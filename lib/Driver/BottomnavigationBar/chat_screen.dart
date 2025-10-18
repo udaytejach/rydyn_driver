@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class ChatScreen extends StatefulWidget {
   final String bookingId;
@@ -40,8 +41,45 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _setUserOnline();
+    // _setUserOnline();
+    _setupRealtimePresence();
+
     messageController.addListener(() => _handleTypingStatus());
+  }
+
+  void _setupRealtimePresence() async {
+    final userId = await SharedPrefServices.getUserId();
+    if (userId == null) return;
+
+    final DatabaseReference rtdbRef = FirebaseDatabase.instance.ref();
+    final userStatusDatabaseRef = rtdbRef.child("status/$userId");
+
+    final onlineState = {
+      "state": "online",
+      "last_changed": ServerValue.timestamp,
+    };
+    final offlineState = {
+      "state": "offline",
+      "last_changed": ServerValue.timestamp,
+    };
+
+    final userStatusFirestoreRef = FirebaseFirestore.instance
+        .collection('userStatus')
+        .doc(userId);
+
+    userStatusDatabaseRef.onDisconnect().set(offlineState);
+    await userStatusDatabaseRef.set(onlineState);
+
+    await userStatusFirestoreRef.set({
+      'isOnline': true,
+      'lastSeen': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    await userStatusDatabaseRef.onDisconnect().set(offlineState);
+    await userStatusFirestoreRef.set({
+      'isOnline': false,
+      'lastSeen': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 
   void _setUserOnline() async {
@@ -461,67 +499,97 @@ class ChatBubble extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-      child: Align(
-        alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-        child: IntrinsicWidth(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: isSentByMe
-                  ? const Color.fromARGB(255, 212, 252, 215)
-                  : Colors.grey[100],
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(isSentByMe ? 12 : 0),
-                topRight: Radius.circular(isSentByMe ? 0 : 12),
-                bottomLeft: const Radius.circular(12),
-                bottomRight: const Radius.circular(12),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: isSentByMe
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
-              children: [
-                if (imageUrl.isNotEmpty)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      imageUrl,
-                      width: 160,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                if (message.isNotEmpty) ...[
-                  const SizedBox(height: 5),
-                  Text(
-                    message,
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      color: Colors.black87,
-                    ),
+      child: Row(
+        mainAxisAlignment: isSentByMe
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: isSentByMe
+                    ? const Color(0xFFE7FFDB)
+                    : const Color(0xFFFFFFFF),
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(12),
+                  topRight: const Radius.circular(12),
+                  bottomLeft: Radius.circular(isSentByMe ? 12 : 0),
+                  bottomRight: Radius.circular(isSentByMe ? 0 : 12),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 2,
+                    offset: const Offset(1, 1),
                   ),
                 ],
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: isSentByMe
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      format12HourTime(timestamp),
-                      style: GoogleFonts.poppins(
-                        fontSize: 10,
-                        color: Colors.grey,
+              ),
+              child: Column(
+                crossAxisAlignment: isSentByMe
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: [
+                  if (imageUrl.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          imageUrl,
+                          width: 200,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 200,
+                              height: 120,
+                              color: Colors.grey.shade300,
+                              alignment: Alignment.center,
+                              child: const Icon(
+                                Icons.broken_image,
+                                color: Colors.grey,
+                                size: 40,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
-                    if (isSentByMe) ...[const SizedBox(width: 4), tickIcon],
-                  ],
-                ),
-              ],
+
+                  if (message.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 50.0),
+                      child: Text(
+                        message,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.black87,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const SizedBox(width: 8),
+                      Text(
+                        format12HourTime(timestamp),
+                        style: GoogleFonts.poppins(
+                          fontSize: 11,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      if (isSentByMe) ...[const SizedBox(width: 4), tickIcon],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

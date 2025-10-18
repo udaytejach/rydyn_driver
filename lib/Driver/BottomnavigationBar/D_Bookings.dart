@@ -9,6 +9,7 @@ import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
 import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
+import 'dart:math';
 
 class D_Bookings extends StatefulWidget {
   const D_Bookings({super.key});
@@ -32,6 +33,9 @@ class _D_BookingsState extends State<D_Bookings> {
       final driverId = await SharedPrefServices.getUserId();
       final driverDocId = await SharedPrefServices.getDocId();
 
+      final random = Random();
+      final ownerOTP = 1000 + random.nextInt(9000);
+
       await FirebaseFirestore.instance
           .collection('bookings')
           .doc(bookingId)
@@ -39,6 +43,7 @@ class _D_BookingsState extends State<D_Bookings> {
             'status': newStatus,
             'driverdocId': driverDocId,
             'driverId': driverId,
+            'ownerOTP': ownerOTP,
           });
 
       setState(() {
@@ -46,8 +51,11 @@ class _D_BookingsState extends State<D_Bookings> {
         if (index != -1) {
           carList[index]['status'] = newStatus;
           carList[index]['driverId'] = driverId;
+          carList[index]['ownerOTP'] = ownerOTP;
         }
       });
+
+      debugPrint('Booking updated successfully. Owner OTP: $ownerOTP');
     } catch (e) {
       debugPrint('Error updating booking status: $e');
       ScaffoldMessenger.of(
@@ -185,10 +193,10 @@ class _D_BookingsState extends State<D_Bookings> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const D_SideMenu(),
-      appBar: DAppbar(),
+      appBar: DAppbar(title: 'My Bookings'),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.only(bottom: 15, right: 15, left: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -272,8 +280,10 @@ class _D_BookingsState extends State<D_Bookings> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          BookingDetails(bookingData: car),
+                                      builder: (_) => BookingDetails(
+                                        bookingData: car,
+                                        docId: car['id'],
+                                      ),
                                     ),
                                   );
                                 },
@@ -369,7 +379,7 @@ class _D_BookingsState extends State<D_Bookings> {
                                                     ),
                                                     CustomText(
                                                       text:
-                                                          ' . ${car['distance'] ?? '45'} Km',
+                                                          ' . ${car['distance'] ?? ''}',
                                                       fontSize: 12,
                                                       fontWeight:
                                                           FontWeight.w500,

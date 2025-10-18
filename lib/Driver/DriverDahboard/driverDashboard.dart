@@ -630,8 +630,10 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) =>
-                                            BookingDetails(bookingData: car),
+                                        builder: (_) => BookingDetails(
+                                          bookingData: car,
+                                          docId: car['id'],
+                                        ),
                                       ),
                                     );
                                     // setState(() {

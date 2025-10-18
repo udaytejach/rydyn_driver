@@ -11,51 +11,106 @@ class MyEarnings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const D_SideMenu(),
-      appBar: DAppbar(),
 
+      // appBar: DAppbar(title: 'Earnings'),
       body: Column(
         children: [
-          ClipPath(
-            clipper: VShapeClipper(),
-            child: Container(
-              width: double.infinity,
-              color: klightorangecolor,
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  CustomText(
-                    text: "Total earnings",
-                    textcolor: korangeColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  SizedBox(height: 4),
-                  CustomText(
-                    text: "₹1500.0",
-                    textcolor: korangeColor,
-                    fontSize: 34,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  SizedBox(height: 8),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: CustomText(
-                      text:
-                          "The ride payment will be auto-debited to your account once the customer pays for the booking in cash.",
-                      textcolor: korangeColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      textAlign: TextAlign.center,
+          Stack(
+            children: [
+              SizedBox(
+                height: 250,
+                child: ClipPath(
+                  clipper: VShapeClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    color: klightorangecolor,
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        SizedBox(height: 50),
+                        CustomText(
+                          text: "Total earnings",
+                          textcolor: korangeColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        SizedBox(height: 4),
+                        CustomText(
+                          text: "₹1500.0",
+                          textcolor: korangeColor,
+                          fontSize: 34,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        SizedBox(height: 5),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CustomText(
+                            text:
+                                "The ride payment will be auto-debited to your account once the customer pays for the booking in cash.",
+                            textcolor: korangeColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 20),
-                ],
+                ),
               ),
-            ),
-          ),
+              Positioned(
+                top: 20,
+                left: 16,
+                right: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Builder(
+                          builder: (context) => GestureDetector(
+                            onTap: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: korangeresponseColor,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Image.asset(
+                                "images/Menu_D.png",
+                                color: KblackColor,
+                              ),
+                            ),
+                          ),
+                        ),
 
-          // Heading with filter
+                        const Spacer(),
+
+                        CustomText(
+                          text: 'My Earnings',
+                          fontSize: 23,
+                          fontWeight: FontWeight.w600,
+                          textcolor: KblackColor,
+                        ),
+
+                        const Spacer(),
+                      ],
+                    ),
+
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(

@@ -42,7 +42,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     // _setUserOnline();
-    _setupRealtimePresence();
+    _setUserOnline();
+    // _setupRealtimePresence();
 
     messageController.addListener(() => _handleTypingStatus());
   }
@@ -82,17 +83,37 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }, SetOptions(merge: true));
   }
 
-  void _setUserOnline() async {
+  // void _setUserOnline() async {
+  //   final userId = await SharedPrefServices.getUserId();
+  //   FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
+  //     'isOnline': true,
+  //     'lastSeen': FieldValue.serverTimestamp(),
+  //   }, SetOptions(merge: true));
+  // }
+
+  // void _setUserOffline() async {
+  //   final userId = await SharedPrefServices.getUserId();
+  //   FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
+  //     'isOnline': false,
+  //     'lastSeen': FieldValue.serverTimestamp(),
+  //   }, SetOptions(merge: true));
+  // }
+
+  Future<void> _setUserOnline() async {
     final userId = await SharedPrefServices.getUserId();
-    FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
+    if (userId == null || userId.isEmpty) return;
+
+    await FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
       'isOnline': true,
       'lastSeen': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
 
-  void _setUserOffline() async {
+  Future<void> _setUserOffline() async {
     final userId = await SharedPrefServices.getUserId();
-    FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
+    if (userId == null || userId.isEmpty) return;
+
+    await FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
       'isOnline': false,
       'lastSeen': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
@@ -163,7 +184,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     final senderId = await SharedPrefServices.getUserId();
     String imageUrl = '';
 
-    // 🔹 Upload image if selected
     if (selectedImage != null) {
       final fileName =
           'chat_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -238,7 +258,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                     builder: (context, snapshot) {
                       if (!snapshot.hasData || !snapshot.data!.exists) {
                         return Text(
-                          "Offline",
+                          "Ofline",
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.grey,

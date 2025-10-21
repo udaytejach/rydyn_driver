@@ -279,11 +279,29 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           ),
                         );
                       } else if (lastSeen != null) {
-                        final formatted = DateFormat(
+                        final lastSeenDate = lastSeen.toDate();
+                        final now = DateTime.now();
+
+                        final difference = now.difference(lastSeenDate).inDays;
+                        final timeFormat = DateFormat(
                           'hh:mm a',
-                        ).format(lastSeen.toDate());
+                        ).format(lastSeenDate);
+                        String displayText;
+
+                        if (difference == 0) {
+                          displayText = "last seen today at $timeFormat";
+                        } else if (difference == 1) {
+                          displayText = "last seen yesterday at $timeFormat";
+                        } else if (difference > 1 && difference <= 6) {
+                          displayText =
+                              "last seen on ${DateFormat('EEEE').format(lastSeenDate)} at $timeFormat";
+                        } else {
+                          displayText =
+                              "last seen on ${DateFormat('MMM d, hh:mm a').format(lastSeenDate)}";
+                        }
+
                         return Text(
-                          "Last seen at $formatted",
+                          displayText,
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: Colors.grey,

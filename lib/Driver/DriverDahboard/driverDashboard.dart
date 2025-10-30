@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
@@ -14,7 +13,7 @@ import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
 import 'package:rydyn/Driver/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
-
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DriverDashboard extends StatefulWidget {
@@ -39,6 +38,12 @@ class _DriverDashboardState extends State<DriverDashboard> {
   int _watchCurrentPage = 0;
   Timer? _watchAutoScrollTimer;
 
+  double totalEarnings = 0.0;
+  bool isEarningsLoading = true;
+
+  int _bounceIndex = 0;
+  late Timer _iconTimer;
+
   @override
   void initState() {
     super.initState();
@@ -47,11 +52,66 @@ class _DriverDashboardState extends State<DriverDashboard> {
     // _startAutoScroll();
 
     _startOfferAutoScroll();
+    _startIconBounce();
+    _fetchTotalEarnings();
   }
 
   int activeIndex = 0;
 
   List<Map<String, dynamic>> carList = [];
+
+  void _startIconBounce() {
+    _iconTimer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
+      setState(() {
+        _bounceIndex = (_bounceIndex + 1) % 3;
+      });
+    });
+  }
+
+  Future<void> _fetchTotalEarnings() async {
+    try {
+      final driverId = await SharedPrefServices.getUserId();
+      if (driverId == null) return;
+
+      // Fetch all transactions
+      final txSnapshot = await FirebaseFirestore.instance
+          .collection('transactions')
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      double total = 0.0;
+
+      for (var txDoc in txSnapshot.docs) {
+        final tx = txDoc.data();
+        final bookingDocId = tx['bookingDocId'] ?? '';
+        if (bookingDocId.isEmpty) continue;
+
+        final bookingSnap = await FirebaseFirestore.instance
+            .collection('bookings')
+            .doc(bookingDocId)
+            .get();
+
+        if (!bookingSnap.exists) continue;
+
+        final bookingData = bookingSnap.data()!;
+        final driverIdFromBooking = bookingData['driverId'] ?? '';
+
+        if (driverIdFromBooking == driverId && tx['status'] == 'Success') {
+          total += (tx['amount'] ?? 0.0);
+        }
+      }
+
+      setState(() {
+        totalEarnings = total;
+        isEarningsLoading = false;
+      });
+    } catch (e) {
+      debugPrint("Error fetching earnings: $e");
+      setState(() {
+        isEarningsLoading = false;
+      });
+    }
+  }
 
   Future<void> _fetchCars() async {
     try {
@@ -289,7 +349,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
     _watchAutoScrollTimer?.cancel();
     _offerPageController.dispose();
     _offerAutoScrollTimer?.cancel();
-
+    _iconTimer.cancel();
     super.dispose();
   }
 
@@ -535,12 +595,51 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                             textcolor: kgreyColor,
                                           ),
                                           SizedBox(height: 1),
-                                          CustomText(
-                                            text: "₹0.0",
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.w700,
-                                            textcolor: korangeColor,
-                                          ),
+                                          isEarningsLoading
+                                              ? SizedBox(
+                                                  height: 40,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: List.generate(
+                                                      3,
+                                                      (
+                                                        index,
+                                                      ) => AnimatedPadding(
+                                                        duration:
+                                                            const Duration(
+                                                              milliseconds: 400,
+                                                            ),
+                                                        padding: EdgeInsets.only(
+                                                          top:
+                                                              index ==
+                                                                  _bounceIndex
+                                                              ? 0
+                                                              : 10,
+                                                        ),
+                                                        child: const Icon(
+                                                          Icons.currency_rupee,
+                                                          color: korangeColor,
+                                                          size: 24,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : AnimatedFlipCounter(
+                                                  duration: const Duration(
+                                                    milliseconds: 800,
+                                                  ),
+                                                  value: totalEarnings,
+                                                  prefix: "₹",
+                                                  fractionDigits: 2,
+                                                  thousandSeparator: ",",
+                                                  textStyle: const TextStyle(
+                                                    fontSize: 28,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: korangeColor,
+                                                  ),
+                                                ),
                                         ],
                                       ),
                                     ),

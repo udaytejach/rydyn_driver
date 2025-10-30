@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,13 +6,15 @@ import 'package:country_picker/country_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
 import 'package:rydyn/Driver/DriverLogin/registrationotpscreen.dart';
 import 'package:rydyn/Driver/Widgets/D_customTextfield.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
+import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/Driver/Widgets/customTextField.dart';
 import 'package:rydyn/Driver/Widgets/mobileNumberInputField.dart';
 
 class DriverRegistrationPage extends StatefulWidget {
@@ -36,15 +39,214 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   final branchController = TextEditingController();
 
   String? vehicleType;
-  File? profileImage;
-  File? licenceFront;
-  File? licenceBack;
+  // File? profileImage;
+
   bool isAgreed = false;
 
-  Future<void> _pickImage(Function(File) onPicked) async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) onPicked(File(picked.path));
+  File? image;
+  void _pickImage() async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Center(
+          child: CustomText(
+            text: "Select Image From",
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            textcolor: KblackColor,
+          ),
+        ),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final pickedImage = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 80,
+                  );
+                  if (pickedImage != null) {
+                    setState(() {
+                      image = File(pickedImage.path);
+                    });
+                  }
+                },
+                child: Row(
+                  children: [
+                    const Icon(Icons.camera, size: 18, color: korangeColor),
+                    const SizedBox(width: 8),
+                    CustomText(
+                      text: "Camera",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      textcolor: Colors.black,
+                    ),
+                  ],
+                ),
+              ),
+
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final pickedImage = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                    imageQuality: 80,
+                  );
+                  if (pickedImage != null) {
+                    setState(() {
+                      image = File(pickedImage.path);
+                    });
+                  }
+                },
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.photo_library,
+                      size: 18,
+                      color: korangeColor,
+                    ),
+                    const SizedBox(width: 8),
+                    CustomText(
+                      text: "Gallery",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      textcolor: Colors.black,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  File? licenceFront;
+  File? licenceBack;
+
+  Future<void> _pickLicenceImage({required bool isFront}) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: const Center(
+          child: Text(
+            "Select Image From",
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          ),
+        ),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // 📸 Camera Option
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 80,
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      if (isFront) {
+                        licenceFront = File(picked.path);
+                      } else {
+                        licenceBack = File(picked.path);
+                      }
+                    });
+                  }
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.camera_alt, color: korangeColor, size: 20),
+                    SizedBox(width: 8),
+                    Text("Camera"),
+                  ],
+                ),
+              ),
+
+              // 🖼️ Gallery Option
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                    imageQuality: 80,
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      if (isFront) {
+                        licenceFront = File(picked.path);
+                      } else {
+                        licenceBack = File(picked.path);
+                      }
+                    });
+                  }
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.photo_library, color: korangeColor, size: 20),
+                    SizedBox(width: 8),
+                    Text("Gallery"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool isValidIfsc(String code) {
+    return RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$').hasMatch(code);
+  }
+
+  bool isLoading = false;
+  Future<void> fetchIfscDetails(String ifscCode) async {
+    setState(() => isLoading = true);
+
+    try {
+      final response = await http.get(
+        Uri.parse('https://ifsc.razorpay.com/$ifscCode'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        print('Bank Name: ${data['BANK']}');
+        print(' Branch Name: ${data['BRANCH']}');
+
+        setState(() {
+          bankController.text = data['BANK'] ?? '';
+          branchController.text = data['BRANCH'] ?? '';
+          isLoading = false;
+        });
+      } else {
+        setState(() => isLoading = false);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invalid IFSC Code. Please check and try again.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(' Error fetching IFSC details: $e'),
+          backgroundColor: Colors.orangeAccent,
+        ),
+      );
+    }
   }
 
   Country selectedCountry = Country(
@@ -73,15 +275,35 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
           preferredSize: const Size.fromHeight(1.0),
           child: Container(color: Colors.grey.shade300, height: 1.0),
         ),
-        title: const Padding(
-          padding: EdgeInsets.only(bottom: 10.0, top: 5),
-          child: Text(
-            "Basic Information",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: 22,
-            ),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 10.0, top: 5),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    child: Image.asset(
+                      "images/chevronLeft.png",
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: CustomText(
+                  text: "Basic Information",
+                  textcolor: KblackColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 22,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -100,21 +322,19 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                         CircleAvatar(
                           radius: 55,
                           backgroundColor: Colors.grey.shade300,
-                          backgroundImage: profileImage != null
-                              ? FileImage(profileImage!)
+                          backgroundImage: image != null
+                              ? FileImage(image!)
                               : null,
                         ),
                         Positioned(
                           right: 0,
                           bottom: 0,
                           child: InkWell(
-                            onTap: () async {
-                              await _pickImage(
-                                (f) => setState(() => profileImage = f),
-                              );
+                            onTap: () {
+                              _pickImage();
                             },
                             child: const CircleAvatar(
-                              backgroundColor: Colors.orange,
+                              backgroundColor: korangeColor,
                               radius: 18,
                               child: Icon(
                                 Icons.camera_alt,
@@ -181,7 +401,25 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1900),
                             lastDate: DateTime.now(),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                    primary: korangeColor,
+                                    onPrimary: Colors.white,
+                                    onSurface: Colors.black,
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: korangeColor,
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
                           );
+
                           if (picked != null) {
                             dobController.text = DateFormat(
                               "dd-MM-yyyy",
@@ -276,9 +514,9 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                             children: [
                               Expanded(
                                 child: GestureDetector(
-                                  onTap: () async => await _pickImage(
-                                    (f) => setState(() => licenceFront = f),
-                                  ),
+                                  onTap: () async =>
+                                      await _pickLicenceImage(isFront: true),
+
                                   child: DottedBorder(
                                     options:
                                         const RoundedRectDottedBorderOptions(
@@ -305,9 +543,8 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: GestureDetector(
-                                  onTap: () async => await _pickImage(
-                                    (f) => setState(() => licenceBack = f),
-                                  ),
+                                  onTap: () =>
+                                      _pickLicenceImage(isFront: false),
                                   child: DottedBorder(
                                     options:
                                         const RoundedRectDottedBorderOptions(
@@ -319,7 +556,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                         ),
                                     child: Container(
                                       height: 120,
-
+                                      width: double.infinity,
                                       alignment: Alignment.center,
                                       child: licenceBack != null
                                           ? Image.file(
@@ -351,29 +588,75 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
                   const SizedBox(height: 10),
                   D_CustomTextField(
-                    controller: holderController,
-                    labelText: "Account Holder Name",
+                    controller: ifscController,
+                    labelText: "IFSC Code",
+
+                    onChanged: (value) async {
+                      final code = value.toUpperCase().trim();
+
+                      if (code.isEmpty || code.length < 11) {
+                        setState(() {
+                          bankController.clear();
+                          branchController.clear();
+                        });
+                        return;
+                      }
+
+                      if (code.length == 11) {
+                        if (isValidIfsc(code)) {
+                          await fetchIfscDetails(code);
+                        } else {
+                          setState(() {
+                            bankController.clear();
+                            branchController.clear();
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(' Invalid IFSC Code Format.'),
+                              backgroundColor: Colors.redAccent,
+                            ),
+                          );
+                        }
+                      }
+
+                      if (code.length > 11) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'IFSC code cannot exceed 11 characters.',
+                            ),
+                            backgroundColor: Colors.orangeAccent,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+
+                  const SizedBox(height: 10),
+                  D_CustomTextField(
+                    controller: bankController,
+                    labelText: "Bank Name",
+                    readOnly: true,
                   ),
                   const SizedBox(height: 10),
+                  D_CustomTextField(
+                    controller: branchController,
+                    labelText: "Branch",
+                    readOnly: true,
+                  ),
+                  const SizedBox(height: 10),
+
                   D_CustomTextField(
                     controller: accountController,
                     labelText: "Account Number",
                   ),
                   const SizedBox(height: 10),
                   D_CustomTextField(
-                    controller: ifscController,
-                    labelText: "IFSC Code",
+                    controller: holderController,
+                    labelText: "Account Holder Name",
                   ),
-                  const SizedBox(height: 10),
-                  D_CustomTextField(
-                    controller: bankController,
-                    labelText: "Bank Name",
-                  ),
-                  const SizedBox(height: 10),
-                  D_CustomTextField(
-                    controller: branchController,
-                    labelText: "Branch Name",
-                  ),
+
+                  SizedBox(height: 20),
 
                   const SizedBox(height: 20),
                   Row(
@@ -381,9 +664,24 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                     children: [
                       Checkbox(
                         value: isAgreed,
-                        onChanged: (value) =>
-                            setState(() => isAgreed = value ?? false),
+                        checkColor: kwhiteColor,
+                        fillColor: MaterialStateProperty.resolveWith<Color>((
+                          states,
+                        ) {
+                          if (states.contains(MaterialState.selected)) {
+                            return korangeColor;
+                          }
+                          return Colors.white;
+                        }),
+                        side: const BorderSide(color: korangeColor, width: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        onChanged: (value) {
+                          setState(() => isAgreed = value ?? false);
+                        },
                       ),
+
                       Expanded(
                         child: Text(
                           "I agree to the collection and use of my information as described in the Privacy Policy.",
@@ -432,7 +730,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                   dob: dobController.text,
                                   vehicleType: vehicleType ?? "",
                                   licenceNumber: licenceController.text,
-                                  profileImage: profileImage,
+                                  profileImage: image,
                                   licenceFront: licenceFront,
                                   licenceBack: licenceBack,
                                   holderName: holderController.text,
@@ -518,21 +816,41 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
       );
       return false;
     }
-    if (licenceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter licence number")),
-      );
-      return false;
-    }
-    if (profileImage == null) {
+
+    if (image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please upload profile image")),
       );
       return false;
     }
-    if (licenceFront == null || licenceBack == null) {
+    if (!RegExp(r'^[0-9]{9,18}$').hasMatch(accountController.text.trim())) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please upload licence images")),
+        const SnackBar(
+          content: Text('Please enter a valid Account Number (9–18 digits).'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return false;
+    }
+
+    if (licenceController.text.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(' Please enter a valid Licence Number.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return false;
+    }
+
+    if (!RegExp(
+      r'^[A-Z]{4}0[A-Z0-9]{6}$',
+    ).hasMatch(ifscController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid IFSC Code format.'),
+          backgroundColor: Colors.redAccent,
+        ),
       );
       return false;
     }

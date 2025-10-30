@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
@@ -25,7 +24,7 @@ void main() async {
   // await FirebaseAuth.instance.signInAnonymously();
   runApp(const MyApp());
 }
- 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

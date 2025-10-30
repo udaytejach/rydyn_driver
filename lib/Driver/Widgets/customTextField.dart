@@ -18,6 +18,9 @@ class CustomTextField extends StatelessWidget {
   final Color borderColor;
   final double fontSize;
 
+  /// 🆕 New property
+  final ValueChanged<String>? onChanged;
+
   const CustomTextField({
     super.key,
     required this.controller,
@@ -33,10 +36,16 @@ class CustomTextField extends StatelessWidget {
     this.textColor = korangeColor,
     this.borderColor = const Color(0xFFD5D7DA),
     this.fontSize = 16,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bool showEditIcon =
+        labelText.toLowerCase() != "phone number" &&
+        !readOnly &&
+        suffix == null;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: TextFormField(
@@ -47,6 +56,7 @@ class CustomTextField extends StatelessWidget {
         readOnly: readOnly,
         maxLines: maxLines ?? 1,
         inputFormatters: inputFormatters,
+        onChanged: onChanged,
         style: GoogleFonts.poppins(
           color: textColor,
           fontSize: fontSize,
@@ -62,9 +72,11 @@ class CustomTextField extends StatelessWidget {
             },
         decoration: InputDecoration(
           labelText: labelText,
-          suffixIcon: suffix != null
-              ? Padding(padding: const EdgeInsets.all(15), child: suffix)
-              : null,
+          suffixIcon:
+              suffix ??
+              (showEditIcon
+                  ? const Icon(Icons.edit, color: KorangeLightColor, size: 18)
+                  : null),
           labelStyle: GoogleFonts.poppins(color: labelColor, fontSize: 14),
           contentPadding: const EdgeInsets.symmetric(
             vertical: 16,

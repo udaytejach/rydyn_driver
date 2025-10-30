@@ -112,13 +112,13 @@ class _DocumentsPageState extends State<DocumentsPage> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: SizedBox(
-                width: double.infinity,
+                width: 250,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     backgroundColor: korangeColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
                   onPressed: () {},
@@ -150,40 +150,117 @@ class LicenceDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text("Driving Licence"),
-        backgroundColor: Colors.orange,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(color: Colors.grey.shade300, height: 1.0),
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 10.0, top: 5),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    child: Image.asset(
+                      "images/chevronLeft.png",
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: CustomText(
+                  text: "Driving Licence",
+                  textcolor: KblackColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 22,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: frontUrl != null && frontUrl!.isNotEmpty
-                        ? Image.network(frontUrl!, fit: BoxFit.contain)
-                        : Container(
-                            color: Colors.grey.shade200,
-                            child: const Center(child: Text("No Front Image")),
-                          ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: backUrl != null && backUrl!.isNotEmpty
-                        ? Image.network(backUrl!, fit: BoxFit.contain)
-                        : Container(
-                            color: Colors.grey.shade200,
-                            child: const Center(child: Text("No Back Image")),
-                          ),
-                  ),
-                ],
-              ),
-            ),
+            const SizedBox(height: 20),
+
+            _buildLicenceCard(title: "", imageUrl: frontUrl),
+            const SizedBox(height: 20),
+
+            _buildLicenceCard(title: "", imageUrl: backUrl),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLicenceCard({required String title, String? imageUrl}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: imageUrl != null && imageUrl.isNotEmpty
+              ? Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 200,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: KorangeColorNew,
+                        ),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 200,
+                      color: Colors.grey.shade200,
+                      child: const Center(child: Text("Failed to load image")),
+                    );
+                  },
+                )
+              : Container(
+                  height: 200,
+                  color: Colors.grey.shade100,
+                  child: const Center(
+                    child: Text(
+                      "No Image Available",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                ),
+        ),
+      ],
     );
   }
 }

@@ -208,7 +208,7 @@ class _BookingDetailsState extends State<BookingDetails> {
         final formattedETA = DateFormat("h:mm a").format(eta);
 
         if (eta.day > pickupTime.day) {
-          return "$formattedETA (Next Day)";
+          return "$formattedETA";
         }
 
         return formattedETA;
@@ -1221,43 +1221,42 @@ class _BookingDetailsState extends State<BookingDetails> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: SizedBox(
-          height: 55,
-          child: SlideAction(
-            outerColor: status == 'Ongoing' ? Colors.green : korangeColor,
-            innerColor: Colors.white,
-            borderRadius: 30,
-            elevation: 4,
-            sliderButtonIconPadding: 11,
+      floatingActionButton: status == 'Completed'
+          ? null
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: SizedBox(
+                height: 55,
+                child: SlideAction(
+                  outerColor: status == 'Ongoing' ? Colors.green : korangeColor,
+                  innerColor: Colors.white,
+                  borderRadius: 30,
+                  elevation: 4,
+                  sliderButtonIconPadding: 11,
+                  sliderButtonIcon: Icon(
+                    Icons.arrow_forward_ios,
+                    color: status == 'Ongoing' ? Colors.green : korangeColor,
+                    size: 20,
+                  ),
+                  text: status == 'Ongoing'
+                      ? "Swipe to Complete Ride"
+                      : "Swipe to Start Ride",
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                  onSubmit: () async {
+                    await Future.delayed(const Duration(milliseconds: 400));
 
-            sliderButtonIcon: Icon(
-              Icons.arrow_forward_ios,
-              color: status == 'Ongoing' ? Colors.green : korangeColor,
-              size: 20,
+                    if (status == 'Ongoing') {
+                    } else {
+                      _showOtpDialog(context, OwnerOTP, widget.docId);
+                    }
+                  },
+                ),
+              ),
             ),
-            text: status == 'Ongoing'
-                ? "Swipe to Complete Ride"
-                : "Swipe to Start Ride",
-            textStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
-
-            onSubmit: () async {
-              await Future.delayed(const Duration(milliseconds: 400));
-
-              if (status == 'Ongoing') {
-                // _showCompleteRideDialog(context, widget.docId);
-              } else {
-                _showOtpDialog(context, OwnerOTP, widget.docId);
-              }
-            },
-          ),
-        ),
-      ),
     );
   }
 

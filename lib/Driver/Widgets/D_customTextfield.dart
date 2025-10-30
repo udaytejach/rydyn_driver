@@ -17,7 +17,7 @@ class D_CustomTextField extends StatelessWidget {
   final Color textColor;
   final Color borderColor;
   final double fontSize;
-
+  final ValueChanged<String>? onChanged;
   const D_CustomTextField({
     super.key,
     required this.controller,
@@ -33,6 +33,7 @@ class D_CustomTextField extends StatelessWidget {
     this.textColor = korangeColor,
     this.borderColor = const Color(0xFFD5D7DA),
     this.fontSize = 16,
+    this.onChanged,
   });
 
   @override
@@ -46,6 +47,7 @@ class D_CustomTextField extends StatelessWidget {
         obscureText: obscureText,
         readOnly: readOnly,
         maxLines: maxLines ?? 1,
+        onChanged: onChanged,
         inputFormatters: inputFormatters,
         style: GoogleFonts.poppins(
           color: textColor,

@@ -144,7 +144,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             "Selected country: ${selectedCountry.name} (${selectedCountry.countryCode}) +${selectedCountry.phoneCode}",
                           );
 
-                          // ✅ First name validation
                           if (!isValidName(firstName)) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -194,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
 
                           print(
-                            "✅ All validations passed, proceeding with registration...",
+                            "All validations passed, proceeding with registration...",
                           );
 
                           try {

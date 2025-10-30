@@ -173,7 +173,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     String addonPrice = data['addonPrice']?.toString() ?? '0.00';
     String taxes = data['taxes']?.toString() ?? '0.00';
     String walletPoints = data['walletPoints']?.toString() ?? '0.00';
-    String totalPrice = data['totalPrice']?.toString() ?? '0.00';
+    String totalPrice = data['fare']?.toString() ?? '0.00';
     String status = data['status'] ?? '';
     String OwnerOTP = data['ownerOTP'].toString();
     String pickupLat = data['pickupLat'].toString();
@@ -1106,7 +1106,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                               textcolor: KblackColor,
                             ),
                             CustomText(
-                              text: "₹$servicePrice",
+                              text: "₹$totalPrice",
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,

@@ -40,6 +40,8 @@ class _BookingDetailsState extends State<BookingDetails> {
     data = widget.bookingData;
     fetchVehicleData();
     fetchOwnerData();
+    // getPaymentStatus(widget.docId);
+    print(widget.docId);
   }
 
   void fetchVehicleData() async {
@@ -71,7 +73,7 @@ class _BookingDetailsState extends State<BookingDetails> {
 
       if (snapshot.exists) {
         final data = snapshot.data() as Map<String, dynamic>?;
-        debugPrint("👉 Fetched Owner Data: $data");
+        debugPrint(" Fetched Owner Data: $data");
 
         setState(() {
           ownerData = data;
@@ -122,6 +124,35 @@ class _BookingDetailsState extends State<BookingDetails> {
           backgroundColor: Colors.redAccent,
         ),
       );
+    }
+  }
+
+  Future<String> getPaymentStatus(String bookingDocId) async {
+    try {
+      final txSnapshot = await FirebaseFirestore.instance
+          .collection('transactions')
+          .where('bookingDocId', isEqualTo: bookingDocId)
+          .orderBy('timestamp', descending: true)
+          .limit(1)
+          .get();
+
+      if (txSnapshot.docs.isEmpty) {
+        return 'Waiting for Payment';
+      }
+
+      final txData = txSnapshot.docs.first.data();
+      final status = txData['status'] ?? '';
+
+      if (status == 'Success') {
+        return 'Payment Received';
+      } else if (status == 'Failed') {
+        return 'Payment Failed';
+      } else {
+        return 'Waiting for Payment';
+      }
+    } catch (e) {
+      print('Error checking payment: $e');
+      return 'Waiting for Payment';
     }
   }
 
@@ -217,6 +248,8 @@ class _BookingDetailsState extends State<BookingDetails> {
         return "--";
       }
     }
+
+    bool isPaymentReceived = false;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -372,7 +405,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                     .toString(),
                                 ownerId: data['ownerId'],
                                 ownerName: ownerFullName,
-                                ownerProfile: ownerData?['profile'] ?? '',
+                                ownerProfile: ownerData?['profilePic'] ?? '',
                               ),
                             ),
                           );
@@ -1106,7 +1139,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                               textcolor: KblackColor,
                             ),
                             CustomText(
-                              text: "₹$totalPrice",
+                              text:
+                                  "₹${(double.tryParse(totalPrice) ?? 0).toStringAsFixed(2)}",
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,
@@ -1180,7 +1214,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                               textcolor: korangeColor,
                             ),
                             CustomText(
-                              text: "₹$totalPrice",
+                              text:
+                                  "₹${(double.tryParse(totalPrice) ?? 0).toStringAsFixed(2)}",
+
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               textcolor: korangeColor,
@@ -1197,45 +1233,89 @@ class _BookingDetailsState extends State<BookingDetails> {
             ),
 
             const SizedBox(height: 30),
-            // _buildCard(
-            //   context,
-            //   imagePath: 'images/copoun_image.png',
-            //   text: 'Coupons & Offers',
-            //   onTap: () {},
-            // ),
-            // const SizedBox(height: 15),
-            // _buildCard(
-            //   context,
-            //   imagePath: 'images/cancel_image.png',
-            //   text: 'Cancellation policy',
-            //   onTap: () {
-            //     Navigator.of(context).push(
-            //       MaterialPageRoute(
-            //         builder: (context) => const CancellationPolicyScreen(),
-            //       ),
-            //     );
-            //   },
-            // ),
+
             const SizedBox(height: 100),
           ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: status == 'Completed'
-          ? null
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          ? FutureBuilder<String>(
+              future: getPaymentStatus(widget.docId),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const SizedBox(
+                    height: 50,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                String paymentStatus = snapshot.data!;
+                Color buttonColor;
+
+                if (paymentStatus == 'Payment Received') {
+                  buttonColor = Colors.green;
+                } else if (paymentStatus == 'Payment Failed') {
+                  buttonColor = Colors.red;
+                } else {
+                  buttonColor = Colors.orange;
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: buttonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        elevation: 4,
+                      ),
+                      onPressed: () {
+                        if (paymentStatus == 'Waiting for Payment') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Waiting for payment confirmation...',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        paymentStatus,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            )
+          : (status == 'Accepted' || status == 'Ongoing')
+          ? Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15),
               child: SizedBox(
                 height: 55,
                 child: SlideAction(
-                  outerColor: status == 'Ongoing' ? Colors.green : korangeColor,
+                  outerColor: status == 'Ongoing'
+                      ? korangeresponseColor
+                      : Colors.green,
                   innerColor: Colors.white,
                   borderRadius: 30,
                   elevation: 4,
                   sliderButtonIconPadding: 11,
                   sliderButtonIcon: Icon(
                     Icons.arrow_forward_ios,
-                    color: status == 'Ongoing' ? Colors.green : korangeColor,
+                    color: status == 'Ongoing'
+                        ? korangeresponseColor
+                        : Colors.green,
                     size: 20,
                   ),
                   text: status == 'Ongoing'
@@ -1244,19 +1324,21 @@ class _BookingDetailsState extends State<BookingDetails> {
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontSize: 16,
                   ),
                   onSubmit: () async {
                     await Future.delayed(const Duration(milliseconds: 400));
 
                     if (status == 'Ongoing') {
-                    } else {
+                      // Complete ride logic
+                    } else if (status == 'Accepted') {
                       _showOtpDialog(context, OwnerOTP, widget.docId);
                     }
                   },
                 ),
               ),
-            ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 

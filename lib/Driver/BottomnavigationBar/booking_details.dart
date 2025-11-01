@@ -1330,7 +1330,130 @@ class _BookingDetailsState extends State<BookingDetails> {
                     await Future.delayed(const Duration(milliseconds: 400));
 
                     if (status == 'Ongoing') {
-                      // Complete ride logic
+                      bool? confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            title: Center(
+                              child: CustomText(
+                                text: "Complete Ride",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                textcolor: korangeColor,
+                              ),
+                            ),
+                            backgroundColor: kwhiteColor,
+                            content: CustomText(
+                              text:
+                                  "Are you sure you want to complete this ride?",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              textcolor: KblackColor,
+                            ),
+                            actionsAlignment: MainAxisAlignment.spaceBetween,
+                            actions: [
+                              OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(
+                                    color: korangeColor,
+                                    width: 1.5,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 25,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(
+                                    color: korangeColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: korangeColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 25,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(
+                                          color: korangeColor,
+                                        ),
+                                      );
+                                    },
+                                  );
+
+                                  try {
+                                    await FirebaseFirestore.instance
+                                        .collection('bookings')
+                                        .doc(widget.docId)
+                                        .update({'status': 'Completed'});
+
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop(true);
+
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => D_BottomNavigation(),
+                                      ),
+                                      (route) => false,
+                                    );
+                                  } catch (e) {
+                                    Navigator.of(context).pop();
+                                    print("Error updating booking status: $e");
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          "Failed to complete ride: $e",
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  "Yes",
+                                  style: TextStyle(
+                                    color: kwhiteColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirm == true) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Ride completed successfully!"),
+                          ),
+                        );
+                      }
                     } else if (status == 'Accepted') {
                       _showOtpDialog(context, OwnerOTP, widget.docId);
                     }

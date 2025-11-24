@@ -539,24 +539,24 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                           const SizedBox(height: 10),
                                           Row(
                                             children: [
-                                              Expanded(
-                                                child: OutlinedButton(
-                                                  style:
-                                                      OutlinedButton.styleFrom(
-                                                        side: const BorderSide(
-                                                          color:
-                                                              KorangeColorNew,
-                                                        ),
-                                                      ),
-                                                  onPressed: () {},
-                                                  child: const CustomText(
-                                                    text: "Decline",
-                                                    textcolor: KorangeColorNew,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ),
+                                              // Expanded(
+                                              //   child: OutlinedButton(
+                                              //     style:
+                                              //         OutlinedButton.styleFrom(
+                                              //           side: const BorderSide(
+                                              //             color:
+                                              //                 KorangeColorNew,
+                                              //           ),
+                                              //         ),
+                                              //     onPressed: () {},
+                                              //     child: const CustomText(
+                                              //       text: "Decline",
+                                              //       textcolor: KorangeColorNew,
+                                              //       fontSize: 12,
+                                              //       fontWeight: FontWeight.w500,
+                                              //     ),
+                                              //   ),
+                                              // ),
                                               const SizedBox(width: 10),
                                               Expanded(
                                                 child: ElevatedButton(

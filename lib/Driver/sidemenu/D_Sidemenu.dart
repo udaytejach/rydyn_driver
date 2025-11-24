@@ -7,6 +7,7 @@ import 'package:rydyn/Driver/sidemenu/D_Helpandsupport.dart';
 import 'package:rydyn/Driver/sidemenu/D_Termsandconditions.dart';
 import 'package:rydyn/Driver/sidemenu/Driverprofilepage.dart';
 import 'package:rydyn/Driver/sidemenu/MyDocuments.dart';
+import 'package:rydyn/Driver/sidemenu/privacy_policy.dart';
 
 class D_SideMenu extends StatelessWidget {
   const D_SideMenu({super.key});
@@ -71,6 +72,7 @@ class D_SideMenu extends StatelessWidget {
                         );
                       },
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
                             text:
@@ -173,7 +175,12 @@ class D_SideMenu extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PrivacyPolicy()),
+              );
+            },
           ),
           ListTile(
             leading: Image.asset("images/D_logout.png"),

@@ -707,7 +707,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                         SizedBox(height: 20),
                         if (carList.isNotEmpty) ...[
                           SizedBox(
-                            height: 180,
+                            height: 170,
                             child: PageView.builder(
                               itemCount: carList.length,
                               controller: _pageController,
@@ -892,7 +892,6 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                             ),
                                                           ],
                                                         ),
-                                                        // vehicle number safe
                                                       ],
                                                     ),
                                                   ),
@@ -914,36 +913,32 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
                                               const SizedBox(height: 10),
 
-                                              // Buttons row
                                               Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Expanded(
-                                                    child: OutlinedButton(
-                                                      style: OutlinedButton.styleFrom(
-                                                        side: const BorderSide(
-                                                          color:
-                                                              KorangeColorNew,
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        // _updateBookingStatus(
-                                                        //   car['id'],
-                                                        //   'Declined',
-                                                        // );
-                                                      },
-                                                      child: const CustomText(
-                                                        text: "Decline",
-                                                        textcolor:
-                                                            KorangeColorNew,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                  ),
+                                                  // Expanded(
+                                                  //   child: OutlinedButton(
+                                                  //     style: OutlinedButton.styleFrom(
+                                                  //       side: const BorderSide(
+                                                  //         color:
+                                                  //             KorangeColorNew,
+                                                  //       ),
+                                                  //     ),
+                                                  //     onPressed: () {
+
+                                                  //     },
+                                                  //     child: const CustomText(
+                                                  //       text: "Decline",
+                                                  //       textcolor:
+                                                  //           KorangeColorNew,
+                                                  //       fontSize: 12,
+                                                  //       fontWeight:
+                                                  //           FontWeight.w500,
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
                                                   const SizedBox(width: 10),
                                                   Expanded(
                                                     child: ElevatedButton(
@@ -957,7 +952,6 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                             await SharedPrefServices.getisOnline();
 
                                                         if (!isOnline) {
-                                                          // Offline dialog
                                                           showDialog(
                                                             context: context,
                                                             builder: (context) => AlertDialog(
@@ -1058,7 +1052,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                       onPressed: () {
                                                                         Navigator.pop(
                                                                           context,
-                                                                        ); // close dialog
+                                                                        );
                                                                         _updateBookingStatus(
                                                                           car['id'],
                                                                           'Accepted',

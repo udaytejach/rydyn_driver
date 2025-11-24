@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -662,70 +663,142 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
 
                       const SizedBox(height: 20),
 
-                      DropdownButtonFormField<String>(
-                        value: vehicleController.text.isNotEmpty
-                            ? vehicleController.text
-                            : null,
-                        decoration: InputDecoration(
-                          labelText: "Vehicle Type",
-                          labelStyle: const TextStyle(color: Colors.grey),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: kbordergreyColor,
+                      // DropdownButtonFormField<String>(
+                      //   value: vehicleController.text.isNotEmpty
+                      //       ? vehicleController.text
+                      //       : null,
+                      //   decoration: InputDecoration(
+                      //     labelText: "Vehicle Type",
+                      //     labelStyle: const TextStyle(color: Colors.grey),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: kbordergreyColor,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: kbordergreyColor,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     filled: true,
+                      //     fillColor: kwhiteColor,
+                      //   ),
+                      //   icon: const Icon(
+                      //     Icons.keyboard_arrow_down,
+                      //     color: KblackColor,
+                      //     size: 30,
+                      //   ),
+                      //   dropdownColor: Colors.white,
+                      //   items: const [
+                      //     DropdownMenuItem(
+                      //       value: 'Light',
+                      //       child: CustomText(
+                      //         text: 'Light',
+                      //         fontSize: 15,
+                      //         fontWeight: FontWeight.w500,
+                      //         textcolor: KblackColor,
+                      //       ),
+                      //     ),
+                      //     DropdownMenuItem(
+                      //       value: 'Medium',
+                      //       child: CustomText(
+                      //         text: 'Medium',
+                      //         fontSize: 15,
+                      //         fontWeight: FontWeight.w500,
+                      //         textcolor: KblackColor,
+                      //       ),
+                      //     ),
+                      //     DropdownMenuItem(
+                      //       value: 'Heavy',
+                      //       child: CustomText(
+                      //         text: 'Heavy',
+                      //         fontSize: 15,
+                      //         fontWeight: FontWeight.w500,
+                      //         textcolor: KblackColor,
+                      //       ),
+                      //     ),
+                      //   ],
+                      //   onChanged: isEditing
+                      //       ? (value) {
+                      //           setState(() {
+                      //             vehicleController.text = value!;
+                      //           });
+                      //         }
+                      //       : null,
+                      // ),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          value:
+                              [
+                                'Light',
+                                'Premium',
+                                'Heavy',
+                                'All',
+                              ].contains(vehicleController.text)
+                              ? vehicleController.text
+                              : null,
+
+                          hint: Text(
+                            "Choose Vehicle Type",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
                             ),
-                            borderRadius: BorderRadius.circular(10),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: kbordergreyColor,
+                          items: [
+                            DropdownMenuItem(
+                              value: 'Light',
+                              child: Text('Light'),
                             ),
-                            borderRadius: BorderRadius.circular(10),
+                            DropdownMenuItem(
+                              value: 'Premium',
+                              child: Text('Premium'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Heavy',
+                              child: Text('Heavy'),
+                            ),
+                            DropdownMenuItem(value: 'All', child: Text('All')),
+                          ],
+                          onChanged: isEditing
+                              ? (value) {
+                                  setState(() {
+                                    vehicleController.text = value!;
+                                  });
+                                }
+                              : null,
+
+                          dropdownStyleData: DropdownStyleData(
+                            direction: DropdownDirection.textDirection,
+                            offset: const Offset(0, -5),
+                            maxHeight: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
                           ),
-                          filled: true,
-                          fillColor: kwhiteColor,
+
+                          buttonStyleData: ButtonStyleData(
+                            height: 58,
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Color(0xFFD5D7DA)),
+                            ),
+                          ),
+
+                          menuItemStyleData: const MenuItemStyleData(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                          ),
                         ),
-                        icon: const Icon(
-                          Icons.keyboard_arrow_down,
-                          color: korangeColor,
-                          size: 30,
-                        ),
-                        dropdownColor: Colors.white,
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'Light',
-                            child: CustomText(
-                              text: 'Light',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              textcolor: korangeColor,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Medium',
-                            child: CustomText(
-                              text: 'Medium',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              textcolor: korangeColor,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Heavy',
-                            child: CustomText(
-                              text: 'Heavy',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              textcolor: korangeColor,
-                            ),
-                          ),
-                        ],
-                        onChanged: isEditing
-                            ? (value) {
-                                setState(() {
-                                  vehicleController.text = value!;
-                                });
-                              }
-                            : null,
                       ),
 
                       const SizedBox(height: 20),

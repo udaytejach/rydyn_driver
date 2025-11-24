@@ -4,12 +4,15 @@ class DriverModel {
   String? lastName;
   String? email;
   String? phone;
+  String? status;
   String? dob;
   String? vehicleType;
   String? licenceNumber;
   String? profileUrl;
   String? licenceFrontUrl;
   String? licenceBackUrl;
+  String? aadharFrontUrl;
+  String? aadharBackUrl;
   BankAccount? bankAccount;
   String? roleCode;
   String? countryCode;
@@ -28,8 +31,11 @@ class DriverModel {
     this.profileUrl,
     this.licenceFrontUrl,
     this.licenceBackUrl,
+    this.aadharFrontUrl,
+    this.aadharBackUrl,
     this.bankAccount,
     this.roleCode,
+    this.status,
     this.countryCode,
   });
 
@@ -42,11 +48,14 @@ class DriverModel {
     "email": email,
     "phone": phone,
     "dob": dob,
+    "status": status,
     "vehicleType": vehicleType,
     "licenceNumber": licenceNumber,
     "profileUrl": profileUrl,
     "licenceFrontUrl": licenceFrontUrl,
     "licenceBackUrl": licenceBackUrl,
+    "aadharFrontUrl": aadharFrontUrl,
+    "aadharBackUrl": aadharBackUrl,
     "bankAccount": bankAccount?.toJson(),
     "roleCode": roleCode,
   };

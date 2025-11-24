@@ -87,7 +87,7 @@ class _OtpLoginState extends State<OtpLogin> {
                               textStyle: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
-                                color: korangeColor,
+                                color: KblackColor,
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(color: kbordergreyColor),
@@ -158,7 +158,62 @@ class _OtpLoginState extends State<OtpLogin> {
                                 final role =
                                     await SharedPrefServices.getRoleCode();
 
+                                final status =
+                                    await SharedPrefServices.getStatus();
+
                                 if (!mounted) return;
+
+                                if (status == "Inactive") {
+                                  setState(() => _isLoading = false);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        content: Text(
+                                          "Your status is inactive. Please contact the admin to update your account status.",
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        title: Center(
+                                          child: Text(
+                                            "Account Inactive",
+                                            style: GoogleFonts.poppins(
+                                              color: korangeColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              'OK',
+                                              style: GoogleFonts.poppins(
+                                                color: korangeColor,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+
+                                  return;
+                                }
 
                                 if (role == "Driver") {
                                   Navigator.pushReplacement(

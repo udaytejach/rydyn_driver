@@ -14,82 +14,17 @@ class MyEarnings extends StatefulWidget {
 
 class _MyEarningsState extends State<MyEarnings> {
   String? currentUserId;
-  bool isLoading = true;
-  List<Map<String, dynamic>> transactions = [];
   double totalEarnings = 0.0;
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    _loadUser();
   }
 
-  Future<void> _fetchData() async {
-    final userId = await SharedPrefServices.getUserId();
-    setState(() {
-      currentUserId = userId;
-      isLoading = true;
-    });
-
-    final txSnapshot = await FirebaseFirestore.instance
-        .collection('transactions')
-        .orderBy('timestamp', descending: true)
-        .get();
-
-    List<Map<String, dynamic>> userTransactions = [];
-
-    for (var txDoc in txSnapshot.docs) {
-      final tx = txDoc.data();
-      final bookingDocId = tx['bookingDocId'] ?? '';
-
-      if (bookingDocId.isEmpty) continue;
-
-      final bookingSnap = await FirebaseFirestore.instance
-          .collection('bookings')
-          .doc(bookingDocId)
-          .get();
-
-      if (!bookingSnap.exists) continue;
-
-      final bookingData = bookingSnap.data()!;
-      final driverId = bookingData['driverId'] ?? '';
-      final ownerId = bookingData['ownerId'] ?? '';
-      final ownerDocId = bookingData['ownerdocId'] ?? '';
-
-      // Only include if the logged-in driver is part of it
-      if (userId == driverId) {
-        String ownerName = await _getOwnerName(ownerDocId);
-        tx['ownerName'] = ownerName;
-        userTransactions.add(tx);
-      }
-    }
-
-    // Calculate total earnings
-    double total = userTransactions
-        .where((tx) => tx['status'] == 'Success')
-        .fold(0.0, (sum, tx) => sum + (tx['amount'] ?? 0.0));
-
-    setState(() {
-      transactions = userTransactions;
-      totalEarnings = total;
-      isLoading = false;
-    });
-  }
-
-  Future<String> _getOwnerName(String ownerDocId) async {
-    if (ownerDocId.isEmpty) return "Unknown Owner";
-    final userSnap = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(ownerDocId)
-        .get();
-    if (!userSnap.exists) return "Unknown Owner";
-
-    final userData = userSnap.data()!;
-    final firstName = userData['firstName'] ?? '';
-    final lastName = userData['lastName'] ?? '';
-    return "$firstName $lastName".trim().isEmpty
-        ? "Unknown Owner"
-        : "$firstName $lastName".trim();
+  Future<void> _loadUser() async {
+    currentUserId = await SharedPrefServices.getUserId();
+    setState(() {});
   }
 
   @override
@@ -98,7 +33,6 @@ class _MyEarningsState extends State<MyEarnings> {
       drawer: const D_SideMenu(),
       body: Column(
         children: [
-          // 🔹 Top Orange Header (Unchanged)
           Stack(
             children: [
               SizedBox(
@@ -120,12 +54,14 @@ class _MyEarningsState extends State<MyEarnings> {
                           fontWeight: FontWeight.w400,
                         ),
                         const SizedBox(height: 4),
+
                         CustomText(
                           text: "₹${totalEarnings.toStringAsFixed(2)}",
                           textcolor: korangeColor,
                           fontSize: 34,
                           fontWeight: FontWeight.w700,
                         ),
+
                         const SizedBox(height: 5),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
@@ -138,53 +74,45 @@ class _MyEarningsState extends State<MyEarnings> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
                 ),
               ),
+
               Positioned(
                 top: 20,
                 left: 16,
                 right: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        Builder(
-                          builder: (context) => GestureDetector(
-                            onTap: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: korangeresponseColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Image.asset(
-                                "images/Menu_D.png",
-                                color: KblackColor,
-                              ),
+                    Builder(
+                      builder: (context) => GestureDetector(
+                        onTap: () => Scaffold.of(context).openDrawer(),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: korangeresponseColor,
+                              width: 1,
                             ),
                           ),
+                          child: Image.asset(
+                            "images/Menu_D.png",
+                            color: KblackColor,
+                          ),
                         ),
-                        const Spacer(),
-                        const CustomText(
-                          text: 'My Earnings',
-                          fontSize: 23,
-                          fontWeight: FontWeight.w600,
-                          textcolor: KblackColor,
-                        ),
-                        const Spacer(),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 24),
+                    const Spacer(),
+                    const CustomText(
+                      text: 'My Earnings',
+                      fontSize: 23,
+                      fontWeight: FontWeight.w600,
+                      textcolor: KblackColor,
+                    ),
+                    const Spacer(),
                   ],
                 ),
               ),
@@ -198,7 +126,7 @@ class _MyEarningsState extends State<MyEarnings> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Transactions",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -208,156 +136,240 @@ class _MyEarningsState extends State<MyEarnings> {
                     shape: BoxShape.circle,
                     border: Border.all(color: kbordergreyColor, width: 1.0),
                   ),
-                  child: const Icon(
-                    Icons.filter_list,
-                    color: Colors.black,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.filter_list, size: 20),
                 ),
               ],
             ),
           ),
 
-          if (isLoading)
-            const Padding(
-              padding: EdgeInsets.only(top: 20),
-              child: CircularProgressIndicator(color: korangeColor),
-            ),
+          currentUserId == null
+              ? const CircularProgressIndicator(color: korangeColor)
+              : Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('transactions')
+                        .orderBy('timestamp', descending: true)
+                        .snapshots(),
+                    builder: (context, snap) {
+                      if (!snap.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(color: korangeColor),
+                        );
+                      }
 
-          if (!isLoading && transactions.isEmpty)
-            const Padding(
-              padding: EdgeInsets.only(top: 30),
-              child: CustomText(
-                text: "No Transactions Found",
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                textcolor: KblackColor,
-              ),
-            ),
+                      final docs = snap.data!.docs;
 
-          if (!isLoading && transactions.isNotEmpty)
-            Expanded(
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  final tx = transactions[index];
-                  final ownerName = tx['ownerName'] ?? 'Unknown Owner';
-                  final amount = tx['amount'] ?? 0.0;
-                  final status = tx['status'] ?? 'Pending';
-                  final paymentMethod = tx['paymentMethod'] ?? 'UPI';
-                  final timestamp = tx['timestamp'] != null
-                      ? (tx['timestamp'] as Timestamp).toDate()
-                      : DateTime.now();
-
-                  final dateString =
-                      "${timestamp.day} ${_monthName(timestamp.month)}";
-
-                  return Card(
-                    color: kwhiteColor,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: const BorderSide(
-                        color: kbordergreyColor,
-                        width: 1.0,
-                      ),
-                    ),
-                    elevation: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: kcirclegrey,
-                            child: Image.asset("images/download.png"),
-                          ),
-                          const SizedBox(width: 12),
-
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                ownerName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: korangeColor,
-                                  fontSize: 14,
-                                ),
+                      return FutureBuilder(
+                        future: _processTransactions(
+                          docs,
+                          currentUserId.toString(),
+                        ),
+                        builder: (context, txSnap) {
+                          if (!txSnap.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: korangeColor,
                               ),
-                              IntrinsicHeight(
-                                child: Row(
-                                  children: [
-                                    CustomText(
-                                      text: paymentMethod,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      textcolor: kseegreyColor,
-                                    ),
+                            );
+                          }
 
-                                    const VerticalDivider(
-                                      color: kseegreyColor,
-                                      thickness: 1,
-                                      width: 16,
-                                    ),
-                                    CustomText(
-                                      text: dateString,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      textcolor: kseegreyColor,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                          final data = txSnap.data!;
+                          final list = data['transactions'];
+                          final total = data['total'];
 
-                          const Spacer(),
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (mounted) {
+                              setState(() {
+                                totalEarnings = total;
+                              });
+                            }
+                          });
 
-                          // Container(
-                          //   width: 1,
-                          //   height: 40,
-                          //   color: Colors.grey.shade300,
-                          //   margin: const EdgeInsets.symmetric(horizontal: 12),
-                          // ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "₹${amount.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                  color: korangeColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
+                          if (list.isEmpty) {
+                            return const Center(
+                              child: CustomText(
+                                text: "No Transactions Found",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                textcolor: KblackColor,
                               ),
-                              Text(
-                                status == "Success" ? "Credited" : "Failed",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: status == "Success"
-                                      ? Colors.green
-                                      : Colors.red,
+                            );
+                          }
+
+                          return ListView.builder(
+                            itemCount: list.length,
+                            itemBuilder: (context, index) {
+                              final tx = list[index];
+                              final ownerName =
+                                  tx['ownerName'] ?? 'Unknown Owner';
+                              final amount = tx['amount'] ?? 0.0;
+                              final status = tx['status'] ?? 'Pending';
+                              final method = tx['paymentMethod'] ?? 'UPI';
+
+                              final time = (tx['timestamp'] as Timestamp)
+                                  .toDate();
+
+                              final date =
+                                  "${time.day} ${_monthName(time.month)}";
+
+                              return Card(
+                                color: kwhiteColor,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: const BorderSide(
+                                    color: kbordergreyColor,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                elevation: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: kcirclegrey,
+                                        child: Image.asset(
+                                          "images/download.png",
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            ownerName,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: korangeColor,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              children: [
+                                                CustomText(
+                                                  text: method,
+                                                  fontSize: 12,
+                                                  textcolor: kseegreyColor,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                                const VerticalDivider(
+                                                  color: kseegreyColor,
+                                                  width: 16,
+                                                ),
+                                                CustomText(
+                                                  text: date,
+                                                  fontSize: 12,
+                                                  textcolor: kseegreyColor,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      const Spacer(),
+
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            "₹${amount.toStringAsFixed(2)}",
+                                            style: const TextStyle(
+                                              color: korangeColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            status == "Success"
+                                                ? "Credited"
+                                                : "Failed",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: status == "Success"
+                                                  ? Colors.green
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
         ],
       ),
     );
   }
 
+  // 🔥 PROCESS TRANSACTIONS
+  Future<Map<String, dynamic>> _processTransactions(
+    List<QueryDocumentSnapshot> docs,
+    String userId,
+  ) async {
+    List<Map<String, dynamic>> list = [];
+
+    for (var d in docs) {
+      final tx = d.data() as Map<String, dynamic>;
+      final bookingId = tx['bookingDocId'] ?? "";
+
+      if (bookingId.isEmpty) continue;
+
+      final bookSnap = await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingId)
+          .get();
+
+      if (!bookSnap.exists) continue;
+
+      final book = bookSnap.data()!;
+      if (book['driverId'] != userId) continue;
+
+      final ownerName = await _getOwnerName(book['ownerdocId'] ?? "");
+      tx['ownerName'] = ownerName;
+
+      list.add(tx);
+    }
+
+    double total = list
+        .where((e) => e['status'] == "Success")
+        .fold(0.0, (s, e) => s + (e['amount'] ?? 0.0));
+
+    return {"transactions": list, "total": total};
+  }
+
+  Future<String> _getOwnerName(String id) async {
+    if (id.isEmpty) return "Unknown Owner";
+
+    final snap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .get();
+
+    if (!snap.exists) return "Unknown Owner";
+
+    final d = snap.data()!;
+    return "${d['firstName'] ?? ''} ${d['lastName'] ?? ''}".trim();
+  }
+
   String _monthName(int month) {
-    const months = [
+    const m = [
       'Jan',
       'Feb',
       'Mar',
@@ -371,22 +383,22 @@ class _MyEarningsState extends State<MyEarnings> {
       'Nov',
       'Dec',
     ];
-    return months[month - 1];
+    return m[month - 1];
   }
 }
 
 class VShapeClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height - 30);
-    path.lineTo(size.width / 2, size.height);
-    path.lineTo(size.width, size.height - 30);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
+    Path p = Path();
+    p.lineTo(0, size.height - 30);
+    p.lineTo(size.width / 2, size.height);
+    p.lineTo(size.width, size.height - 30);
+    p.lineTo(size.width, 0);
+    p.close();
+    return p;
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+  bool shouldReclip(oldClipper) => false;
 }

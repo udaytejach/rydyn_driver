@@ -25,7 +25,7 @@ class DriverOtpScreen extends StatefulWidget {
       vehicleType,
       licenceNumber;
   final String countryCode;
-  final File? profileImage, licenceFront, licenceBack;
+  final File? profileImage, licenceFront, licenceBack, aadharFront, aadharBack;
   final String holderName, accountNumber, ifsc, bankName, branchName;
 
   const DriverOtpScreen({
@@ -40,6 +40,8 @@ class DriverOtpScreen extends StatefulWidget {
     this.profileImage,
     this.licenceFront,
     this.licenceBack,
+    this.aadharFront,
+    this.aadharBack,
     required this.holderName,
     required this.accountNumber,
     required this.ifsc,
@@ -82,6 +84,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       vm.driver.vehicleType = widget.vehicleType;
       vm.driver.licenceNumber = widget.licenceNumber;
       vm.driver.roleCode = "Driver";
+      vm.driver.status = 'Inactive';
 
       if (widget.profileImage != null) {
         vm.driver.profileUrl = await vm.uploadImage(
@@ -102,6 +105,19 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
         );
       }
 
+      if (widget.aadharFront != null) {
+        vm.driver.aadharFrontUrl = await vm.uploadImage(
+          widget.aadharFront!,
+          "drivers/${vm.driver.phone}_licence_front.jpg",
+        );
+      }
+      if (widget.aadharBack != null) {
+        vm.driver.aadharBackUrl = await vm.uploadImage(
+          widget.aadharBack!,
+          "drivers/${vm.driver.phone}_licence_back.jpg",
+        );
+      }
+
       vm.driver.bankAccount = BankAccount(
         holderName: widget.holderName,
         accountNumber: widget.accountNumber,
@@ -113,6 +129,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       final docRef = await vm.saveDriver();
 
       await SharedPrefServices.setRoleCode("Driver");
+      await SharedPrefServices.setStatus("Inactive");
       await SharedPrefServices.setUserId(vm.driver.userId ?? "");
       await SharedPrefServices.setProfileImage(vm.driver.profileUrl ?? "");
       await SharedPrefServices.setFirstName(widget.firstName);

@@ -147,6 +147,7 @@ class LoginViewModel extends ChangeNotifier {
     await SharedPrefServices.setRoleCode(userData['roleCode'] ?? "");
 
     await SharedPrefServices.setProfileImage(userData['profileUrl'] ?? "");
+    await SharedPrefServices.setStatus(userData['status'] ?? "");
     await SharedPrefServices.setFirstName(userData['firstName'] ?? "");
     await SharedPrefServices.setLastName(userData['lastName'] ?? "");
     await SharedPrefServices.setEmail(userData['email'] ?? "");

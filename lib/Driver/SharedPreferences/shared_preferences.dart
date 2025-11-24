@@ -11,7 +11,7 @@ class SharedPrefServices {
   static const _keyprofileImage = 'profileimage';
 
   static const _keynumber = 'number';
-  static const _keystatus = 'status';
+  static const _keystatus = 'Inactive';
   static const _keydocId = 'docID';
   static const _keyroleCode = 'roleCode';
   static const _keycountryCode = 'countryCode';

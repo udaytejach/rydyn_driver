@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -128,6 +130,9 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   File? licenceFront;
   File? licenceBack;
 
+  File? aadharFront;
+  File? aadharBack;
+
   Future<void> _pickLicenceImage({required bool isFront}) async {
     showDialog(
       context: context,
@@ -143,7 +148,6 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // 📸 Camera Option
               SimpleDialogOption(
                 onPressed: () async {
                   Navigator.pop(context);
@@ -170,7 +174,6 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                 ),
               ),
 
-              // 🖼️ Gallery Option
               SimpleDialogOption(
                 onPressed: () async {
                   Navigator.pop(context);
@@ -184,6 +187,79 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                         licenceFront = File(picked.path);
                       } else {
                         licenceBack = File(picked.path);
+                      }
+                    });
+                  }
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.photo_library, color: korangeColor, size: 20),
+                    SizedBox(width: 8),
+                    Text("Gallery"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickedAadhar({required bool isFront}) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: const Center(
+          child: Text(
+            "Select Image From",
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          ),
+        ),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 80,
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      if (isFront) {
+                        aadharFront = File(picked.path);
+                      } else {
+                        aadharBack = File(picked.path);
+                      }
+                    });
+                  }
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.camera_alt, color: korangeColor, size: 20),
+                    SizedBox(width: 8),
+                    Text("Camera"),
+                  ],
+                ),
+              ),
+
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                    imageQuality: 80,
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      if (isFront) {
+                        aadharFront = File(picked.path);
+                      } else {
+                        aadharBack = File(picked.path);
                       }
                     });
                   }
@@ -325,7 +401,15 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                           backgroundImage: image != null
                               ? FileImage(image!)
                               : null,
+                          child: image == null
+                              ? Icon(
+                                  Icons.person,
+                                  size: 60,
+                                  color: Colors.white,
+                                )
+                              : null,
                         ),
+
                         Positioned(
                           right: 0,
                           bottom: 0,
@@ -384,17 +468,21 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                       labelStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.grey),
+                        borderSide: const BorderSide(color: Color(0xFFD5D7DA)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(
-                          color: Colors.grey,
-                          width: 2,
+                          color: Color(0xFFD5D7DA),
+                          width: 1,
                         ),
                       ),
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.calendar_today, size: 20),
+                        icon: const Icon(
+                          Icons.calendar_month,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
                         onPressed: () async {
                           final DateTime? picked = await showDatePicker(
                             context: context,
@@ -445,31 +533,54 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                   ),
 
                   const SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    value: vehicleType,
-                    items: ["Light", "Medium", "Heavy"].map((String type) {
-                      return DropdownMenuItem<String>(
-                        value: type,
-                        child: Text(type),
-                      );
-                    }).toList(),
-                    onChanged: (value) => setState(() => vehicleType = value),
-                    decoration: InputDecoration(
-                      labelText: "Vehicle Type",
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton2<String>(
+                      isExpanded: true,
+                      value: vehicleType,
+
+                      hint: Text(
+                        "Choose Vehicle Type",
+                        style: TextStyle(
                           color: Colors.grey,
-                          width: 2,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      items: [
+                        DropdownMenuItem(value: 'Light', child: Text('Light')),
+                        DropdownMenuItem(
+                          value: 'Premium',
+                          child: Text('Premium'),
+                        ),
+                        DropdownMenuItem(value: 'Heavy', child: Text('Heavy')),
+                        DropdownMenuItem(value: 'All', child: Text('All')),
+                      ],
+                      onChanged: (value) => setState(() => vehicleType = value),
+                      dropdownStyleData: DropdownStyleData(
+                        direction: DropdownDirection.textDirection,
+                        offset: const Offset(0, -5),
+                        maxHeight: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+
+                      buttonStyleData: ButtonStyleData(
+                        height: 58,
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Color(0xFFD5D7DA)),
+                        ),
+                      ),
+
+                      menuItemStyleData: const MenuItemStyleData(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),
@@ -501,7 +612,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Upload driver licence",
+                              "Upload Driver Licence",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -561,6 +672,90 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                       child: licenceBack != null
                                           ? Image.file(
                                               licenceBack!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : const Text("Upload Back"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+                  Card(
+                    color: kwhiteColor,
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Upload Aadhar Card",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: korangeColor,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () async =>
+                                      await _pickedAadhar(isFront: true),
+
+                                  child: DottedBorder(
+                                    options:
+                                        const RoundedRectDottedBorderOptions(
+                                          dashPattern: [6, 3],
+                                          strokeWidth: 0.5,
+                                          color: Colors.grey,
+                                          padding: EdgeInsets.all(8),
+                                          radius: Radius.circular(12),
+                                        ),
+                                    child: Container(
+                                      height: 120,
+
+                                      alignment: Alignment.center,
+                                      child: aadharFront != null
+                                          ? Image.file(
+                                              aadharFront!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : const Text("Upload Front"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () => _pickedAadhar(isFront: false),
+                                  child: DottedBorder(
+                                    options:
+                                        const RoundedRectDottedBorderOptions(
+                                          dashPattern: [6, 3],
+                                          strokeWidth: 0.5,
+                                          color: Colors.grey,
+                                          padding: EdgeInsets.all(8),
+                                          radius: Radius.circular(12),
+                                        ),
+                                    child: Container(
+                                      height: 120,
+                                      width: double.infinity,
+                                      alignment: Alignment.center,
+                                      child: aadharBack != null
+                                          ? Image.file(
+                                              aadharBack!,
                                               fit: BoxFit.cover,
                                             )
                                           : const Text("Upload Back"),
@@ -707,12 +902,97 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                               .get();
 
                           if (driverSnap.docs.isNotEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Mobile number already exists as Driver",
-                                ),
-                              ),
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  title: Center(
+                                    child: Text(
+                                      "Mobile Number Exists",
+                                      style: GoogleFonts.poppins(
+                                        color: korangeColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  content: Text(
+                                    "This mobile number is already registered as a Driver.",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text(
+                                        'OK',
+                                        style: GoogleFonts.poppins(
+                                          color: korangeColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            return;
+                          }
+
+                          final ownerSnap = await FirebaseFirestore.instance
+                              .collection('users')
+                              .where('phone', isEqualTo: phone)
+                              .limit(1)
+                              .get();
+
+                          if (ownerSnap.docs.isNotEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  title: Center(
+                                    child: Text(
+                                      "Mobile Number Exists",
+                                      style: GoogleFonts.poppins(
+                                        color: korangeColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  content: Text(
+                                    "This mobile number is already registered as an Owner.",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text(
+                                        'OK',
+                                        style: GoogleFonts.poppins(
+                                          color: korangeColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                             return;
                           }
@@ -733,6 +1013,8 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                   profileImage: image,
                                   licenceFront: licenceFront,
                                   licenceBack: licenceBack,
+                                  aadharFront: aadharFront,
+                                  aadharBack: aadharBack,
                                   holderName: holderController.text,
                                   accountNumber: accountController.text,
                                   ifsc: ifscController.text,
@@ -787,15 +1069,15 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
       return false;
     }
 
-    if (emailController.text.isEmpty ||
-        !RegExp(
-          r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}',
-        ).hasMatch(emailController.text)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please enter valid email")));
-      return false;
-    }
+    // if (emailController.text.isEmpty ||
+    //     !RegExp(
+    //       r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}',
+    //     ).hasMatch(emailController.text)) {
+    //   ScaffoldMessenger.of(
+    //     context,
+    //   ).showSnackBar(const SnackBar(content: Text("Please enter valid email")));
+    //   return false;
+    // }
     if (phoneController.text.isEmpty ||
         phoneController.text.length < 10 ||
         phoneController.text.length > 10) {

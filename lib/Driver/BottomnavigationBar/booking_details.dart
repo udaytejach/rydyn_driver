@@ -200,11 +200,15 @@ class _BookingDetailsState extends State<BookingDetails> {
     String drop2Location = data['drop2'] ?? '';
     String date = data['date'] ?? 'DD/MM/YYYY';
     String time = data['time'] ?? 'HH:MM';
+    String arrivalDate = data['arrivalDate'] ?? 'DD/MM/YYYY';
+    String arrivalTime = data['arrivalTime'] ?? 'HH:MM';
     String servicePrice = data['servicePrice']?.toString() ?? '0.00';
     String addonPrice = data['addonPrice']?.toString() ?? '0.00';
     String taxes = data['taxes']?.toString() ?? '0.00';
     String walletPoints = data['walletPoints']?.toString() ?? '0.00';
     String totalPrice = data['fare']?.toString() ?? '0.00';
+    String serviceFare = data['serviceFare']?.toString() ?? '0.00';
+    String convenienceFee = data['convenienceFee']?.toString() ?? '0.00';
     String status = data['status'] ?? '';
     String OwnerOTP = data['ownerOTP'].toString();
     String pickupLat = data['pickupLat'].toString();
@@ -985,38 +989,103 @@ class _BookingDetailsState extends State<BookingDetails> {
                           fontWeight: FontWeight.w600,
                           textcolor: korangeColor,
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 8),
+
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Image.asset(
-                              "images/calender_drvr.png",
-                              height: 20,
-                              width: 20,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (tripMode == "Round Trip")
+                                  CustomText(
+                                    text: "Depature",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    textcolor: Colors.grey.shade700,
+                                  ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      "images/calender_drvr.png",
+                                      height: 20,
+                                      width: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    CustomText(
+                                      text: date,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      textcolor: KblackColor,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      "images/time.png",
+                                      height: 20,
+                                      width: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    CustomText(
+                                      text: time,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      textcolor: KblackColor,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 8),
-                            CustomText(
-                              text: date,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Image.asset(
-                              "images/time.png",
-                              height: 20,
-                              width: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            CustomText(
-                              text: time,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
+                            if (tripMode == "Round Trip")
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text: "Arrival",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    textcolor: Colors.grey.shade700,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        "images/calender_drvr.png",
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      CustomText(
+                                        text: arrivalDate,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        textcolor: KblackColor,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        "images/time.png",
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      CustomText(
+                                        text: arrivalTime,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        textcolor: KblackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
                       ],
@@ -1133,6 +1202,24 @@ class _BookingDetailsState extends State<BookingDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const CustomText(
+                              text: "Distance",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              textcolor: KblackColor,
+                            ),
+                            CustomText(
+                              text: "$distance",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              textcolor: KblackColor,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const CustomText(
                               text: "Service Price",
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -1140,7 +1227,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             ),
                             CustomText(
                               text:
-                                  "₹${(double.tryParse(totalPrice) ?? 0).toStringAsFixed(2)}",
+                                  "₹${(double.tryParse(serviceFare) ?? 0).toStringAsFixed(2)}",
+
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,
@@ -1148,60 +1236,28 @@ class _BookingDetailsState extends State<BookingDetails> {
                           ],
                         ),
                         const SizedBox(height: 8),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const CustomText(
-                              text: "Add-on’s",
+                              text: "Convenience Fee",
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,
                             ),
                             CustomText(
-                              text: "₹$addonPrice",
+                              text:
+                                  "₹${(double.tryParse(convenienceFee) ?? 0).toStringAsFixed(2)}",
+
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const CustomText(
-                              text: "Fee & Taxes",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
-                            CustomText(
-                              text: "₹$taxes",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const CustomText(
-                              text: "Wallet Points",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
-                            CustomText(
-                              text: "₹$walletPoints",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
+
+                        const SizedBox(height: 10),
                         const DottedLine(dashColor: kseegreyColor),
                         const SizedBox(height: 10),
                         Row(
@@ -1232,16 +1288,17 @@ class _BookingDetailsState extends State<BookingDetails> {
               ),
             ),
 
-            const SizedBox(height: 30),
-
             const SizedBox(height: 100),
           ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: status == 'Completed'
-          ? FutureBuilder<String>(
-              future: getPaymentStatus(widget.docId),
+          ? StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('bookings')
+                  .doc(widget.docId)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const SizedBox(
@@ -1250,15 +1307,19 @@ class _BookingDetailsState extends State<BookingDetails> {
                   );
                 }
 
-                String paymentStatus = snapshot.data!;
-                Color buttonColor;
+                final data = snapshot.data!.data() as Map<String, dynamic>;
+                String paymentStatus =
+                    data['paymentStatus'] ?? 'Waiting for Payment';
 
-                if (paymentStatus == 'Payment Received') {
+                String buttonText = "Waiting for Payment";
+                Color buttonColor = Colors.orange;
+
+                if (paymentStatus == "Success") {
+                  buttonText = "Payment Received";
                   buttonColor = Colors.green;
-                } else if (paymentStatus == 'Payment Failed') {
+                } else if (paymentStatus == "Failed") {
+                  buttonText = "Payment Failed";
                   buttonColor = Colors.red;
-                } else {
-                  buttonColor = Colors.orange;
                 }
 
                 return Padding(
@@ -1286,7 +1347,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                         }
                       },
                       child: Text(
-                        paymentStatus,
+                        buttonText,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -1581,7 +1642,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                               SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  "Ride started successfully — Safe drive! 🚗💨",
+                                  "Ride started successfully — Safe drive! ",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,

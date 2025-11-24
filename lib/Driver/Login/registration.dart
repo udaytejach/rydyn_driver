@@ -16,7 +16,7 @@ import 'package:rydyn/Driver/Widgets/mobileNumberInputField.dart';
 import 'package:rydyn/Driver/viewmodels/register_viewmodel.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({super.key});  
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();

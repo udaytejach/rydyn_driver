@@ -30,9 +30,9 @@ class D_CustomTextField extends StatelessWidget {
     this.inputFormatters,
     this.validator,
     this.labelColor = Colors.grey,
-    this.textColor = korangeColor,
+    this.textColor = KblackColor,
     this.borderColor = const Color(0xFFD5D7DA),
-    this.fontSize = 16,
+    this.fontSize = 15,
     this.onChanged,
   });
 
@@ -52,7 +52,7 @@ class D_CustomTextField extends StatelessWidget {
         style: GoogleFonts.poppins(
           color: textColor,
           fontSize: fontSize,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
         ),
         validator:
             validator ??

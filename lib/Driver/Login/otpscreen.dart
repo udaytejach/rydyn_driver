@@ -12,175 +12,6 @@ import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/viewmodels/register_viewmodel.dart';
 
-// class OtpScreen extends StatefulWidget {
-//   final String phoneNumber;
-//   final String firstName;
-//   final String lastName;
-//   final String email;
-//   final String countryCode;
-//   final bool isTestOtp;
-
-//   const OtpScreen({
-//     super.key,
-//     required this.phoneNumber,
-//     required this.firstName,
-//     required this.lastName,
-//     required this.email,
-//     required this.countryCode,
-//     this.isTestOtp = true,
-//   });
-
-//   @override
-//   State<OtpScreen> createState() => _OtpScreenState();
-// }
-
-// class _OtpScreenState extends State<OtpScreen> {
-//   final TextEditingController otpController = TextEditingController();
-//   bool _isLoading = false;
-
-//   Future<void> _verifyOtp() async {
-//     final otp = otpController.text.trim();
-//     setState(() => _isLoading = true);
-
-//     try {
-//       // if (otp == "1234") {
-//       //   // ✅ fetch user details and save in SharedPreferences
-//       //   final vm = context.read<LoginViewModel>();
-//       //   await vm.fetchLoggedInUser(widget.phoneNumber);
-
-//       //   await SharedPrefServices.setislogged(true);
-
-//       //   // ✅ navigate to dashboard based on role
-//       //   final role = await SharedPrefServices.getRoleCode();
-//       //   if (role == "Driver") {
-//       //     Navigator.pushReplacement(
-//       //       context,
-//       //       MaterialPageRoute(builder: (_) => D_BottomNavigation()),
-//       //     );
-//       //   } else {
-//       //     Navigator.pushReplacement(
-//       //       context,
-//       //       MaterialPageRoute(builder: (_) => BottomNavigation()),
-//       //     );
-//       //   }
-//       // }
-//       if (otp == "1234") {
-//         // ✅ Save to Firestore after OTP verified
-//         await FirebaseFirestore.instance.collection('users').add({
-//           "firstName": widget.firstName,
-//           "lastName": widget.lastName,
-//           "email": widget.email,
-//           "phone": widget.phoneNumber,
-//           "countryCode": widget.countryCode,
-//           "createdAt": FieldValue.serverTimestamp(),
-//         });
-
-//         // ✅ Save to SharedPreferences
-//         await SharedPrefServices.setFirstName(widget.firstName);
-//         await SharedPrefServices.setLastName(widget.lastName);
-//         await SharedPrefServices.setEmail(widget.email);
-//         await SharedPrefServices.setNumber(widget.phoneNumber);
-//         await SharedPrefServices.setCountryCode(widget.countryCode);
-//         await SharedPrefServices.setislogged(true);
-
-//         // ✅ Navigate to Dashboard
-//         Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(builder: (_) => BottomNavigation()),
-//         );
-//       } else {
-//         ScaffoldMessenger.of(
-//           context,
-//         ).showSnackBar(const SnackBar(content: Text("Invalid OTP")));
-//       }
-//     } catch (e) {
-//       ScaffoldMessenger.of(
-//         context,
-//       ).showSnackBar(SnackBar(content: Text("Error: $e")));
-//     } finally {
-//       setState(() => _isLoading = false);
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenWidth = MediaQuery.of(context).size.width;
-//     final localizations = AppLocalizations.of(context);
-
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: SafeArea(
-//         child: Stack(
-//           children: [
-//             Column(
-//               children: [
-//                 const Spacer(),
-//                 Padding(
-//                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       CustomText(
-//                         text: localizations?.otpTitle ?? "Enter Your OTP",
-//                         fontSize: 32,
-//                         fontWeight: FontWeight.w700,
-//                         textcolor: korangeColor,
-//                       ),
-//                       const SizedBox(height: 10),
-//                       Text(
-//                         "OTP sent to ${widget.phoneNumber}",
-//                         style: GoogleFonts.poppins(
-//                           fontSize: 14,
-//                           color: kgreyColor,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 50),
-//                       Pinput(
-//                         controller: otpController,
-//                         length: 4,
-//                         keyboardType: TextInputType.number,
-//                         inputFormatters: [
-//                           FilteringTextInputFormatter.digitsOnly,
-//                         ],
-//                         defaultPinTheme: PinTheme(
-//                           width: 60,
-//                           height: 60,
-//                           textStyle: GoogleFonts.poppins(
-//                             fontSize: 20,
-//                             fontWeight: FontWeight.w600,
-//                             color: korangeColor,
-//                           ),
-//                           decoration: BoxDecoration(
-//                             border: Border.all(color: kbordergreyColor),
-//                             borderRadius: BorderRadius.circular(10),
-//                           ),
-//                           margin: const EdgeInsets.symmetric(horizontal: 10),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 const Spacer(),
-//                 CustomButton(
-//                   text: localizations?.verifyOtp ?? 'Verify OTP',
-//                   onPressed: _verifyOtp,
-//                   width: 220,
-//                   height: 53,
-//                 ),
-//                 const SizedBox(height: 32),
-//               ],
-//             ),
-//             if (_isLoading)
-//               const Center(
-//                 child: CircularProgressIndicator(color: korangeColor),
-//               ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class OtpScreen extends StatefulWidget {
   final String phoneNumber;
   final String firstName;
@@ -222,7 +53,6 @@ class _OtpScreenState extends State<OtpScreen> {
     try {
       final vm = Provider.of<RegisterViewModel>(context, listen: false);
 
-      // Save to Firebase using RegisterViewModel
       final success = await vm.register(
         fisrtName: widget.firstName,
         lastName: widget.lastName,
@@ -232,7 +62,6 @@ class _OtpScreenState extends State<OtpScreen> {
       );
 
       if (success) {
-        // Save to SharedPreferences
         await SharedPrefServices.setFirstName(widget.firstName);
         await SharedPrefServices.setLastName(widget.lastName);
         await SharedPrefServices.setEmail(widget.email);
@@ -325,7 +154,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               textStyle: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
-                                color: korangeColor,
+                                color: KblackColor,
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(color: kbordergreyColor),

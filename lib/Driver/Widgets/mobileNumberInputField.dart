@@ -27,9 +27,9 @@ class PhoneNumberInputField extends StatelessWidget {
         LengthLimitingTextInputFormatter(10),
       ],
       style: GoogleFonts.poppins(
-        color: korangeColor,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
+        color: KblackColor,
+        fontSize: 15,
+        fontWeight: FontWeight.w400,
       ),
       decoration: InputDecoration(
         labelText:
@@ -58,7 +58,7 @@ class PhoneNumberInputField extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: korangeColor,
+                    color: KblackColor,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -79,7 +79,7 @@ class PhoneNumberInputField extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFFB0B0B0), width: 2),
+          borderSide: const BorderSide(color: Color(0xFFB0B0B0), width: 1),
         ),
       ),
     );

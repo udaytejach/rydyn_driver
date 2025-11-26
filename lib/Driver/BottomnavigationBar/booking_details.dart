@@ -39,6 +39,7 @@ class _BookingDetailsState extends State<BookingDetails> {
   void initState() {
     super.initState();
     data = widget.bookingData;
+    fetchReviews();
     fetchVehicleData();
     fetchOwnerData();
     _razorpay = Razorpay();
@@ -47,6 +48,22 @@ class _BookingDetailsState extends State<BookingDetails> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     // getPaymentStatus(widget.docId);
     print(widget.docId);
+  }
+
+  List<Map<String, dynamic>> reviewsList = [];
+  void fetchReviews() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('reviews')
+        .where('bookingId', isEqualTo: widget.docId)
+        .get();
+
+    setState(() {
+      reviewsList = snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    });
+
+    print("Reviews fetched: ${reviewsList.length}");
   }
 
   void _openCheckout(double amount) {
@@ -1498,6 +1515,123 @@ class _BookingDetailsState extends State<BookingDetails> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  if (reviewsList.isNotEmpty)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            blurRadius: 3,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: reviewsList.isEmpty
+                          ? const CustomText(
+                              text: "No review available",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              textcolor: KblackColor,
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const CustomText(
+                                  text: "Your Review",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  textcolor: korangeColor,
+                                ),
+                                const SizedBox(height: 12),
+
+                                Row(
+                                  children: [
+                                    const CustomText(
+                                      text: "Rating :",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      textcolor: KblackColor,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Row(
+                                      children: List.generate(
+                                        reviewsList[0]['rating'],
+                                        (i) => const Icon(
+                                          Icons.star,
+                                          color: Colors.orange,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    CustomText(
+                                      text: reviewsList[0]['rating'].toString(),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      textcolor: KblackColor,
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CustomText(
+                                      text: "Feedback : ",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      textcolor: KblackColor,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Expanded(
+                                      child: CustomText(
+                                        text:
+                                            (reviewsList[0]['feedback'] as List)
+                                                .join(", "),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        textcolor: KblackColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const CustomText(
+                                      text: "Comment : ",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      textcolor: KblackColor,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Expanded(
+                                      child: CustomText(
+                                        text: reviewsList[0]['comment'] ?? "",
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        textcolor: KblackColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                    ),
                   const SizedBox(height: 10),
                   if (status == 'Accepted')
                     GestureDetector(

@@ -157,15 +157,14 @@ class _MyEarningsState extends State<MyEarnings> {
                         );
                       }
 
-                      final docs = snap.data!.docs;
+                      final txDocs = snap.data!.docs;
 
-                      return FutureBuilder(
-                        future: _processTransactions(
-                          docs,
-                          currentUserId.toString(),
-                        ),
-                        builder: (context, txSnap) {
-                          if (!txSnap.hasData) {
+                      return StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('bookings')
+                            .snapshots(),
+                        builder: (context, bookSnap) {
+                          if (!bookSnap.hasData) {
                             return const Center(
                               child: CircularProgressIndicator(
                                 color: korangeColor,
@@ -173,19 +172,46 @@ class _MyEarningsState extends State<MyEarnings> {
                             );
                           }
 
-                          final data = txSnap.data!;
-                          final list = data['transactions'];
-                          final total = data['total'];
+                          final bookingDocs = bookSnap.data!.docs;
+
+                          List<Map<String, dynamic>> finalList = [];
+                          double total = 0.0;
+
+                          for (var tx in txDocs) {
+                            final data = tx.data() as Map<String, dynamic>;
+                            final bookingId = data['bookingDocId'] ?? "";
+
+                            if (bookingId.isEmpty) continue;
+
+                            final match = bookingDocs.where(
+                              (b) => b.id == bookingId,
+                            );
+
+                            if (match.isEmpty) continue;
+
+                            final book =
+                                match.first.data() as Map<String, dynamic>;
+
+                            if (book['driverId'] != currentUserId) continue;
+
+                            data['bookingStatus'] = book['status'] ?? "";
+                            data['ownerName'] = "Rydyn Admin";
+
+                            if (data['status'] == "Success" &&
+                                data['bookingStatus'] != "Cancelled") {
+                              total += data['amount'] ?? 0.0;
+                            }
+
+                            finalList.add(data);
+                          }
 
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             if (mounted) {
-                              setState(() {
-                                totalEarnings = total;
-                              });
+                              setState(() => totalEarnings = total);
                             }
                           });
 
-                          if (list.isEmpty) {
+                          if (finalList.isEmpty) {
                             return const Center(
                               child: CustomText(
                                 text: "No Transactions Found",
@@ -197,35 +223,25 @@ class _MyEarningsState extends State<MyEarnings> {
                           }
 
                           return ListView.builder(
-                            itemCount: list.length,
+                            itemCount: finalList.length,
                             itemBuilder: (context, index) {
-                              final tx = list[index];
-                              final ownerName =
-                                  tx['bookingStatus'] == "Cancelled"
-                                  ? "Rydyn Admin"
-                                  : (tx['ownerName'] ?? "Unknown Owner");
-
-                              final amount = tx['amount'] ?? 0.0;
-                              final status = tx['status'] ?? 'Pending';
-                              final method = tx['paymentMethod'] ?? 'UPI';
-
-                              /* 🌟 ADDED */
-                              final bookingStatus = tx['bookingStatus'] ?? "";
-
+                              final tx = finalList[index];
                               final time = (tx['timestamp'] as Timestamp)
                                   .toDate();
-
                               final date =
                                   "${time.day} ${_monthName(time.month)}";
 
-                              /* 🌟 ADDED — label & color */
-                              String label = "Credited";
-                              Color labelColor = Colors.green;
+                              final amount = tx['amount'] ?? 0.0;
+                              final bookingStatus = tx['bookingStatus'] ?? "";
+                              final method = tx['paymentMethod'] ?? 'UPI';
 
-                              if (bookingStatus == "Cancelled") {
-                                label = "Debited";
-                                labelColor = Colors.red;
-                              }
+                              String label = bookingStatus == "Cancelled"
+                                  ? "Debited"
+                                  : "Credited";
+
+                              Color labelColor = bookingStatus == "Cancelled"
+                                  ? Colors.red
+                                  : Colors.green;
 
                               return Card(
                                 color: kwhiteColor,
@@ -258,7 +274,7 @@ class _MyEarningsState extends State<MyEarnings> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            ownerName,
+                                            tx['ownerName'],
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               color: korangeColor,
@@ -305,7 +321,6 @@ class _MyEarningsState extends State<MyEarnings> {
                                             ),
                                           ),
 
-                                          /* 🌟 UPDATED */
                                           Text(
                                             label,
                                             style: TextStyle(
@@ -329,59 +344,6 @@ class _MyEarningsState extends State<MyEarnings> {
         ],
       ),
     );
-  }
-
-  Future<Map<String, dynamic>> _processTransactions(
-    List<QueryDocumentSnapshot> docs,
-    String userId,
-  ) async {
-    List<Map<String, dynamic>> list = [];
-
-    for (var d in docs) {
-      final tx = d.data() as Map<String, dynamic>;
-      final bookingId = tx['bookingDocId'] ?? "";
-
-      if (bookingId.isEmpty) continue;
-
-      final bookSnap = await FirebaseFirestore.instance
-          .collection('bookings')
-          .doc(bookingId)
-          .get();
-
-      if (!bookSnap.exists) continue;
-
-      final book = bookSnap.data()!;
-      if (book['driverId'] != userId) continue;
-
-      final ownerName = await _getOwnerName(book['ownerdocId'] ?? "");
-      tx['ownerName'] = ownerName;
-
-      tx['bookingStatus'] = book['status'] ?? "";
-
-      list.add(tx);
-    }
-
-    double total = list
-        .where(
-          (e) => e['status'] == "Success" && e['bookingStatus'] != "Cancelled",
-        )
-        .fold(0.0, (s, e) => s + (e['amount'] ?? 0.0));
-
-    return {"transactions": list, "total": total};
-  }
-
-  Future<String> _getOwnerName(String id) async {
-    if (id.isEmpty) return "Unknown Owner";
-
-    final snap = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(id)
-        .get();
-
-    if (!snap.exists) return "Unknown Owner";
-
-    final d = snap.data()!;
-    return "${d['firstName'] ?? ''} ${d['lastName'] ?? ''}".trim();
   }
 
   String _monthName(int month) {

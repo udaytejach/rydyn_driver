@@ -201,16 +201,31 @@ class _MyEarningsState extends State<MyEarnings> {
                             itemBuilder: (context, index) {
                               final tx = list[index];
                               final ownerName =
-                                  tx['ownerName'] ?? 'Unknown Owner';
+                                  tx['bookingStatus'] == "Cancelled"
+                                  ? "Rydyn Admin"
+                                  : (tx['ownerName'] ?? "Unknown Owner");
+
                               final amount = tx['amount'] ?? 0.0;
                               final status = tx['status'] ?? 'Pending';
                               final method = tx['paymentMethod'] ?? 'UPI';
+
+                              /* 🌟 ADDED */
+                              final bookingStatus = tx['bookingStatus'] ?? "";
 
                               final time = (tx['timestamp'] as Timestamp)
                                   .toDate();
 
                               final date =
                                   "${time.day} ${_monthName(time.month)}";
+
+                              /* 🌟 ADDED — label & color */
+                              String label = "Credited";
+                              Color labelColor = Colors.green;
+
+                              if (bookingStatus == "Cancelled") {
+                                label = "Debited";
+                                labelColor = Colors.red;
+                              }
 
                               return Card(
                                 color: kwhiteColor,
@@ -289,15 +304,13 @@ class _MyEarningsState extends State<MyEarnings> {
                                               fontSize: 16,
                                             ),
                                           ),
+
+                                          /* 🌟 UPDATED */
                                           Text(
-                                            status == "Success"
-                                                ? "Credited"
-                                                : "Failed",
+                                            label,
                                             style: TextStyle(
                                               fontSize: 12,
-                                              color: status == "Success"
-                                                  ? Colors.green
-                                                  : Colors.red,
+                                              color: labelColor,
                                             ),
                                           ),
                                         ],
@@ -318,7 +331,6 @@ class _MyEarningsState extends State<MyEarnings> {
     );
   }
 
-  // 🔥 PROCESS TRANSACTIONS
   Future<Map<String, dynamic>> _processTransactions(
     List<QueryDocumentSnapshot> docs,
     String userId,
@@ -344,11 +356,15 @@ class _MyEarningsState extends State<MyEarnings> {
       final ownerName = await _getOwnerName(book['ownerdocId'] ?? "");
       tx['ownerName'] = ownerName;
 
+      tx['bookingStatus'] = book['status'] ?? "";
+
       list.add(tx);
     }
 
     double total = list
-        .where((e) => e['status'] == "Success")
+        .where(
+          (e) => e['status'] == "Success" && e['bookingStatus'] != "Cancelled",
+        )
         .fold(0.0, (s, e) => s + (e['amount'] ?? 0.0));
 
     return {"transactions": list, "total": total};

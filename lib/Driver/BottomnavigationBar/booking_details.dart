@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/chat_screen.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/payment_gateway.dart';
 import 'package:rydyn/Driver/DriverDahboard/driverDashboard.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 class BookingDetails extends StatefulWidget {
@@ -33,15 +34,125 @@ class _BookingDetailsState extends State<BookingDetails> {
   late Map<String, dynamic> data;
   Map<String, dynamic>? vehicleData;
   Map<String, dynamic>? ownerData;
-
+  late Razorpay _razorpay;
   @override
   void initState() {
     super.initState();
     data = widget.bookingData;
     fetchVehicleData();
     fetchOwnerData();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     // getPaymentStatus(widget.docId);
     print(widget.docId);
+  }
+
+  void _openCheckout(double amount) {
+    var options = {
+      'key': 'rzp_test_RZa3mGbco9w4Ms',
+      'amount': (amount * 100).toInt(),
+      'name': 'Rydyn',
+      'description': 'Ride Payment',
+      'prefill': {'contact': '9999999999', 'email': 'test@rydyn.com'},
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Razorpay error: $e');
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    try {
+      debugPrint('Payment Successful: ${response.paymentId}');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Payment Successful: ${response.paymentId}")),
+      );
+
+      final bookingId = widget.docId;
+
+      if (bookingId == null) {
+        debugPrint("Booking ID missing");
+        return;
+      }
+
+      double amount = 39.0;
+
+      final transactionData = {
+        'transactionId': response.paymentId,
+        'bookingDocId': bookingId,
+        'amount': amount,
+        'status': 'Success',
+        'paymentMethod': 'Razorpay',
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await FirebaseFirestore.instance
+          .collection('transactions')
+          .add(transactionData);
+
+      debugPrint("Transaction saved in Firestore: $transactionData");
+
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingId)
+          .update({
+            'paymentStatus': 'Success',
+            'status': 'Cancelled',
+
+            'statusHistory': FieldValue.arrayUnion([
+              {
+                "status": "Cancelled",
+                "dateTime": DateTime.now().toIso8601String(),
+              },
+            ]),
+          });
+
+      debugPrint("Booking updated successfully!");
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PaymentGateway()),
+        );
+      }
+    } catch (e) {
+      debugPrint("Error saving transaction: $e");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error saving transaction details")),
+      );
+
+      final bookingId = widget.bookingData['bookingId'];
+
+      if (bookingId != null && bookingId.toString().isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('bookings')
+            .doc(bookingId)
+            .update({'paymentStatus': 'Failure'});
+      }
+    }
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    debugPrint(' Failed: ${response.message}');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Payment Failed: ${response.message}")),
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    debugPrint(' External Wallet Selected: ${response.walletName}');
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
   }
 
   void fetchVehicleData() async {
@@ -156,6 +267,81 @@ class _BookingDetailsState extends State<BookingDetails> {
     }
   }
 
+  Future<void> _cancelRideFree() async {
+    final bookingId = widget.docId;
+    if (bookingId == null) return;
+
+    await FirebaseFirestore.instance
+        .collection("bookings")
+        .doc(bookingId)
+        .update({
+          "status": "Cancelled",
+          "paymentStatus": "Success",
+          "statusHistory": FieldValue.arrayUnion([
+            {
+              "status": "Cancelled",
+              "dateTime": DateTime.now().toIso8601String(),
+            },
+          ]),
+        });
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => D_BottomNavigation()),
+      );
+    }
+  }
+
+  Future<void> _checkCancellationTimeAndProceed() async {
+    print(widget.docId);
+    try {
+      final bookingId = widget.docId;
+
+      if (bookingId == null) {
+        print("Booking ID missing");
+        return;
+      }
+
+      final doc = await FirebaseFirestore.instance
+          .collection("bookings")
+          .doc(bookingId)
+          .get();
+
+      if (!doc.exists) return;
+
+      final data = doc.data()!;
+      List history = data['statusHistory'] ?? [];
+
+      DateTime? acceptedTime;
+
+      for (var item in history) {
+        if (item['status'] == "Accepted") {
+          acceptedTime = DateTime.tryParse(item['dateTime']);
+          break;
+        }
+      }
+
+      if (acceptedTime == null) {
+        await _cancelRideFree();
+        return;
+      }
+
+      DateTime now = DateTime.now();
+      int diffMinutes = now.difference(acceptedTime).inMinutes;
+
+      print("Time Difference: $diffMinutes mins");
+
+      if (diffMinutes <= 5) {
+        await _cancelRideFree();
+      } else {
+        _openCheckout(39.0);
+      }
+    } catch (e) {
+      print("Error in cancellation check: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print('docid');
@@ -217,6 +403,34 @@ class _BookingDetailsState extends State<BookingDetails> {
     String dropLng = data['dropLng'].toString();
     String drop2Lat = data['drop2Lat'].toString();
     String drop2Lng = data['drop2Lng'].toString();
+    List history = data['statusHistory'] ?? [];
+
+    DateTime? acceptedTime;
+
+    for (var item in history) {
+      if (item['status'] == "Accepted") {
+        acceptedTime = DateTime.tryParse(item['dateTime']);
+        break;
+      }
+    }
+
+    if (acceptedTime != null) {
+      print("Accepted Time: $acceptedTime");
+
+      DateTime now = DateTime.now();
+
+      int diffMinutes = now.difference(acceptedTime!).inMinutes;
+
+      print("Difference in minutes: $diffMinutes");
+
+      if (diffMinutes <= 5) {
+        print("FREE CANCELLATION");
+      } else {
+        print("CHARGE CANCELLATION FEE");
+      }
+    } else {
+      print("Accepted status not found!");
+    }
 
     String _calculateETA(String time, String duration) {
       try {
@@ -1284,6 +1498,119 @@ class _BookingDetailsState extends State<BookingDetails> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  if (status == 'Accepted')
+                    GestureDetector(
+                      onTap: () {
+                        showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              title: Center(
+                                child: CustomText(
+                                  text: "Cancel Ride",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  textcolor: korangeColor,
+                                ),
+                              ),
+                              backgroundColor: kwhiteColor,
+                              content: CustomText(
+                                text:
+                                    "Are you sure you want to cancel this ride?",
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                textcolor: KblackColor,
+                              ),
+                              actionsAlignment: MainAxisAlignment.spaceBetween,
+                              actions: [
+                                OutlinedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                      color: korangeColor,
+                                      width: 1.5,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 25,
+                                      vertical: 10,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "No",
+                                    style: TextStyle(
+                                      color: korangeColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: korangeColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 25,
+                                      vertical: 10,
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    _checkCancellationTimeAndProceed();
+                                  },
+                                  child: Text(
+                                    "Yes",
+                                    style: TextStyle(
+                                      color: kwhiteColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.block, color: Colors.white, size: 26),
+                            const SizedBox(width: 10),
+                            Text(
+                              "Cancel My Order",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -1293,74 +1620,102 @@ class _BookingDetailsState extends State<BookingDetails> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: status == 'Completed'
-          ? StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('bookings')
-                  .doc(widget.docId)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const SizedBox(
-                    height: 50,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
+      floatingActionButton: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('bookings')
+            .doc(widget.docId)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const SizedBox(
+              height: 50,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
 
-                final data = snapshot.data!.data() as Map<String, dynamic>;
-                String paymentStatus =
-                    data['paymentStatus'] ?? 'Waiting for Payment';
+          final data = snapshot.data!.data() as Map<String, dynamic>;
 
-                String buttonText = "Waiting for Payment";
-                Color buttonColor = Colors.orange;
+          String status = data['status'] ?? '';
+          String paymentStatus = data['paymentStatus'] ?? 'Waiting for Payment';
 
-                if (paymentStatus == "Success") {
-                  buttonText = "Payment Received";
-                  buttonColor = Colors.green;
-                } else if (paymentStatus == "Failed") {
-                  buttonText = "Payment Failed";
-                  buttonColor = Colors.red;
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        elevation: 4,
-                      ),
-                      onPressed: () {
-                        if (paymentStatus == 'Waiting for Payment') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Waiting for payment confirmation...',
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        buttonText,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+          if (status == 'Cancelled') {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    disabledBackgroundColor: Colors.red,
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    elevation: 4,
+                  ),
+                  onPressed: null,
+                  child: const Text(
+                    "Ride Cancelled",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                );
-              },
-            )
-          : (status == 'Accepted' || status == 'Ongoing')
-          ? Padding(
+                ),
+              ),
+            );
+          }
+
+          if (status == 'Completed') {
+            String buttonText = "Waiting for Payment";
+            Color buttonColor = Colors.orange;
+
+            if (paymentStatus == "Success") {
+              buttonText = "Payment Received";
+              buttonColor = Colors.green;
+            } else if (paymentStatus == "Failed") {
+              buttonText = "Payment Failed";
+              buttonColor = Colors.red;
+            }
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: buttonColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    elevation: 4,
+                  ),
+                  onPressed: () {
+                    if (paymentStatus == 'Waiting for Payment') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Waiting for payment confirmation...'),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(
+                    buttonText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+
+          if (status == 'Accepted' || status == 'Ongoing') {
+            return Padding(
               padding: const EdgeInsets.only(left: 15, right: 15),
               child: SizedBox(
                 height: 55,
@@ -1440,7 +1795,6 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   ),
                                 ),
                               ),
-
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: korangeColor,
@@ -1483,7 +1837,6 @@ class _BookingDetailsState extends State<BookingDetails> {
                                     );
                                   } catch (e) {
                                     Navigator.of(context).pop();
-                                    print("Error updating booking status: $e");
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
@@ -1521,8 +1874,12 @@ class _BookingDetailsState extends State<BookingDetails> {
                   },
                 ),
               ),
-            )
-          : const SizedBox.shrink(),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 

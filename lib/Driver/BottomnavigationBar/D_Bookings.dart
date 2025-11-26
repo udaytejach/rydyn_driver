@@ -50,6 +50,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     "Accepted",
     "Ongoing",
     "Completed",
+    "Cancelled",
   ];
   List<Map<String, dynamic>> carList = [];
 
@@ -116,8 +117,10 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
         'driverdocId': driverDocId,
         'driverId': driverId,
         'driverName': driverName,
-
         'ownerOTP': ownerOTP,
+        'statusHistory': FieldValue.arrayUnion([
+          {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
+        ]),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -151,6 +154,10 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
         break;
       case 3:
         status = 'Completed';
+        break;
+
+      case 4:
+        status = 'Cancelled';
         break;
     }
     return carList.where((car) => car['status'] == status).toList();
@@ -357,6 +364,10 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                         break;
                       case 3:
                         status = 'Completed';
+                        break;
+
+                      case 4:
+                        status = 'Cancelled';
                         break;
                     }
 

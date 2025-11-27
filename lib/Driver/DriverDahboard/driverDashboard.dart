@@ -55,6 +55,13 @@ class _DriverDashboardState extends State<DriverDashboard> {
     // _fetchTotalEarnings();
   }
 
+  void _loadOnlineStatus() async {
+    final status = await SharedPrefServices.getisOnline();
+    setState(() {
+      isOnline = status ?? false;
+    });
+  }
+
   int activeIndex = 0;
 
   List<Map<String, dynamic>> carList = [];
@@ -245,13 +252,6 @@ class _DriverDashboardState extends State<DriverDashboard> {
     });
   }
 
-  void _loadOnlineStatus() async {
-    final status = await SharedPrefServices.getisOnline();
-    setState(() {
-      isOnline = status ?? false;
-    });
-  }
-
   void _startAutoScroll() {
     _autoScrollTimer = Timer.periodic(Duration(seconds: 4), (timer) {
       if (_pageController.hasClients) {
@@ -278,7 +278,6 @@ class _DriverDashboardState extends State<DriverDashboard> {
         var data = doc.data() as Map<String, dynamic>;
         data['id'] = doc.id;
 
-        // 🔥 FETCH VEHICLE DETAILS (same as your old code)
         if (data['vehicleId'] != null &&
             data['vehicleId'].toString().isNotEmpty) {
           DocumentSnapshot vehicleDoc = await FirebaseFirestore.instance
@@ -295,7 +294,6 @@ class _DriverDashboardState extends State<DriverDashboard> {
           data['vehicleDetails'] = {};
         }
 
-        // 🔥 DEFAULT FALLBACKS
         data['pickup'] = data['pickup'] ?? 'NA';
         data['drop'] = data['drop'] ?? 'NA';
         data['date'] = data['date'] ?? 'NA';
@@ -373,9 +371,12 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
   Future<void> _updateOnlineStatusOnServer(bool status) async {
     try {
+      final driverId = await SharedPrefServices.getDocId();
+      print(driverId);
+
       await FirebaseFirestore.instance
           .collection('drivers')
-          .doc(SharedPrefServices.getDocId())
+          .doc(driverId)
           .update({'isOnline': status});
     } catch (e) {
       print("Failed to update server: $e");
@@ -457,16 +458,16 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
                                   GestureDetector(
                                     onTap: () {
-                                      _showOnlineDialog(); // tap -> dialog
+                                      _showOnlineDialog();
                                     },
                                     child: AnimatedContainer(
                                       duration: const Duration(
                                         milliseconds: 300,
                                       ),
-                                      width: 100,
+                                      width: 114,
                                       height: 40,
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 4,
+                                        horizontal: 2,
                                       ),
                                       decoration: BoxDecoration(
                                         color: isOnline

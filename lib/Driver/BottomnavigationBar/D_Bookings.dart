@@ -117,7 +117,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
         'driverdocId': driverDocId,
         'driverId': driverId,
         'driverName': driverName,
-        'ownerOTP': ownerOTP,
+        'ownerOTP': ownerOTP.toString(),
         'statusHistory': FieldValue.arrayUnion([
           {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
         ]),

@@ -1635,7 +1635,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                   const SizedBox(height: 10),
                   if (status == 'Accepted')
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
+                        bool isFree = await _checkFreeCancellation();
+
                         showDialog<bool>(
                           context: context,
                           builder: (BuildContext context) {
@@ -1652,13 +1654,18 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 ),
                               ),
                               backgroundColor: kwhiteColor,
-                              content: CustomText(
-                                text:
-                                    "Are you sure you want to cancel this ride?",
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                textcolor: KblackColor,
+
+                              content: Text(
+                                isFree
+                                    ? "You can cancel this ride for FREE.\nAre you sure?"
+                                    : "Cancelling now will charge ₹39.\nDo you want to proceed?",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: KblackColor,
+                                ),
                               ),
+
                               actionsAlignment: MainAxisAlignment.spaceBetween,
                               actions: [
                                 OutlinedButton(
@@ -1697,11 +1704,18 @@ class _BookingDetailsState extends State<BookingDetails> {
                                       vertical: 10,
                                     ),
                                   ),
-                                  onPressed: () async {
-                                    _checkCancellationTimeAndProceed();
+
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    if (isFree) {
+                                      _cancelRideFree();
+                                    } else {
+                                      _openCheckout(39.0);
+                                    }
                                   },
+
                                   child: Text(
-                                    "Yes",
+                                    isFree ? "Cancel Ride" : "Pay ₹39",
                                     style: TextStyle(
                                       color: kwhiteColor,
                                       fontWeight: FontWeight.w600,
@@ -1714,6 +1728,87 @@ class _BookingDetailsState extends State<BookingDetails> {
                           },
                         );
                       },
+
+                      // onTap: () {
+                      //   showDialog<bool>(
+                      //     context: context,
+                      //     builder: (BuildContext context) {
+                      //       return AlertDialog(
+                      //         shape: RoundedRectangleBorder(
+                      //           borderRadius: BorderRadius.circular(15),
+                      //         ),
+                      //         title: Center(
+                      //           child: CustomText(
+                      //             text: "Cancel Ride",
+                      //             fontSize: 16,
+                      //             fontWeight: FontWeight.w600,
+                      //             textcolor: korangeColor,
+                      //           ),
+                      //         ),
+                      //         backgroundColor: kwhiteColor,
+                      //         content: CustomText(
+                      //           text:
+                      //               "Are you sure you want to cancel this ride?",
+                      //           fontSize: 14,
+                      //           fontWeight: FontWeight.w500,
+                      //           textcolor: KblackColor,
+                      //         ),
+                      //         actionsAlignment: MainAxisAlignment.spaceBetween,
+                      //         actions: [
+                      //           OutlinedButton(
+                      //             onPressed: () => Navigator.pop(context),
+                      //             style: OutlinedButton.styleFrom(
+                      //               side: BorderSide(
+                      //                 color: korangeColor,
+                      //                 width: 1.5,
+                      //               ),
+                      //               shape: RoundedRectangleBorder(
+                      //                 borderRadius: BorderRadius.circular(30),
+                      //               ),
+                      //               padding: const EdgeInsets.symmetric(
+                      //                 horizontal: 25,
+                      //                 vertical: 10,
+                      //               ),
+                      //             ),
+                      //             child: Text(
+                      //               "No",
+                      //               style: TextStyle(
+                      //                 color: korangeColor,
+                      //                 fontWeight: FontWeight.w600,
+                      //                 fontSize: 14,
+                      //               ),
+                      //             ),
+                      //           ),
+
+                      //           ElevatedButton(
+                      //             style: ElevatedButton.styleFrom(
+                      //               backgroundColor: korangeColor,
+                      //               shape: RoundedRectangleBorder(
+                      //                 borderRadius: BorderRadius.circular(30),
+                      //               ),
+                      //               padding: const EdgeInsets.symmetric(
+                      //                 horizontal: 25,
+                      //                 vertical: 10,
+                      //               ),
+                      //             ),
+                      //             onPressed: () async {
+                      //               // _showCancellationTypeDialog();
+                      //               _updateMainDialogContent(context);
+                      //             },
+                      //             child: Text(
+                      //               "Yes",
+                      //               style: TextStyle(
+                      //                 color: kwhiteColor,
+                      //                 fontWeight: FontWeight.w600,
+                      //                 fontSize: 14,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       );
+                      //     },
+                      //   );
+                      // },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 15,
@@ -1957,7 +2052,17 @@ class _BookingDetailsState extends State<BookingDetails> {
                                     await FirebaseFirestore.instance
                                         .collection('bookings')
                                         .doc(widget.docId)
-                                        .update({'status': 'Completed'});
+                                        .update({
+                                          'status': 'Completed',
+                                          "statusHistory":
+                                              FieldValue.arrayUnion([
+                                                {
+                                                  "status": "Completed",
+                                                  "dateTime": DateTime.now()
+                                                      .toIso8601String(),
+                                                },
+                                              ]),
+                                        });
 
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pop(true);
@@ -2014,6 +2119,113 @@ class _BookingDetailsState extends State<BookingDetails> {
           return const SizedBox.shrink();
         },
       ),
+    );
+  }
+
+  Future<bool> _checkFreeCancellation() async {
+    final bookingId = widget.docId;
+
+    final doc = await FirebaseFirestore.instance
+        .collection("bookings")
+        .doc(bookingId)
+        .get();
+
+    if (!doc.exists) return true;
+
+    final data = doc.data()!;
+    List history = data['statusHistory'] ?? [];
+
+    DateTime? acceptedTime;
+
+    for (var item in history) {
+      if (item['status'] == "Accepted") {
+        acceptedTime = DateTime.tryParse(item['dateTime']);
+        break;
+      }
+    }
+
+    if (acceptedTime == null) return true;
+
+    int diff = DateTime.now().difference(acceptedTime).inMinutes;
+
+    return diff <= 5;
+  }
+
+  Future<void> _showCancellationTypeDialog() async {
+    final bookingId = widget.docId;
+
+    final doc = await FirebaseFirestore.instance
+        .collection("bookings")
+        .doc(bookingId)
+        .get();
+
+    if (!doc.exists) return;
+
+    final data = doc.data()!;
+    List history = data['statusHistory'] ?? [];
+
+    DateTime? acceptedTime;
+
+    for (var item in history) {
+      if (item['status'] == "Accepted") {
+        acceptedTime = DateTime.tryParse(item['dateTime']);
+        break;
+      }
+    }
+
+    bool isFree = false;
+
+    if (acceptedTime == null) {
+      isFree = true;
+    } else {
+      int diffMinutes = DateTime.now().difference(acceptedTime).inMinutes;
+      isFree = diffMinutes <= 5;
+    }
+
+    // Show final dialog
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Center(
+            child: CustomText(
+              text: "Cancellation",
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              textcolor: korangeColor,
+            ),
+          ),
+          content: Text(
+            isFree
+                ? "You can cancel this ride for FREE."
+                : "Cancelling now will charge ₹39.",
+            style: TextStyle(fontSize: 14),
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("No"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: korangeColor),
+              onPressed: () {
+                Navigator.pop(context);
+
+                if (isFree) {
+                  _cancelRideFree();
+                } else {
+                  _openCheckout(39.0);
+                }
+              },
+              child: Text("Proceed", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
     );
   }
 

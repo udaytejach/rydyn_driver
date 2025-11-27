@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/D_Models/Driver_Model.dart';
 import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
+import 'package:rydyn/Driver/Login/loginScreen.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customButton.dart';
@@ -157,7 +158,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => D_BottomNavigation()),
+          MaterialPageRoute(builder: (_) => LoginScreen()),
           (route) => false,
         );
       }

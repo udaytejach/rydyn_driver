@@ -16,10 +16,22 @@ class _MyEarningsState extends State<MyEarnings> {
   String? currentUserId;
   double totalEarnings = 0.0;
 
+  Map<String, Map<String, dynamic>> ownerDetails = {};
+
   @override
   void initState() {
     super.initState();
     _loadUser();
+    loadAllOwners(); // 🔥 PRELOAD USERS
+  }
+
+  // 🔥 FETCH USERS ONE TIME ONLY
+  Future<void> loadAllOwners() async {
+    final snap = await FirebaseFirestore.instance.collection('users').get();
+
+    for (var doc in snap.docs) {
+      ownerDetails[doc.id] = doc.data();
+    }
   }
 
   Future<void> _loadUser() async {
@@ -195,7 +207,22 @@ class _MyEarningsState extends State<MyEarnings> {
                             if (book['driverId'] != currentUserId) continue;
 
                             data['bookingStatus'] = book['status'] ?? "";
-                            data['ownerName'] = "Rydyn Admin";
+
+                            final ownerDocId = book['ownerdocId'] ?? "";
+
+                            if (data['bookingStatus'] != "Cancelled" &&
+                                ownerDocId.isNotEmpty) {
+                              final owner = ownerDetails[ownerDocId];
+
+                              if (owner != null) {
+                                data['ownerName'] =
+                                    "${owner['firstName']} ${owner['lastName']}";
+                              } else {
+                                data['ownerName'] = "Rydyn Admin";
+                              }
+                            } else {
+                              data['ownerName'] = "Rydyn Admin";
+                            }
 
                             if (data['status'] == "Success" &&
                                 data['bookingStatus'] != "Cancelled") {

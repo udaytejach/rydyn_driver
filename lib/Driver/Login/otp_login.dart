@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
 import 'package:rydyn/Driver/Login/selectLanguage.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
@@ -163,55 +164,64 @@ class _OtpLoginState extends State<OtpLogin> {
 
                                 if (!mounted) return;
 
+                                // if (status == "Inactive") {
+                                //   setState(() => _isLoading = false);
+                                //   showDialog(
+                                //     context: context,
+                                //     builder: (context) {
+                                //       return AlertDialog(
+                                //         shape: RoundedRectangleBorder(
+                                //           borderRadius: BorderRadius.circular(
+                                //             10,
+                                //           ),
+                                //         ),
+                                //         content: Text(
+                                //           "Your status is inactive. Please contact the admin to update your account status.",
+                                //           style: GoogleFonts.poppins(
+                                //             color: Colors.black,
+                                //             fontSize: 14,
+                                //             fontWeight: FontWeight.w500,
+                                //           ),
+                                //         ),
+                                //         title: Center(
+                                //           child: Text(
+                                //             "Account Inactive",
+                                //             style: GoogleFonts.poppins(
+                                //               color: korangeColor,
+                                //               fontSize: 15,
+                                //               fontWeight: FontWeight.w600,
+                                //             ),
+                                //           ),
+                                //         ),
+
+                                //         actions: [
+                                //           TextButton(
+                                //             onPressed: () {
+                                //               Navigator.pop(context);
+                                //             },
+                                //             child: Text(
+                                //               'OK',
+                                //               style: GoogleFonts.poppins(
+                                //                 color: korangeColor,
+                                //                 fontSize: 14,
+                                //                 fontWeight: FontWeight.w600,
+                                //               ),
+                                //             ),
+                                //           ),
+                                //         ],
+                                //       );
+                                //     },
+                                //   );
+
+                                //   return;
+                                // }
                                 if (status == "Inactive") {
-                                  setState(() => _isLoading = false);
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        content: Text(
-                                          "Your status is inactive. Please contact the admin to update your account status.",
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        title: Center(
-                                          child: Text(
-                                            "Account Inactive",
-                                            style: GoogleFonts.poppins(
-                                              color: korangeColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text(
-                                              'OK',
-                                              style: GoogleFonts.poppins(
-                                                color: korangeColor,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => NewDriverDashbaord(),
+                                    ),
                                   );
-
                                   return;
                                 }
 

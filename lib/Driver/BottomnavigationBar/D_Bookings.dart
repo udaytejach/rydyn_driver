@@ -53,7 +53,6 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     "Cancelled",
   ];
   List<Map<String, dynamic>> carList = [];
-
   Future<void> _updateBookingStatus(String bookingId, String newStatus) async {
     try {
       final driverId = await SharedPrefServices.getUserId();
@@ -64,19 +63,59 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
       final bookingRef = FirebaseFirestore.instance
           .collection('bookings')
           .doc(bookingId);
-      final bookingSnap = await bookingRef.get();
 
-      if (!bookingSnap.exists) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Booking not found.')));
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snap = await transaction.get(bookingRef);
+
+        if (!snap.exists) {
+          throw Exception('BOOKING_NOT_FOUND');
+        }
+
+        final data = snap.data() as Map<String, dynamic>;
+        final existingDriverId = (data['driverId'] ?? '') as String;
+
+        if (existingDriverId.isNotEmpty && existingDriverId != driverId) {
+          throw Exception('RIDE_ALREADY_TAKEN');
+        }
+
+        final random = Random();
+        final ownerOTP = (1000 + random.nextInt(9000)).toString();
+
+        transaction.update(bookingRef, {
+          'status': newStatus,
+          'driverdocId': driverDocId,
+          'driverId': driverId,
+          'driverName': driverName,
+          'ownerOTP': ownerOTP,
+          'statusHistory': FieldValue.arrayUnion([
+            {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
+          ]),
+        });
+      });
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ride accepted successfully!'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error updating booking status: $e');
+
+      if (e.toString().contains('BOOKING_NOT_FOUND')) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Booking not found.'),
+            backgroundColor: Colors.red,
+          ),
+        );
         return;
       }
 
-      final bookingData = bookingSnap.data() as Map<String, dynamic>;
-      final existingDriverId = bookingData['driverId'] ?? '';
-
-      if (existingDriverId.isNotEmpty && existingDriverId != driverId) {
+      if (e.toString().contains('RIDE_ALREADY_TAKEN')) {
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -109,28 +148,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
         return;
       }
 
-      final random = Random();
-      final ownerOTP = 1000 + random.nextInt(9000);
-
-      await bookingRef.update({
-        'status': newStatus,
-        'driverdocId': driverDocId,
-        'driverId': driverId,
-        'driverName': driverName,
-        'ownerOTP': ownerOTP.toString(),
-        'statusHistory': FieldValue.arrayUnion([
-          {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
-        ]),
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ride accepted successfully!'),
-          backgroundColor: Colors.orange,
-        ),
-      );
-    } catch (e) {
-      debugPrint('Error updating booking status: $e');
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to update status: $e'),
@@ -139,6 +157,92 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
       );
     }
   }
+
+  // Future<void> _updateBookingStatus(String bookingId, String newStatus) async {
+  //   try {
+  //     final driverId = await SharedPrefServices.getUserId();
+  //     final driverDocId = await SharedPrefServices.getDocId();
+  //     final driverName =
+  //         "${await SharedPrefServices.getFirstName()} ${await SharedPrefServices.getLastName()}";
+
+  //     final bookingRef = FirebaseFirestore.instance
+  //         .collection('bookings')
+  //         .doc(bookingId);
+  //     final bookingSnap = await bookingRef.get();
+
+  //     if (!bookingSnap.exists) {
+  //       ScaffoldMessenger.of(
+  //         context,
+  //       ).showSnackBar(const SnackBar(content: Text('Booking not found.')));
+  //       return;
+  //     }
+
+  //     final bookingData = bookingSnap.data() as Map<String, dynamic>;
+  //     final existingDriverId = bookingData['driverId'] ?? '';
+
+  //     if (existingDriverId.isNotEmpty && existingDriverId != driverId) {
+  //       showDialog(
+  //         context: context,
+  //         builder: (context) => AlertDialog(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(15),
+  //           ),
+  //           title: const Center(
+  //             child: Text(
+  //               "Ride Already Taken",
+  //               style: TextStyle(fontWeight: FontWeight.bold),
+  //             ),
+  //           ),
+  //           content: const Text(
+  //             "This ride has already been accepted by another driver.",
+  //             textAlign: TextAlign.center,
+  //           ),
+  //           actions: [
+  //             Center(
+  //               child: ElevatedButton(
+  //                 onPressed: () => Navigator.pop(context),
+  //                 style: ElevatedButton.styleFrom(
+  //                   backgroundColor: korangeColor,
+  //                 ),
+  //                 child: const Text("OK", style: TextStyle(color: kwhiteColor)),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //       return;
+  //     }
+
+  //     final random = Random();
+  //     final ownerOTP = 1000 + random.nextInt(9000);
+
+  //     await bookingRef.update({
+  //       'status': newStatus,
+  //       'driverdocId': driverDocId,
+  //       'driverId': driverId,
+  //       'driverName': driverName,
+  //       'ownerOTP': ownerOTP.toString(),
+  //       'statusHistory': FieldValue.arrayUnion([
+  //         {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
+  //       ]),
+  //     });
+
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('Ride accepted successfully!'),
+  //         backgroundColor: Colors.orange,
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     debugPrint('Error updating booking status: $e');
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Failed to update status: $e'),
+  //         backgroundColor: Colors.redAccent,
+  //       ),
+  //     );
+  //   }
+  // }
 
   List<Map<String, dynamic>> get filteredCars {
     String status = '';
@@ -663,6 +767,9 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                 CustomCancelButton(
                                                                   text: 'No',
                                                                   onPressed: () {
+                                                                    print(
+                                                                      car['id'],
+                                                                    );
                                                                     Navigator.pop(
                                                                       context,
                                                                     );

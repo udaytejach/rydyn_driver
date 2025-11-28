@@ -310,54 +310,54 @@ class _BookingDetailsState extends State<BookingDetails> {
     }
   }
 
-  Future<void> _checkCancellationTimeAndProceed() async {
-    print(widget.docId);
-    try {
-      final bookingId = widget.docId;
+  // Future<void> _checkCancellationTimeAndProceed() async {
+  //   print(widget.docId);
+  //   try {
+  //     final bookingId = widget.docId;
 
-      if (bookingId == null) {
-        print("Booking ID missing");
-        return;
-      }
+  //     if (bookingId == null) {
+  //       print("Booking ID missing");
+  //       return;
+  //     }
 
-      final doc = await FirebaseFirestore.instance
-          .collection("bookings")
-          .doc(bookingId)
-          .get();
+  //     final doc = await FirebaseFirestore.instance
+  //         .collection("bookings")
+  //         .doc(bookingId)
+  //         .get();
 
-      if (!doc.exists) return;
+  //     if (!doc.exists) return;
 
-      final data = doc.data()!;
-      List history = data['statusHistory'] ?? [];
+  //     final data = doc.data()!;
+  //     List history = data['statusHistory'] ?? [];
 
-      DateTime? acceptedTime;
+  //     DateTime? acceptedTime;
 
-      for (var item in history) {
-        if (item['status'] == "Accepted") {
-          acceptedTime = DateTime.tryParse(item['dateTime']);
-          break;
-        }
-      }
+  //     for (var item in history) {
+  //       if (item['status'] == "Accepted") {
+  //         acceptedTime = DateTime.tryParse(item['dateTime']);
+  //         break;
+  //       }
+  //     }
 
-      if (acceptedTime == null) {
-        await _cancelRideFree();
-        return;
-      }
+  //     if (acceptedTime == null) {
+  //       await _cancelRideFree();
+  //       return;
+  //     }
 
-      DateTime now = DateTime.now();
-      int diffMinutes = now.difference(acceptedTime).inMinutes;
+  //     DateTime now = DateTime.now();
+  //     int diffMinutes = now.difference(acceptedTime).inMinutes;
 
-      print("Time Difference: $diffMinutes mins");
+  //     print("Time Difference: $diffMinutes mins");
 
-      if (diffMinutes <= 5) {
-        await _cancelRideFree();
-      } else {
-        _openCheckout(39.0);
-      }
-    } catch (e) {
-      print("Error in cancellation check: $e");
-    }
-  }
+  //     if (diffMinutes <= 5) {
+  //       await _cancelRideFree();
+  //     } else {
+  //       _openCheckout(39.0);
+  //     }
+  //   } catch (e) {
+  //     print("Error in cancellation check: $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

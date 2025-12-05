@@ -109,13 +109,13 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       if (widget.aadharFront != null) {
         vm.driver.aadharFrontUrl = await vm.uploadImage(
           widget.aadharFront!,
-          "drivers/${vm.driver.phone}_licence_front.jpg",
+          "drivers/${vm.driver.phone}_aadhar_front.jpg",
         );
       }
       if (widget.aadharBack != null) {
         vm.driver.aadharBackUrl = await vm.uploadImage(
           widget.aadharBack!,
-          "drivers/${vm.driver.phone}_licence_back.jpg",
+          "drivers/${vm.driver.phone}_aadhar_back.jpg",
         );
       }
 
@@ -146,7 +146,8 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       await SharedPrefServices.setdrivingLicence(widget.licenceNumber);
       await SharedPrefServices.setlicenceFront(vm.driver.licenceFrontUrl ?? "");
       await SharedPrefServices.setlicenceBack(vm.driver.licenceBackUrl ?? "");
-
+      await SharedPrefServices.setaadharFront(vm.driver.aadharFrontUrl ?? "");
+      await SharedPrefServices.setaadharBack(vm.driver.aadharBackUrl ?? "");
       await SharedPrefServices.setbankNmae(widget.bankName);
       await SharedPrefServices.setaccountNumber(widget.accountNumber);
       await SharedPrefServices.setaccountHolderName(widget.holderName);

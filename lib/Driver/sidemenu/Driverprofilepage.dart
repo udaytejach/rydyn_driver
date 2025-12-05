@@ -301,7 +301,9 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
   }
 
   Future<void> updateDriverDetails() async {
-    final firstName = firstnameController.text.trim();
+    final firstName =
+        firstnameController.text.trim()[0].toUpperCase() +
+        firstnameController.text.trim().substring(1);
     final lastName = lastnameController.text.trim();
     final email = emailController.text.trim();
     final dob = dobController.text.trim();
@@ -535,6 +537,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
               'ifsc': ifsc,
             },
             if (currentStatus == "Rejected") 'status': "Inactive",
+            'rejectReason': '',
           });
 
       await SharedPrefServices.setFirstName(firstName);

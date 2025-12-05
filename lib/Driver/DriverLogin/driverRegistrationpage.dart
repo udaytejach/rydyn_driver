@@ -950,6 +950,11 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (!_validateInputs()) return;
+                        String capitalize(String value) {
+                          if (value.isEmpty) return value;
+                          return value[0].toUpperCase() +
+                              value.substring(1).toLowerCase();
+                        }
 
                         final phone = phoneController.text.trim();
 
@@ -1061,7 +1066,9 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => DriverOtpScreen(
-                                  firstName: firstNameController.text,
+                                  firstName: capitalize(
+                                    firstNameController.text,
+                                  ),
                                   lastName: lastNameController.text,
                                   email: emailController.text,
                                   phoneNumber: phone,
@@ -1081,6 +1088,10 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                   branchName: branchController.text,
                                 ),
                               ),
+                            );
+
+                            print(
+                              "Formatted First Name: ${capitalize(firstNameController.text)}",
                             );
                           }
                         } catch (e) {

@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
 import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
@@ -43,14 +45,18 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
   String? profileUrl;
   String? licenceFrontUrl;
   String? licenceBackUrl;
+  String? aadharFront;
+  String? aadharBack;
   File? image;
   bool isPrimary = false;
   bool isEditing = true;
+  String currentStatus = "";
 
   @override
   void initState() {
     super.initState();
     _loadDriverDetails();
+    currentStatus = SharedPrefServices.getStatus() ?? "";
   }
 
   bool isValidIfsc(String code) {
@@ -67,6 +73,8 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
     vehicleController.text = await SharedPrefServices.getvehicletypee() ?? '';
     licenceFrontUrl = await SharedPrefServices.getlicenceFront() ?? '';
     licenceBackUrl = await SharedPrefServices.getlicenceBack() ?? '';
+    aadharFront = await SharedPrefServices.getaadharFront() ?? '';
+    aadharBack = await SharedPrefServices.getaadharBack() ?? '';
     holderController.text =
         await SharedPrefServices.getaccountHolderName() ?? '';
     accountController.text = await SharedPrefServices.getaccountNumber() ?? '';
@@ -74,6 +82,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
     bankController.text = await SharedPrefServices.getbankNmae() ?? '';
     branchController.text = await SharedPrefServices.getbranchName() ?? '';
     profileUrl = await SharedPrefServices.getProfileImage() ?? '';
+
     setState(() {});
   }
 
@@ -158,7 +167,6 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Invalid IFSC Code. Please check and try again.'),
-            backgroundColor: Colors.redAccent,
           ),
         );
       }
@@ -240,7 +248,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
         }),
       );
 
-      print("🔍 Razorpay Response: ${response.body}");
+      print(" Razorpay Response: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -265,17 +273,14 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Invalid account number or IFSC.'),
-              backgroundColor: Colors.redAccent,
-            ),
+            const SnackBar(content: Text('Invalid account number or IFSC.')),
           );
         }
       } else {
         print('Razorpay error: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('⚠️ Razorpay Error: ${response.body}'),
+            content: Text('Razorpay Error: ${response.body}'),
             backgroundColor: Colors.orangeAccent,
           ),
         );
@@ -307,72 +312,172 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
     final branch = branchController.text.trim();
     final holder = holderController.text.trim();
     final account = accountController.text.trim();
+    final currentStatus = SharedPrefServices.getStatus() ?? "";
 
-    if (firstName.isEmpty ||
-        lastName.isEmpty ||
-        email.isEmpty ||
-        dob.isEmpty ||
-        vehicleType.isEmpty ||
-        licenceNumber.isEmpty ||
-        ifsc.isEmpty ||
-        bank.isEmpty ||
-        branch.isEmpty ||
-        holder.isEmpty ||
-        account.isEmpty) {
+    // if (firstName.isEmpty ||
+    //     lastName.isEmpty ||
+    //     email.isEmpty ||
+    //     dob.isEmpty ||
+    //     vehicleType.isEmpty ||
+    //     licenceNumber.isEmpty ||
+    //     ifsc.isEmpty ||
+    //     bank.isEmpty ||
+    //     branch.isEmpty ||
+    //     holder.isEmpty ||
+    //     account.isEmpty) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Please fill all required fields before updating.'),
+    //     ),
+    //   );
+    //   return;
+    // }
+    if (firstName.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please enter first name.")));
+      return;
+    }
+
+    if (firstName.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please fill all required fields before updating.'),
-          backgroundColor: Colors.redAccent,
+          content: Text("First name must have at least 2 letters."),
         ),
       );
       return;
     }
 
-    if (!RegExp(r'^[A-Z]{4}0[A-Z0-9]{6}$').hasMatch(ifsc)) {
+    if (lastName.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please enter last name.")));
+      return;
+    }
+
+    if (phoneController.text.isEmpty ||
+        phoneController.text.length < 10 ||
+        phoneController.text.length > 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter a valid phone number.")),
+      );
+      return;
+    }
+    if (dobController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select date of birth.")),
+      );
+      return;
+    }
+    if (vehicleType.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select vehicle type.")),
+      );
+      return;
+    }
+
+    if (image == null && (profileUrl == null || profileUrl!.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please upload profile image.")),
+      );
+      return;
+    }
+
+    if (licenceFrontUrl == null ||
+        licenceFrontUrl!.isEmpty ||
+        licenceBackUrl == null ||
+        licenceBackUrl!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please upload Licence Front & Back.')),
+      );
+      return;
+    }
+
+    if (aadharFront == null ||
+        aadharFront!.isEmpty ||
+        aadharBack == null ||
+        aadharBack!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please upload Aadhar Front & Back.')),
+      );
+      return;
+    }
+
+    if (licenceController.text.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
+      );
+      return;
+    }
+    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
+
+    if (!dlRegex.hasMatch(licenceController.text.trim())) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Invalid IFSC Code format.'),
-          backgroundColor: Colors.redAccent,
+          content: Text(
+            'Invalid Driving Licence Format (e.g., TS0920201234567)',
+          ),
         ),
       );
       return;
     }
 
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(' Please enter a valid email address.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
+    // if (firstName.length < 2 || holder.length < 2) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text(' Names must have at least 2 characters.'),
+    //     ),
+    //   );
+    //   return;
+    // }
 
-    if (!RegExp(r'^[0-9]{9,18}$').hasMatch(account)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid Account Number (9–18 digits).'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
+    // if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text(' Please enter a valid email address.')),
+    //   );
+    //   return;
+    // }
 
     if (licenceNumber.length < 8) {
       ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
+      );
+      return;
+    }
+
+    if (ifscController.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please enter IFSC code.")));
+      return;
+    }
+    if (!RegExp(
+      r'^[A-Z]{4}0[A-Z0-9]{6}$',
+    ).hasMatch(ifscController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid IFSC Code format.')),
+      );
+      return;
+    }
+    if (ifscController.text.isNotEmpty && accountController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter Account Number.")),
+      );
+      return;
+    }
+    if (!RegExp(r'^[0-9]{9,18}$').hasMatch(accountController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(' Please enter a valid Licence Number.'),
-          backgroundColor: Colors.redAccent,
+          content: Text('Please enter a valid Account Number (9–18 digits).'),
         ),
       );
       return;
     }
 
-    if (firstName.length < 2 || holder.length < 2) {
+    if (holderController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(' Names must have at least 2 characters.'),
-          backgroundColor: Colors.redAccent,
+          content: Text("Please enter the account holder's name."),
         ),
       );
       return;
@@ -429,6 +534,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
               'accountNumber': account,
               'ifsc': ifsc,
             },
+            if (currentStatus == "Rejected") 'status': "Inactive",
           });
 
       await SharedPrefServices.setFirstName(firstName);
@@ -444,6 +550,13 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
       await SharedPrefServices.setaccountNumber(account);
       await SharedPrefServices.setlicenceFront(uploadedLicenceFrontUrl!);
       await SharedPrefServices.setlicenceBack(uploadedLicenceBackUrl!);
+      await SharedPrefServices.setaadharFront(uploadedLicenceFrontUrl!);
+      await SharedPrefServices.setaadharBack(uploadedLicenceBackUrl!);
+      if (currentStatus == "Rejected") {
+        await SharedPrefServices.setStatus("Inactive");
+      }
+      await SharedPrefServices.setaadharFront(aadharFront!);
+      await SharedPrefServices.setaadharBack(aadharBack!);
       if (uploadedProfileUrl != null) {
         await SharedPrefServices.setProfileImage(uploadedProfileUrl);
       }
@@ -453,7 +566,13 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
       );
 
       await Future.delayed(const Duration(seconds: 1));
-      if (mounted) {
+      if (currentStatus == "Rejected") {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => NewDriverDashbaord()),
+          (route) => false,
+        );
+      } else {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => D_BottomNavigation()),
@@ -474,6 +593,20 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
     }
   }
 
+  String? validateDLNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter Driving Licence Number";
+    }
+
+    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
+
+    if (!dlRegex.hasMatch(value)) {
+      return "Invalid Driving Licence Format (e.g., TS0920201234567)";
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -492,12 +625,18 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: InkWell(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: () => Navigator.pop(context),
-                      child: Image.asset(
-                        "images/chevronLeft.png",
-                        width: 24,
-                        height: 24,
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        alignment: Alignment.centerLeft,
+                        child: Image.asset(
+                          "images/chevronLeft.png",
+                          width: 24,
+                          height: 24,
+                        ),
                       ),
                     ),
                   ),
@@ -623,13 +762,19 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                     debugPrint("Invalid date format: $e");
                                   }
                                 }
+                                final currentDate = DateTime.now();
+                                final lastAllowedDate = DateTime(
+                                  currentDate.year - 18,
+                                  currentDate.month,
+                                  currentDate.day,
+                                );
 
                                 // Show date picker
                                 final pickedDate = await showDatePicker(
                                   context: context,
                                   initialDate: initialDate,
                                   firstDate: DateTime(1950),
-                                  lastDate: DateTime.now(),
+                                  lastDate: lastAllowedDate,
                                   builder: (context, child) {
                                     return Theme(
                                       data: Theme.of(context).copyWith(
@@ -663,80 +808,14 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
 
                       const SizedBox(height: 20),
 
-                      // DropdownButtonFormField<String>(
-                      //   value: vehicleController.text.isNotEmpty
-                      //       ? vehicleController.text
-                      //       : null,
-                      //   decoration: InputDecoration(
-                      //     labelText: "Vehicle Type",
-                      //     labelStyle: const TextStyle(color: Colors.grey),
-                      //     enabledBorder: OutlineInputBorder(
-                      //       borderSide: const BorderSide(
-                      //         color: kbordergreyColor,
-                      //       ),
-                      //       borderRadius: BorderRadius.circular(10),
-                      //     ),
-                      //     focusedBorder: OutlineInputBorder(
-                      //       borderSide: const BorderSide(
-                      //         color: kbordergreyColor,
-                      //       ),
-                      //       borderRadius: BorderRadius.circular(10),
-                      //     ),
-                      //     filled: true,
-                      //     fillColor: kwhiteColor,
-                      //   ),
-                      //   icon: const Icon(
-                      //     Icons.keyboard_arrow_down,
-                      //     color: KblackColor,
-                      //     size: 30,
-                      //   ),
-                      //   dropdownColor: Colors.white,
-                      //   items: const [
-                      //     DropdownMenuItem(
-                      //       value: 'Light',
-                      //       child: CustomText(
-                      //         text: 'Light',
-                      //         fontSize: 15,
-                      //         fontWeight: FontWeight.w500,
-                      //         textcolor: KblackColor,
-                      //       ),
-                      //     ),
-                      //     DropdownMenuItem(
-                      //       value: 'Medium',
-                      //       child: CustomText(
-                      //         text: 'Medium',
-                      //         fontSize: 15,
-                      //         fontWeight: FontWeight.w500,
-                      //         textcolor: KblackColor,
-                      //       ),
-                      //     ),
-                      //     DropdownMenuItem(
-                      //       value: 'Heavy',
-                      //       child: CustomText(
-                      //         text: 'Heavy',
-                      //         fontSize: 15,
-                      //         fontWeight: FontWeight.w500,
-                      //         textcolor: KblackColor,
-                      //       ),
-                      //     ),
-                      //   ],
-                      //   onChanged: isEditing
-                      //       ? (value) {
-                      //           setState(() {
-                      //             vehicleController.text = value!;
-                      //           });
-                      //         }
-                      //       : null,
-                      // ),
                       DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
                           isExpanded: true,
                           value:
                               [
                                 'Light',
-                                'Premium',
-                                'Heavy',
-                                'All',
+                                'Light-Premium',
+                                'Light-Premium-Heavy',
                               ].contains(vehicleController.text)
                               ? vehicleController.text
                               : null,
@@ -755,14 +834,14 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                               child: Text('Light'),
                             ),
                             DropdownMenuItem(
-                              value: 'Premium',
-                              child: Text('Premium'),
+                              value: 'Light-Premium',
+                              child: Text('Light-Premium'),
                             ),
                             DropdownMenuItem(
-                              value: 'Heavy',
-                              child: Text('Heavy'),
+                              value: 'Light-Premium-Heavy',
+                              child: Text('Light-Premium-Heavy'),
                             ),
-                            DropdownMenuItem(value: 'All', child: Text('All')),
+                            // DropdownMenuItem(value: 'All', child: Text('All')),
                           ],
                           onChanged: isEditing
                               ? (value) {
@@ -806,13 +885,15 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                         controller: licenceController,
                         labelText: "Licence Number",
                         readOnly: !isEditing,
+                        inputFormatters: [UpperCaseTextFormatter()],
+                        validator: validateDLNumber,
                       ),
                       const SizedBox(height: 10),
                       CustomText(
                         text: " Driving Licence (Front & Back)",
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        textcolor: korangeColor,
+                        textcolor: KblackColor,
                       ),
                       const SizedBox(height: 10),
 
@@ -860,18 +941,45 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                         )
                                       : null,
                                 ),
+
                                 if (isEditing)
                                   Positioned(
                                     top: 6,
                                     right: 6,
                                     child: GestureDetector(
-                                      onTap: () =>
-                                          pickLicenceImage(isFront: true),
-                                      child: const CircleAvatar(
+                                      onTap: () {
+                                        if (currentStatus == "Rejected") {
+                                          if (licenceFrontUrl != null &&
+                                              licenceFrontUrl!.isNotEmpty) {
+                                            setState(() {
+                                              licenceFrontUrl = "";
+                                            });
+                                          } else {
+                                            pickLicenceImage(isFront: true);
+                                          }
+                                        } else {
+                                          pickLicenceImage(isFront: true);
+                                        }
+                                      },
+                                      child: CircleAvatar(
                                         radius: 15,
-                                        backgroundColor: korangeColor,
+                                        backgroundColor:
+                                            currentStatus == "Rejected"
+                                            ? (licenceFrontUrl != null &&
+                                                      licenceFrontUrl!
+                                                          .isNotEmpty
+                                                  ? Colors.red
+                                                  : korangeColor)
+                                            : korangeColor,
+
                                         child: Icon(
-                                          Icons.edit,
+                                          currentStatus == "Rejected"
+                                              ? (licenceFrontUrl != null &&
+                                                        licenceFrontUrl!
+                                                            .isNotEmpty
+                                                    ? Icons.delete
+                                                    : Icons.add)
+                                              : Icons.edit,
                                           color: Colors.white,
                                           size: 16,
                                         ),
@@ -881,6 +989,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                               ],
                             ),
                           ),
+
                           const SizedBox(width: 15),
                           Expanded(
                             child: Stack(
@@ -923,18 +1032,225 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                         )
                                       : null,
                                 ),
+
                                 if (isEditing)
                                   Positioned(
                                     top: 6,
                                     right: 6,
                                     child: GestureDetector(
-                                      onTap: () =>
-                                          pickLicenceImage(isFront: false),
-                                      child: const CircleAvatar(
+                                      onTap: () {
+                                        if (currentStatus == "Rejected") {
+                                          if (licenceBackUrl != null &&
+                                              licenceBackUrl!.isNotEmpty) {
+                                            setState(() {
+                                              licenceBackUrl = "";
+                                            });
+                                          } else {
+                                            pickLicenceImage(isFront: false);
+                                          }
+                                        } else {
+                                          pickLicenceImage(isFront: false);
+                                        }
+                                      },
+                                      child: CircleAvatar(
                                         radius: 15,
-                                        backgroundColor: korangeColor,
+                                        backgroundColor:
+                                            currentStatus == "Rejected"
+                                            ? (licenceBackUrl != null &&
+                                                      licenceBackUrl!.isNotEmpty
+                                                  ? Colors.red
+                                                  : korangeColor)
+                                            : korangeColor,
+
                                         child: Icon(
-                                          Icons.edit,
+                                          currentStatus == "Rejected"
+                                              ? (licenceBackUrl != null &&
+                                                        licenceBackUrl!
+                                                            .isNotEmpty
+                                                    ? Icons.delete
+                                                    : Icons.add)
+                                              : Icons.edit,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 15),
+                      CustomText(
+                        text: " Aadhar Card (Front & Back)",
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        textcolor: KblackColor,
+                      ),
+                      const SizedBox(height: 10),
+
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 130,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    color: Colors.grey.shade100,
+                                    image:
+                                        (aadharFront != null &&
+                                            aadharFront!.isNotEmpty)
+                                        ? DecorationImage(
+                                            image:
+                                                aadharFront!.startsWith('http')
+                                                ? NetworkImage(aadharFront!)
+                                                : FileImage(File(aadharFront!))
+                                                      as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
+                                  ),
+                                  child:
+                                      (aadharFront == null ||
+                                          aadharFront!.isEmpty)
+                                      ? const Center(
+                                          child: Text(
+                                            "Front Side",
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        )
+                                      : null,
+                                ),
+
+                                if (isEditing)
+                                  Positioned(
+                                    top: 6,
+                                    right: 6,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (currentStatus == "Rejected") {
+                                          if (aadharFront != null &&
+                                              aadharFront!.isNotEmpty) {
+                                            setState(() {
+                                              aadharFront = "";
+                                            });
+                                          } else {
+                                            pickAadharImage(isFront: true);
+                                          }
+                                        } else {
+                                          pickAadharImage(isFront: true);
+                                        }
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 15,
+                                        backgroundColor:
+                                            currentStatus == "Rejected"
+                                            ? (aadharFront != null &&
+                                                      aadharFront!.isNotEmpty
+                                                  ? Colors.red
+                                                  : korangeColor)
+                                            : korangeColor,
+                                        child: Icon(
+                                          currentStatus == "Rejected"
+                                              ? (aadharFront != null &&
+                                                        aadharFront!.isNotEmpty
+                                                    ? Icons.delete
+                                                    : Icons.add)
+                                              : Icons.edit,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 130,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    color: Colors.grey.shade100,
+                                    image:
+                                        (aadharBack != null &&
+                                            aadharBack!.isNotEmpty)
+                                        ? DecorationImage(
+                                            image:
+                                                aadharBack!.startsWith('http')
+                                                ? NetworkImage(aadharBack!)
+                                                : FileImage(File(aadharBack!))
+                                                      as ImageProvider,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
+                                  ),
+                                  child:
+                                      (aadharBack == null ||
+                                          aadharBack!.isEmpty)
+                                      ? const Center(
+                                          child: Text(
+                                            "Back Side",
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        )
+                                      : null,
+                                ),
+
+                                if (isEditing)
+                                  Positioned(
+                                    top: 6,
+                                    right: 6,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (currentStatus == "Rejected") {
+                                          if (aadharBack != null &&
+                                              aadharBack!.isNotEmpty) {
+                                            setState(() {
+                                              aadharBack = "";
+                                            });
+                                          } else {
+                                            pickAadharImage(isFront: false);
+                                          }
+                                        } else {
+                                          pickAadharImage(isFront: false);
+                                        }
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 15,
+                                        backgroundColor:
+                                            currentStatus == "Rejected"
+                                            ? (aadharBack != null &&
+                                                      aadharBack!.isNotEmpty
+                                                  ? Colors.red
+                                                  : korangeColor)
+                                            : korangeColor,
+                                        child: Icon(
+                                          currentStatus == "Rejected"
+                                              ? (aadharBack != null &&
+                                                        aadharBack!.isNotEmpty
+                                                    ? Icons.delete
+                                                    : Icons.add)
+                                              : Icons.edit,
                                           color: Colors.white,
                                           size: 16,
                                         ),
@@ -952,7 +1268,6 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                   ),
                 ),
 
-                // --- BANK DETAILS TAB ---
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
                   child: Card(
@@ -983,6 +1298,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                             controller: ifscController,
                             labelText: "IFSC",
                             readOnly: !isEditing,
+                            inputFormatters: [UpperCaseTextFormatter()],
                             onChanged: (value) async {
                               final code = value.toUpperCase().trim();
 
@@ -990,6 +1306,8 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                 setState(() {
                                   bankController.clear();
                                   branchController.clear();
+                                  accountController.clear();
+                                  holderController.clear();
                                 });
                                 return;
                               }
@@ -998,10 +1316,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                 if (isValidIfsc(code)) {
                                   await fetchIfscDetails(code);
                                 } else {
-                                  setState(() {
-                                    bankController.clear();
-                                    branchController.clear();
-                                  });
+                                  setState(() {});
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
@@ -1177,252 +1492,96 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
       ),
     );
   }
+
+  Future<void> pickAadharImage({required bool isFront}) async {
+    if (!isEditing) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: const Center(
+          child: Text(
+            "Select Image From",
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+          ),
+        ),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              /// CAMERA
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 80,
+                  );
+
+                  if (picked != null) {
+                    setState(() {
+                      if (isFront) {
+                        aadharFront = picked.path;
+                      } else {
+                        aadharBack = picked.path;
+                      }
+                    });
+                  }
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.camera_alt, color: korangeColor, size: 20),
+                    SizedBox(width: 8),
+                    Text("Camera"),
+                  ],
+                ),
+              ),
+
+              /// GALLERY
+              SimpleDialogOption(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                    imageQuality: 80,
+                  );
+
+                  if (picked != null) {
+                    setState(() {
+                      if (isFront) {
+                        aadharFront = picked.path;
+                      } else {
+                        aadharBack = picked.path;
+                      }
+                    });
+                  }
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.photo_library, color: korangeColor, size: 20),
+                    SizedBox(width: 8),
+                    Text("Gallery"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-// class ProfileScreen extends StatefulWidget {
-//   const ProfileScreen({super.key});
-
-//   @override
-//   State<ProfileScreen> createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   final TextEditingController firstnameController = TextEditingController();
-//   final TextEditingController lastnameController = TextEditingController();
-//   final TextEditingController emailController = TextEditingController();
-//   final TextEditingController phoneController = TextEditingController();
-//   final TextEditingController dobController = TextEditingController();
-//   final TextEditingController licenceController = TextEditingController();
-//   final TextEditingController vehicleController = TextEditingController();
-
-//   final TextEditingController holderController = TextEditingController();
-//   final TextEditingController accountController = TextEditingController();
-//   final TextEditingController ifscController = TextEditingController();
-//   final TextEditingController bankController = TextEditingController();
-//   final TextEditingController branchController = TextEditingController();
-
-//   String? profileUrl;
-//   String? licenceFrontUrl;
-//   String? licenceBackUrl;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadDriverDetails();
-//   }
-
-//   Future<void> _loadDriverDetails() async {
-//     final vm = Provider.of<DriverViewModel>(context, listen: false);
-//     final driver = vm.driver;
-
-//     firstnameController.text = driver.firstName ?? '';
-//     lastnameController.text = driver.lastName ?? '';
-//     emailController.text = driver.email ?? '';
-//     phoneController.text = driver.phone ?? '';
-//     dobController.text = driver.dob ?? '';
-//     licenceController.text = driver.licenceNumber ?? '';
-//     vehicleController.text = driver.vehicleType ?? '';
-
-//     profileUrl = driver.profileUrl;
-//     licenceFrontUrl = driver.licenceFrontUrl;
-//     licenceBackUrl = driver.licenceBackUrl;
-
-//     if (driver.bankAccount != null) {
-//       holderController.text = driver.bankAccount!.holderName ?? '';
-//       accountController.text = driver.bankAccount!.accountNumber ?? '';
-//       ifscController.text = driver.bankAccount!.ifsc ?? '';
-//       bankController.text = driver.bankAccount!.bankName ?? '';
-//       branchController.text = driver.bankAccount!.branch ?? '';
-//     }
-
-//     setState(() {}); // refresh UI
-//   }
-
-//   String _getUserInitials() {
-//     final first = SharedPrefServices.getFirstName() ?? '';
-//     final last = SharedPrefServices.getLastName() ?? '';
-
-//     String firstInitial = first.isNotEmpty ? first[0].toUpperCase() : '';
-//     String lastInitial = last.isNotEmpty ? last[0].toUpperCase() : '';
-
-//     return firstInitial + lastInitial;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final localizations = AppLocalizations.of(context)!;
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         elevation: 0,
-//         backgroundColor: Colors.white,
-//         automaticallyImplyLeading: false,
-//         bottom: const PreferredSize(
-//           preferredSize: Size.fromHeight(1.0),
-//           child: Divider(height: 1, color: Colors.grey),
-//         ),
-//         title: Center(
-//           child: Text(
-//             localizations.profile,
-//             style: const TextStyle(
-//               fontSize: 22,
-//               fontWeight: FontWeight.w600,
-//               color: Colors.black,
-//             ),
-//           ),
-//         ),
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(20),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             // Profile Picture
-//             Center(
-//               child: Stack(
-//                 children: [
-//                   CircleAvatar(
-//                     radius: 55,
-//                     backgroundColor: KlightgreyColor,
-//                     backgroundImage:
-//                         (SharedPrefServices.getProfileImage() ?? '').isNotEmpty
-//                             ? NetworkImage(
-//                               SharedPrefServices.getProfileImage()!,
-//                             )
-//                             : null,
-//                     child:
-//                         (SharedPrefServices.getProfileImage() ?? '').isEmpty
-//                             ? Text(
-//                               _getUserInitials(),
-//                               style: const TextStyle(
-//                                 fontSize: 25,
-//                                 fontWeight: FontWeight.w600,
-//                                 color: Color(0xFFC7D5E7),
-//                               ),
-//                             )
-//                             : null,
-//                   ),
-
-//                   Positioned(
-//                     right: 0,
-//                     bottom: 0,
-//                     child: CircleAvatar(
-//                       radius: 18,
-//                       backgroundColor: korangeColor,
-//                       child: Image.asset("images/camera.png"),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             const SizedBox(height: 30),
-
-//             // Basic Info
-//             CustomTextField(
-//               controller: firstnameController,
-//               labelText: localizations.p_firstName,
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 20),
-//             CustomTextField(
-//               controller: lastnameController,
-//               labelText: localizations.p_lastName,
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 20),
-//             CustomTextField(
-//               controller: emailController,
-//               labelText: localizations.p_email,
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 20),
-//             CustomTextField(
-//               controller: phoneController,
-//               labelText: localizations.p_phoneNumner,
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 20),
-//             CustomTextField(
-//               controller: dobController,
-//               labelText: "Date of Birth",
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 20),
-//             CustomTextField(
-//               controller: vehicleController,
-//               labelText: "Vehicle Type",
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 20),
-//             CustomTextField(
-//               controller: licenceController,
-//               labelText: "Licence Number",
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 20),
-
-//             // Licence images
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child:
-//                       licenceFrontUrl != null
-//                           ? Image.network(licenceFrontUrl!, height: 120)
-//                           : Container(height: 120, color: Colors.grey.shade200),
-//                 ),
-//                 const SizedBox(width: 10),
-//                 Expanded(
-//                   child:
-//                       licenceBackUrl != null
-//                           ? Image.network(licenceBackUrl!, height: 120)
-//                           : Container(height: 120, color: Colors.grey.shade200),
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 30),
-
-//             // Bank Details
-//             const Text(
-//               "Bank Details",
-//               style: TextStyle(
-//                 fontSize: 18,
-//                 fontWeight: FontWeight.w600,
-//                 color: Colors.orange,
-//               ),
-//             ),
-//             const SizedBox(height: 15),
-//             CustomTextField(
-//               controller: holderController,
-//               labelText: "Account Holder Name",
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 10),
-//             CustomTextField(
-//               controller: accountController,
-//               labelText: "Account Number",
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 10),
-//             CustomTextField(
-//               controller: ifscController,
-//               labelText: "IFSC",
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 10),
-//             CustomTextField(
-//               controller: bankController,
-//               labelText: "Bank Name",
-//               readOnly: true,
-//             ),
-//             const SizedBox(height: 10),
-//             CustomTextField(
-//               controller: branchController,
-//               labelText: "Branch",
-//               readOnly: true,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
+}

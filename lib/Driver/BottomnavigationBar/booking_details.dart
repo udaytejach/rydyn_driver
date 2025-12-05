@@ -310,55 +310,6 @@ class _BookingDetailsState extends State<BookingDetails> {
     }
   }
 
-  // Future<void> _checkCancellationTimeAndProceed() async {
-  //   print(widget.docId);
-  //   try {
-  //     final bookingId = widget.docId;
-
-  //     if (bookingId == null) {
-  //       print("Booking ID missing");
-  //       return;
-  //     }
-
-  //     final doc = await FirebaseFirestore.instance
-  //         .collection("bookings")
-  //         .doc(bookingId)
-  //         .get();
-
-  //     if (!doc.exists) return;
-
-  //     final data = doc.data()!;
-  //     List history = data['statusHistory'] ?? [];
-
-  //     DateTime? acceptedTime;
-
-  //     for (var item in history) {
-  //       if (item['status'] == "Accepted") {
-  //         acceptedTime = DateTime.tryParse(item['dateTime']);
-  //         break;
-  //       }
-  //     }
-
-  //     if (acceptedTime == null) {
-  //       await _cancelRideFree();
-  //       return;
-  //     }
-
-  //     DateTime now = DateTime.now();
-  //     int diffMinutes = now.difference(acceptedTime).inMinutes;
-
-  //     print("Time Difference: $diffMinutes mins");
-
-  //     if (diffMinutes <= 5) {
-  //       await _cancelRideFree();
-  //     } else {
-  //       _openCheckout(39.0);
-  //     }
-  //   } catch (e) {
-  //     print("Error in cancellation check: $e");
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     print('docid');
@@ -503,12 +454,18 @@ class _BookingDetailsState extends State<BookingDetails> {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: InkWell(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () => Navigator.pop(context),
-                  child: Image.asset(
-                    "images/chevronLeft.png",
-                    width: 24,
-                    height: 24,
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    alignment: Alignment.centerLeft,
+                    child: Image.asset(
+                      "images/chevronLeft.png",
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
                 ),
               ),
@@ -578,37 +535,45 @@ class _BookingDetailsState extends State<BookingDetails> {
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                           ),
-                          // Row(
-                          //   children: [
-                          //     CustomText(
-                          //       text: transmission,
-                          //       textcolor: kgreyColor,
-                          //       fontWeight: FontWeight.w400,
-                          //       fontSize: 12,
-                          //     ),
-                          //     Text(' | ', style: TextStyle(color: kgreyColor)),
-                          //     CustomText(
-                          //       text: category,
-                          //       textcolor: kgreyColor,
-                          //       fontWeight: FontWeight.w400,
-                          //       fontSize: 12,
-                          //     ),
-                          //   ],
-                          // ),
+
                           const SizedBox(height: 6),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Text(
-                              "View Vehicle Details",
-                              style: TextStyle(
+                          Row(
+                            children: [
+                              CustomText(
+                                text: "$category",
+                                textcolor: korangeColor,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12,
-                                color: korangeColor,
-                                decoration: TextDecoration.underline,
-                                decorationColor: korangeColor,
                               ),
-                            ),
+                              SizedBox(width: 8),
+                              Container(
+                                height: 15,
+                                width: 1.3,
+                                color: korangeBordercolor,
+                              ),
+                              SizedBox(width: 8),
+                              CustomText(
+                                text: "$transmission",
+                                textcolor: korangeColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
+                            ],
                           ),
+
+                          // GestureDetector(
+                          //   onTap: () {},
+                          //   child: Text(
+                          //     "View Vehicle Details",
+                          //     style: TextStyle(
+                          //       fontWeight: FontWeight.w600,
+                          //       fontSize: 12,
+                          //       color: korangeColor,
+                          //       decoration: TextDecoration.underline,
+                          //       decorationColor: korangeColor,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -619,120 +584,136 @@ class _BookingDetailsState extends State<BookingDetails> {
 
             const SizedBox(height: 5),
 
-            if (status == 'Accepted' || status == 'Ongoing')
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ChatScreen(
-                                bookingId: widget.docId,
-                                driverId: SharedPrefServices.getUserId()
-                                    .toString(),
-                                ownerId: data['ownerId'],
-                                ownerName: ownerFullName,
-                                ownerProfile: ownerData?['profilePic'] ?? '',
-                              ),
-                            ),
-                          );
-                        },
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('bookings')
+                  .doc(widget.docId)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return SizedBox();
 
-                        icon: const Icon(
-                          Icons.chat,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        label: const Text(
-                          "Chat",
-                          style: TextStyle(
+                final bookingData =
+                    snapshot.data!.data() as Map<String, dynamic>;
+                final status = bookingData['status'] ?? '';
+
+                if (status != 'Accepted' && status != 'Ongoing') {
+                  return SizedBox();
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ChatScreen(
+                                  bookingId: widget.docId,
+                                  driverId: SharedPrefServices.getUserId()
+                                      .toString(),
+                                  ownerId: bookingData['ownerId'],
+                                  ownerName: ownerFullName,
+                                  ownerProfile: ownerData?['profilePic'] ?? '',
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.chat,
                             color: Colors.grey,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            size: 20,
                           ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 1.5,
+                          label: const Text(
+                            "Chat",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Colors.grey.shade300,
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            backgroundColor: Colors.white,
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          backgroundColor: Colors.white,
                         ),
                       ),
-                    ),
 
-                    const SizedBox(width: 12),
+                      const SizedBox(width: 12),
 
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          final ownerPhone = ownerData?['phone'] ?? '';
-                          if (ownerPhone.isNotEmpty) {
-                            final Uri callUri = Uri(
-                              scheme: 'tel',
-                              path: ownerPhone,
-                            );
-                            if (await canLaunchUrl(callUri)) {
-                              await launchUrl(callUri);
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            final ownerPhone = ownerData?['phone'] ?? '';
+                            if (ownerPhone.isNotEmpty) {
+                              final Uri callUri = Uri(
+                                scheme: 'tel',
+                                path: ownerPhone,
+                              );
+                              if (await canLaunchUrl(callUri)) {
+                                await launchUrl(callUri);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Unable to open dialer."),
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                              }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text("Unable to open dialer."),
+                                  content: Text(
+                                    "Owner phone number not available.",
+                                  ),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: Colors.redAccent,
                                 ),
                               );
                             }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Owner phone number not available.",
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: Colors.redAccent,
-                              ),
-                            );
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.phone,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        label: const Text(
-                          "Call",
-                          style: TextStyle(
+                          },
+                          icon: const Icon(
+                            Icons.phone,
                             color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            size: 20,
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: korangeColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                          label: const Text(
+                            "Call",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          elevation: 0,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: korangeColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            elevation: 0,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                );
+              },
+            ),
 
             const SizedBox(height: 15),
 
@@ -1516,330 +1497,310 @@ class _BookingDetailsState extends State<BookingDetails> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  if (reviewsList.isNotEmpty)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.grey.shade300,
-                          width: 1,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            blurRadius: 3,
-                            offset: const Offset(0, 1),
-                          ),
-                        ],
-                      ),
-                      child: reviewsList.isEmpty
-                          ? const CustomText(
-                              text: "No review available",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              textcolor: KblackColor,
-                            )
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const CustomText(
-                                  text: "Your Review",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  textcolor: korangeColor,
-                                ),
-                                const SizedBox(height: 12),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('reviews')
+                        .where('bookingId', isEqualTo: widget.docId)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return SizedBox(); // or loader if you want
+                      }
 
-                                Row(
-                                  children: [
-                                    const CustomText(
-                                      text: "Rating :",
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      textcolor: KblackColor,
-                                    ),
-                                    SizedBox(width: 4),
-                                    Row(
-                                      children: List.generate(
-                                        reviewsList[0]['rating'],
-                                        (i) => const Icon(
-                                          Icons.star,
-                                          color: Colors.orange,
-                                          size: 18,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    CustomText(
-                                      text: reviewsList[0]['rating'].toString(),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      textcolor: KblackColor,
-                                    ),
-                                  ],
-                                ),
+                      final reviewsList = snapshot.data!.docs
+                          .map((doc) => doc.data() as Map<String, dynamic>)
+                          .toList();
 
-                                const SizedBox(height: 10),
+                      if (reviewsList.isEmpty) {
+                        return Container();
+                        // Container(
+                        //   width: double.infinity,
+                        //   padding: const EdgeInsets.all(15),
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.white,
+                        //     borderRadius: BorderRadius.circular(12),
+                        //     border: Border.all(
+                        //       color: Colors.grey.shade300,
+                        //       width: 1,
+                        //     ),
+                        //     boxShadow: [
+                        //       BoxShadow(
+                        //         color: Colors.grey.withOpacity(0.1),
+                        //         blurRadius: 3,
+                        //         offset: const Offset(0, 1),
+                        //       ),
+                        //     ],
+                        //   ),
+                        //   child: const CustomText(
+                        //     text: "No review available",
+                        //     fontSize: 14,
+                        //     fontWeight: FontWeight.w500,
+                        //     textcolor: KblackColor,
+                        //   ),
+                        // );
+                      }
 
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const CustomText(
-                                      text: "Feedback : ",
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      textcolor: KblackColor,
-                                    ),
-                                    SizedBox(width: 4),
-                                    Expanded(
-                                      child: CustomText(
-                                        text:
-                                            (reviewsList[0]['feedback'] as List)
-                                                .join(", "),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        textcolor: KblackColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                      final review = reviewsList[0];
 
-                                const SizedBox(height: 10),
-
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const CustomText(
-                                      text: "Comment : ",
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      textcolor: KblackColor,
-                                    ),
-                                    SizedBox(width: 4),
-                                    Expanded(
-                                      child: CustomText(
-                                        text: reviewsList[0]['comment'] ?? "",
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        textcolor: KblackColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                    ),
-                  const SizedBox(height: 10),
-                  if (status == 'Accepted')
-                    GestureDetector(
-                      onTap: () async {
-                        bool isFree = await _checkFreeCancellation();
-
-                        showDialog<bool>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              title: Center(
-                                child: CustomText(
-                                  text: "Cancel Ride",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  textcolor: korangeColor,
-                                ),
-                              ),
-                              backgroundColor: kwhiteColor,
-
-                              content: Text(
-                                isFree
-                                    ? "You can cancel this ride for FREE.\nAre you sure?"
-                                    : "Cancelling now will charge ₹39.\nDo you want to proceed?",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: KblackColor,
-                                ),
-                              ),
-
-                              actionsAlignment: MainAxisAlignment.spaceBetween,
-                              actions: [
-                                OutlinedButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(
-                                      color: korangeColor,
-                                      width: 1.5,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 25,
-                                      vertical: 10,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "No",
-                                    style: TextStyle(
-                                      color: korangeColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: korangeColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 25,
-                                      vertical: 10,
-                                    ),
-                                  ),
-
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    if (isFree) {
-                                      _cancelRideFree();
-                                    } else {
-                                      _openCheckout(39.0);
-                                    }
-                                  },
-
-                                  child: Text(
-                                    isFree ? "Cancel Ride" : "Pay ₹39",
-                                    style: TextStyle(
-                                      color: kwhiteColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-
-                      // onTap: () {
-                      //   showDialog<bool>(
-                      //     context: context,
-                      //     builder: (BuildContext context) {
-                      //       return AlertDialog(
-                      //         shape: RoundedRectangleBorder(
-                      //           borderRadius: BorderRadius.circular(15),
-                      //         ),
-                      //         title: Center(
-                      //           child: CustomText(
-                      //             text: "Cancel Ride",
-                      //             fontSize: 16,
-                      //             fontWeight: FontWeight.w600,
-                      //             textcolor: korangeColor,
-                      //           ),
-                      //         ),
-                      //         backgroundColor: kwhiteColor,
-                      //         content: CustomText(
-                      //           text:
-                      //               "Are you sure you want to cancel this ride?",
-                      //           fontSize: 14,
-                      //           fontWeight: FontWeight.w500,
-                      //           textcolor: KblackColor,
-                      //         ),
-                      //         actionsAlignment: MainAxisAlignment.spaceBetween,
-                      //         actions: [
-                      //           OutlinedButton(
-                      //             onPressed: () => Navigator.pop(context),
-                      //             style: OutlinedButton.styleFrom(
-                      //               side: BorderSide(
-                      //                 color: korangeColor,
-                      //                 width: 1.5,
-                      //               ),
-                      //               shape: RoundedRectangleBorder(
-                      //                 borderRadius: BorderRadius.circular(30),
-                      //               ),
-                      //               padding: const EdgeInsets.symmetric(
-                      //                 horizontal: 25,
-                      //                 vertical: 10,
-                      //               ),
-                      //             ),
-                      //             child: Text(
-                      //               "No",
-                      //               style: TextStyle(
-                      //                 color: korangeColor,
-                      //                 fontWeight: FontWeight.w600,
-                      //                 fontSize: 14,
-                      //               ),
-                      //             ),
-                      //           ),
-
-                      //           ElevatedButton(
-                      //             style: ElevatedButton.styleFrom(
-                      //               backgroundColor: korangeColor,
-                      //               shape: RoundedRectangleBorder(
-                      //                 borderRadius: BorderRadius.circular(30),
-                      //               ),
-                      //               padding: const EdgeInsets.symmetric(
-                      //                 horizontal: 25,
-                      //                 vertical: 10,
-                      //               ),
-                      //             ),
-                      //             onPressed: () async {
-                      //               // _showCancellationTypeDialog();
-                      //               _updateMainDialogContent(context);
-                      //             },
-                      //             child: Text(
-                      //               "Yes",
-                      //               style: TextStyle(
-                      //                 color: kwhiteColor,
-                      //                 fontWeight: FontWeight.w600,
-                      //                 fontSize: 14,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       );
-                      //     },
-                      //   );
-                      // },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15,
-                          vertical: 12,
-                        ),
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(25),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: Colors.grey.shade300,
                             width: 1,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.block, color: Colors.white, size: 26),
-                            const SizedBox(width: 10),
-                            Text(
-                              "Cancel My Order",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
                             ),
                           ],
                         ),
-                      ),
-                    ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomText(
+                              text: "Customer Review",
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              textcolor: korangeColor,
+                            ),
+                            const SizedBox(height: 12),
+
+                            // ⭐ Rating Row
+                            Row(
+                              children: [
+                                const CustomText(
+                                  text: "Rating :",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                                SizedBox(width: 4),
+
+                                Row(
+                                  children: List.generate(
+                                    review['rating'],
+                                    (i) => const Icon(
+                                      Icons.star,
+                                      color: Colors.orange,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(width: 4),
+                                CustomText(
+                                  text: review['rating'].toString(),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  textcolor: KblackColor,
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            // 📝 Feedback
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const CustomText(
+                                  text: "Feedback : ",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child: CustomText(
+                                    text: (review['feedback'] as List).join(
+                                      ", ",
+                                    ),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    textcolor: KblackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            // 💬 Comment
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const CustomText(
+                                  text: "Comment : ",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child: CustomText(
+                                    text: review['comment'] ?? "",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    textcolor: KblackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 10),
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('bookings')
+                        .doc(widget.docId)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return SizedBox();
+
+                      final bookingData =
+                          snapshot.data!.data() as Map<String, dynamic>? ?? {};
+                      final status = bookingData['status'] ?? '';
+
+                      if (status != 'New' && status != 'Accepted') {
+                        return SizedBox();
+                      }
+
+                      return GestureDetector(
+                        onTap: () async {
+                          bool isFree = await _checkFreeCancellation();
+
+                          showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                title: Center(
+                                  child: CustomText(
+                                    text: "Cancel Ride",
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    textcolor: korangeColor,
+                                  ),
+                                ),
+                                backgroundColor: kwhiteColor,
+                                content: Text(
+                                  isFree
+                                      ? "You can cancel this ride for FREE.\nAre you sure?"
+                                      : "Cancelling now will charge ₹39.\nDo you want to proceed?",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: KblackColor,
+                                  ),
+                                ),
+                                actionsAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                actions: [
+                                  OutlinedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: korangeColor,
+                                        width: 1.5,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 25,
+                                        vertical: 10,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "No",
+                                      style: TextStyle(
+                                        color: korangeColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: korangeColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 25,
+                                        vertical: 10,
+                                      ),
+                                    ),
+
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      if (isFree) {
+                                        _cancelRideFree();
+                                      } else {
+                                        _openCheckout(39.0);
+                                      }
+                                    },
+
+                                    child: Text(
+                                      isFree ? "Cancel Ride" : "Pay ₹39",
+                                      style: TextStyle(
+                                        color: kwhiteColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.block, color: Colors.white, size: 26),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Cancel My Ride",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -1864,10 +1825,10 @@ class _BookingDetailsState extends State<BookingDetails> {
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
 
-          String status = data['status'] ?? '';
+          String ridestatus = data['status'] ?? '';
           String paymentStatus = data['paymentStatus'] ?? 'Waiting for Payment';
 
-          if (status == 'Cancelled') {
+          if (ridestatus == 'Cancelled') {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: SizedBox(
@@ -1896,7 +1857,7 @@ class _BookingDetailsState extends State<BookingDetails> {
             );
           }
 
-          if (status == 'Completed') {
+          if (ridestatus == 'Completed') {
             String buttonText = "Waiting for Payment";
             Color buttonColor = Colors.orange;
 
@@ -1943,13 +1904,13 @@ class _BookingDetailsState extends State<BookingDetails> {
             );
           }
 
-          if (status == 'Accepted' || status == 'Ongoing') {
+          if (ridestatus == 'Accepted' || ridestatus == 'Ongoing') {
             return Padding(
               padding: const EdgeInsets.only(left: 15, right: 15),
               child: SizedBox(
                 height: 55,
                 child: SlideAction(
-                  outerColor: status == 'Ongoing'
+                  outerColor: ridestatus == 'Ongoing'
                       ? korangeresponseColor
                       : Colors.green,
                   innerColor: Colors.white,
@@ -1958,12 +1919,12 @@ class _BookingDetailsState extends State<BookingDetails> {
                   sliderButtonIconPadding: 11,
                   sliderButtonIcon: Icon(
                     Icons.arrow_forward_ios,
-                    color: status == 'Ongoing'
+                    color: ridestatus == 'Ongoing'
                         ? korangeresponseColor
                         : Colors.green,
                     size: 20,
                   ),
-                  text: status == 'Ongoing'
+                  text: ridestatus == 'Ongoing'
                       ? "Swipe to Complete Ride"
                       : "Swipe to Start Ride",
                   textStyle: const TextStyle(
@@ -1974,7 +1935,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                   onSubmit: () async {
                     await Future.delayed(const Duration(milliseconds: 400));
 
-                    if (status == 'Ongoing') {
+                    if (ridestatus == 'Ongoing') {
                       bool? confirm = await showDialog<bool>(
                         context: context,
                         builder: (BuildContext context) {
@@ -2010,18 +1971,10 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 25,
-                                    vertical: 10,
-                                  ),
                                 ),
                                 child: Text(
                                   "No",
-                                  style: TextStyle(
-                                    color: korangeColor,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
+                                  style: TextStyle(color: korangeColor),
                                 ),
                               ),
                               ElevatedButton(
@@ -2030,85 +1983,45 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 25,
-                                    vertical: 10,
-                                  ),
                                 ),
                                 onPressed: () async {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return const Center(
-                                        child: CircularProgressIndicator(
-                                          color: korangeColor,
-                                        ),
-                                      );
-                                    },
+                                  Navigator.pop(context);
+
+                                  await FirebaseFirestore.instance
+                                      .collection('bookings')
+                                      .doc(widget.docId)
+                                      .update({
+                                        'status': 'Completed',
+                                        "statusHistory": FieldValue.arrayUnion([
+                                          {
+                                            "status": "Completed",
+                                            "dateTime": DateTime.now()
+                                                .toIso8601String(),
+                                          },
+                                        ]),
+                                      });
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Ride completed successfully!",
+                                      ),
+                                    ),
                                   );
-
-                                  try {
-                                    await FirebaseFirestore.instance
-                                        .collection('bookings')
-                                        .doc(widget.docId)
-                                        .update({
-                                          'status': 'Completed',
-                                          "statusHistory":
-                                              FieldValue.arrayUnion([
-                                                {
-                                                  "status": "Completed",
-                                                  "dateTime": DateTime.now()
-                                                      .toIso8601String(),
-                                                },
-                                              ]),
-                                        });
-
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pop(true);
-
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => D_BottomNavigation(),
-                                      ),
-                                      (route) => false,
-                                    );
-                                  } catch (e) {
-                                    Navigator.of(context).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          "Failed to complete ride: $e",
-                                        ),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                  }
                                 },
                                 child: Text(
                                   "Yes",
-                                  style: TextStyle(
-                                    color: kwhiteColor,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
+                                  style: TextStyle(color: kwhiteColor),
                                 ),
                               ),
                             ],
                           );
                         },
                       );
+                    } else if (ridestatus == 'Accepted') {
+                      String userOTP = data['ownerOTP'].toString().trim();
 
-                      if (confirm == true) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Ride completed successfully!"),
-                          ),
-                        );
-                      }
-                    } else if (status == 'Accepted') {
-                      _showOtpDialog(context, OwnerOTP, widget.docId);
+                      _showOtpDialog(context, userOTP, widget.docId);
                     }
                   },
                 ),
@@ -2182,7 +2095,6 @@ class _BookingDetailsState extends State<BookingDetails> {
       isFree = diffMinutes <= 5;
     }
 
-    // Show final dialog
     showDialog(
       context: context,
       builder: (context) {
@@ -2317,15 +2229,23 @@ class _BookingDetailsState extends State<BookingDetails> {
                     await FirebaseFirestore.instance
                         .collection('bookings')
                         .doc(docID)
-                        .update({'status': 'Ongoing'});
+                        .update({
+                          'status': 'Ongoing',
+                          'statusHistory': FieldValue.arrayUnion([
+                            {
+                              'status': 'Ongoing',
+                              'dateTime': DateTime.now().toIso8601String(),
+                            },
+                          ]),
+                        });
 
                     Navigator.pop(context);
 
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => D_BottomNavigation()),
-                      (route) => false,
-                    );
+                    // Navigator.pushAndRemoveUntil(
+                    //   context,
+                    //   MaterialPageRoute(builder: (_) => D_BottomNavigation()),
+                    //   (route) => false,
+                    // );
 
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(

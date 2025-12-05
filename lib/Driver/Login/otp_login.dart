@@ -215,7 +215,8 @@ class _OtpLoginState extends State<OtpLogin> {
 
                                 //   return;
                                 // }
-                                if (status == "Inactive") {
+                                if (status == "Inactive" ||
+                                    status == "Rejected") {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

@@ -27,7 +27,7 @@ class D_SideMenu extends StatelessWidget {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(6.0),
                       child: Stack(
                         alignment: Alignment.bottomCenter,
                         children: [
@@ -81,8 +81,9 @@ class D_SideMenu extends StatelessWidget {
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
                           ),
-                          const CustomText(
-                            text: "Light Vehicle Driver",
+                          CustomText(
+                            text:
+                                "${SharedPrefServices.getvehicletypee()} Driver",
                             textcolor: kseegreyColor,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -102,26 +103,6 @@ class D_SideMenu extends StatelessWidget {
 
           const Divider(),
 
-          // ListTile(
-          //   leading: Image.asset("images/mybookings.png"),
-          //   title: const CustomText(
-          //     text: "My Bookings",
-          //     textcolor: kcocoblack,
-          //     fontSize: 16,
-          //     fontWeight: FontWeight.w500,
-          //   ),
-          //   onTap: () {},
-          // ),
-          // ListTile(
-          //   leading: Image.asset("images/myearnings.png"),
-          //   title: const CustomText(
-          //     text: "My Earnings",
-          //     textcolor: kcocoblack,
-          //     fontSize: 16,
-          //     fontWeight: FontWeight.w500,
-          //   ),
-          //   onTap: () {},
-          // ),
           ListTile(
             leading: Image.asset("images/documents.png"),
             title: const CustomText(

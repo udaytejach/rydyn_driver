@@ -25,9 +25,10 @@ class SharedPrefServices {
   static const _keyifscCode = 'ifscCode';
   static const _keybankName = 'bankName';
   static const _keybranchName = 'branchName';
-
+  static const _keyaadharFront = 'aadharFront';
+  static const _keyaadharBack = 'aadharBack';
   static const _keyislogged = 'islogged';
-
+  static const _keyrejectReason = 'rejectReason';
   static const _keyisOnline = 'isOnline';
 
   static Future init() async => prefs = await SharedPreferences.getInstance();
@@ -51,8 +52,17 @@ class SharedPrefServices {
   static Future setlicenceBack(String licenceBack) async =>
       await prefs!.setString(_keylicenceBack, licenceBack);
 
+  static Future setaadharFront(String aadharFront) async =>
+      await prefs!.setString(_keyaadharFront, aadharFront);
+
+  static Future setaadharBack(String aadharBack) async =>
+      await prefs!.setString(_keyaadharBack, aadharBack);
+
   static Future setaccountHolderName(String accountHolderName) async =>
       await prefs!.setString(_keyaccountHolderName, accountHolderName);
+
+  static Future setrejectReason(String rejectReason) async =>
+      await prefs!.setString(_keyrejectReason, rejectReason);
 
   static Future setaccountNumber(String accountNumber) async =>
       await prefs!.setString(_keyaccountNumber, accountNumber);
@@ -105,9 +115,13 @@ class SharedPrefServices {
   static String? getvehicletypee() => prefs!.getString(_keyvehicleType);
   static String? getlicenceFront() => prefs!.getString(_keylicenceFront);
   static String? getlicenceBack() => prefs!.getString(_keylicenceBack);
+  static String? getaadharFront() => prefs!.getString(_keyaadharFront);
+  static String? getaadharBack() => prefs!.getString(_keyaadharBack);
   static String? getaccountHolderName() =>
       prefs!.getString(_keyaccountHolderName);
   static String? getaccountNumber() => prefs!.getString(_keyaccountNumber);
+
+  static String? getrejectReason() => prefs!.getString(_keyrejectReason);
   static String? getifscCode() => prefs!.getString(_keyifscCode);
   static String? getbankNmae() => prefs!.getString(_keybankName);
   static String? getbranchName() => prefs!.getString(_keybranchName);
@@ -136,17 +150,31 @@ class SharedPrefServices {
     await prefs!.setString(_keyfirstName, "");
     await prefs!.setString(_keylastName, "");
     await prefs!.setString(_keyemail, "");
-
     await prefs!.setString(_keyprofileImage, "");
-
     await prefs!.setString(_keynumber, "");
     await prefs!.setString(_keystatus, "");
     await prefs!.setString(_keyroleCode, "");
-    await prefs!.setBool(_keyislogged, false);
-
+    await prefs!.setString(_keycountryCode, "");
     await prefs!.setString(_keydocId, "");
+    await prefs!.setBool(_keyislogged, false);
+    await prefs!.setBool(_keyisOnline, false);
 
-    print('User data reset in SharedPreferences.');
+    await prefs!.setString(_keydob, "");
+    await prefs!.setString(_keydrivingLicence, "");
+    await prefs!.setString(_keyvehicleType, "");
+    await prefs!.setString(_keylicenceFront, "");
+    await prefs!.setString(_keylicenceBack, "");
+
+    await prefs!.setString(_keyaadharFront, "");
+    await prefs!.setString(_keyaadharBack, "");
+    await prefs!.setString(_keyrejectReason, "");
+    await prefs!.setString(_keyaccountHolderName, "");
+    await prefs!.setString(_keyaccountNumber, "");
+    await prefs!.setString(_keyifscCode, "");
+    await prefs!.setString(_keybankName, "");
+    await prefs!.setString(_keybranchName, "");
+
+    print('All user data cleared from SharedPreferences.');
   }
 
   static getdocumentId() {}

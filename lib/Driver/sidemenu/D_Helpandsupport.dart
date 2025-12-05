@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class D_HelpAndSupport extends StatelessWidget {
+class D_HelpAndSupport extends StatefulWidget {
+  @override
+  State<D_HelpAndSupport> createState() => _D_HelpAndSupportState();
+}
+
+class _D_HelpAndSupportState extends State<D_HelpAndSupport> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: Colors.transparent, // Important!
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Gradient background
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -28,27 +33,29 @@ class D_HelpAndSupport extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   height: 56,
-                  decoration: BoxDecoration(
-                    // color: Colors.white,
-                    // border: Border(
-                    //   bottom: BorderSide(color: Colors.grey.shade300, width: 1),
-                    // ),
-                  ),
+                  decoration: BoxDecoration(),
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: InkWell(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () => Navigator.pop(context),
-                          child: Image.asset(
-                            "images/chevronLeft.png",
-                            width: 24,
-                            height: 24,
-                            color: kwhiteColor,
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            alignment: Alignment.centerLeft,
+                            child: Image.asset(
+                              "images/chevronLeft.png",
+                              width: 24,
+                              height: 24,
+                              color: kwhiteColor,
+                            ),
                           ),
                         ),
                       ),
+
                       Center(
                         child: Text(
                           localizations.menuHelpSupport,
@@ -63,7 +70,6 @@ class D_HelpAndSupport extends StatelessWidget {
                   ),
                 ),
 
-                // Main content
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.all(16),
@@ -94,15 +100,6 @@ class D_HelpAndSupport extends StatelessWidget {
                         ),
                         SizedBox(height: 12),
 
-                        // Center(
-                        //   child: CustomText(
-                        //     text:
-                        //         "Lorem Ipsum is simply dummy text\nof the printing and typesetting industry.",
-                        //     fontSize: 14,
-                        //     fontWeight: FontWeight.w400,
-                        //     textcolor: KorangeLightColor,
-                        //   ),
-                        // ),
                         SizedBox(height: 54),
 
                         Align(
@@ -122,12 +119,18 @@ class D_HelpAndSupport extends StatelessWidget {
                               "images/phone.png",
                               localizations.hS_t3,
                               "+91 9000052798",
+                              onTap: () {
+                                _callNumber("+91 9000052798");
+                              },
                             ),
                             SizedBox(height: 12),
                             contactCard(
                               "images/sendemail.png",
                               localizations.hS_t4,
                               "help@manadriver.com",
+                              onTap: () {
+                                _sendEmail("help@manadriver.com");
+                              },
                             ),
                           ],
                         ),
@@ -143,46 +146,104 @@ class D_HelpAndSupport extends StatelessWidget {
     );
   }
 
-  Widget contactCard(String imagePath, String title, String subtitle) {
-    return Container(
-      decoration: BoxDecoration(
-        color: KcontactcardColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: EdgeInsets.all(12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: KcontactimagecontainerColor,
-              borderRadius: BorderRadius.circular(12),
+  void _callNumber(String phone) async {
+    phone = phone.replaceAll("+91", "").trim();
+
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Phone number not available.")),
+      );
+      return;
+    }
+
+    if (phone.length != 10) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Invalid phone number.")));
+      return;
+    }
+
+    final Uri callUri = Uri(scheme: 'tel', path: phone);
+
+    if (await canLaunchUrl(callUri)) {
+      await launchUrl(callUri);
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Unable to open dialer.")));
+    }
+  }
+
+  void _sendEmail(String email) async {
+    if (email.isEmpty || !email.contains("@")) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid email address."),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    final Uri mailUri = Uri(scheme: 'mailto', path: email);
+
+    if (await canLaunchUrl(mailUri)) {
+      await launchUrl(mailUri);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Unable to open email app.")),
+      );
+    }
+  }
+
+  Widget contactCard(
+    String imagePath,
+    String title,
+    String subtitle, {
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: KcontactcardColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: KcontactimagecontainerColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.all(4),
+              child: Image.asset(imagePath, width: 48, height: 48),
             ),
-            padding: EdgeInsets.all(4),
-            child: Image.asset(imagePath, width: 48, height: 48),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(
-                  text: title,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  textcolor: KcontacttextColor,
-                ),
-                SizedBox(height: 4),
-                CustomText(
-                  text: subtitle,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  textcolor: korangeColor,
-                ),
-              ],
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text: title,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    textcolor: KcontacttextColor,
+                  ),
+                  SizedBox(height: 4),
+                  CustomText(
+                    text: subtitle,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    textcolor: korangeColor,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/D_Bookings.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/booking_details.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
@@ -175,7 +178,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
       if (carList.isNotEmpty) {
         var first = carList.first;
-        debugPrint("👉 First Booking:");
+        debugPrint(" First Booking:");
         debugPrint("Pickup: ${first['pickup']}");
         debugPrint("Drop: ${first['drop']}");
         debugPrint("Date: ${first['date']}");
@@ -208,31 +211,146 @@ class _DriverDashboardState extends State<DriverDashboard> {
     }
   }
 
-  void _updateBookingStatus(String bookingId, String newStatus) async {
+  Future<void> _updateBookingStatus(String bookingId, String newStatus) async {
     try {
-      String driverId = SharedPrefServices.getUserId().toString();
-      String driverDocId = SharedPrefServices.getDocId().toString();
-      await FirebaseFirestore.instance
-          .collection('bookings')
-          .doc(bookingId)
-          .update({
-            'status': newStatus,
-            'driverdocId': driverDocId,
-            'driverId': driverId,
-          });
+      final driverId = await SharedPrefServices.getUserId();
+      final driverDocId = await SharedPrefServices.getDocId();
+      final driverName =
+          "${await SharedPrefServices.getFirstName()} ${await SharedPrefServices.getLastName()}";
 
-      setState(() {
-        int index = carList.indexWhere((car) => car['id'] == bookingId);
-        if (index != -1) {
-          carList[index]['status'] = newStatus;
+      final bookingRef = FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingId);
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snap = await transaction.get(bookingRef);
+
+        if (!snap.exists) {
+          throw Exception('BOOKING_NOT_FOUND');
         }
+
+        final data = snap.data() as Map<String, dynamic>;
+        final existingDriverId = (data['driverId'] ?? '') as String;
+
+        if (existingDriverId.isNotEmpty && existingDriverId != driverId) {
+          throw Exception('RIDE_ALREADY_TAKEN');
+        }
+
+        final random = Random();
+        final ownerOTP = (1000 + random.nextInt(9000)).toString();
+
+        transaction.update(bookingRef, {
+          'status': newStatus,
+          'driverdocId': driverDocId,
+          'driverId': driverId,
+          'driverName': driverName,
+          'ownerOTP': ownerOTP,
+          'statusHistory': FieldValue.arrayUnion([
+            {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
+          ]),
+        });
       });
 
-      _fetchCars();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ride accepted successfully!')),
+      );
     } catch (e) {
-      debugPrint("Error updating booking: $e");
+      debugPrint('Error updating booking status: $e');
+
+      if (e.toString().contains('BOOKING_NOT_FOUND')) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Booking not found.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (e.toString().contains('RIDE_ALREADY_TAKEN')) {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: const Center(
+              child: Text(
+                "Ride Already Taken",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            content: const Text(
+              "This ride has already been accepted by another driver.",
+              textAlign: TextAlign.center,
+            ),
+            actions: [
+              Center(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: korangeColor,
+                  ),
+                  child: const Text("OK", style: TextStyle(color: kwhiteColor)),
+                ),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update status: $e'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
+  // void _updateBookingStatus(String bookingId, String newStatus) async {
+  //   try {
+  //     String driverId = SharedPrefServices.getUserId().toString();
+  //     String driverDocId = SharedPrefServices.getDocId().toString();
+  //     final driverName =
+  //         "${await SharedPrefServices.getFirstName()} ${await SharedPrefServices.getLastName()}";
+  //     await FirebaseFirestore.instance
+  //         .collection('bookings')
+  //         .doc(bookingId)
+  //         .update({
+  //           'status': newStatus,
+  //           'driverdocId': driverDocId,
+  //           'driverId': driverId,
+  //           'driverName': driverName,
+  //            'ownerOTP': ownerOTP,
+  //           'statusHistory': FieldValue.arrayUnion([
+  //             {
+  //               'status': newStatus,
+  //               'dateTime': DateTime.now().toIso8601String(),
+  //             },
+  //           ]),
+  //         });
+  //     if (!mounted) return;
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Ride accepted successfully!')),
+  //     );
+
+  //     setState(() {
+  //       int index = carList.indexWhere((car) => car['id'] == bookingId);
+  //       if (index != -1) {
+  //         carList[index]['status'] = newStatus;
+  //       }
+  //     });
+
+  //     _fetchCars();
+  //   } catch (e) {
+  //     debugPrint("Error updating booking: $e");
+  //   }
+  // }
 
   void _startOfferAutoScroll() {
     _offerAutoScrollTimer = Timer.periodic(Duration(seconds: 4), (timer) {
@@ -464,7 +582,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                       duration: const Duration(
                                         milliseconds: 300,
                                       ),
-                                      width: 114,
+                                      width: 120,
                                       height: 40,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 2,
@@ -497,11 +615,18 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                           ),
                                           Align(
                                             alignment: Alignment.center,
-                                            child: Text(
-                                              isOnline ? "Online" : "Offline",
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                  ),
+                                              child: Text(
+                                                isOnline ? "Online" : "Offline",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 15,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -754,15 +879,15 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                         ],
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Image.asset(
-                                        'images/backarrow.png',
-                                        width: 28,
-                                        height: 28,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(8.0),
+                                    //   child: Image.asset(
+                                    //     'images/backarrow.png',
+                                    //     width: 28,
+                                    //     height: 28,
+                                    //     fit: BoxFit.contain,
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                                 SizedBox(height: 3),
@@ -1176,8 +1301,17 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                               CustomButton(
                                                                                 text: 'Yes',
                                                                                 onPressed: () {
-                                                                                  Navigator.pop(
+                                                                                  Navigator.pushReplacement(
                                                                                     context,
+                                                                                    MaterialPageRoute(
+                                                                                      builder:
+                                                                                          (
+                                                                                            context,
+                                                                                          ) => BookingDetails(
+                                                                                            bookingData: car,
+                                                                                            docId: car['id'],
+                                                                                          ),
+                                                                                    ),
                                                                                   );
                                                                                   _updateBookingStatus(
                                                                                     car['id'],
@@ -1239,76 +1373,76 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
                   SizedBox(height: 20),
                   Divider(height: 4, color: KdeviderColor, thickness: 5),
-                  SizedBox(height: 20),
-                  Container(
-                    margin: EdgeInsets.only(left: 15, right: 15),
-                    color: kwhiteColor,
+                  // SizedBox(height: 20),
 
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              text: localizations.menuOffers,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              textcolor: KblackColor,
-                            ),
-                            Text(
-                              localizations.home_viewoffers,
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: korangeColor,
-                                decoration: TextDecoration.underline,
-                                decorationColor: korangeColor,
-                                decorationStyle: TextDecorationStyle.solid,
-                                decorationThickness: 1.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          height: 140,
-                          child: PageView.builder(
-                            controller: _offerPageController,
-                            itemCount: offerImages.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.asset(
-                                    offerImages[index],
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                        Center(
-                          child: SmoothPageIndicator(
-                            controller: _offerPageController,
-                            count: offerImages.length,
-                            effect: WormEffect(
-                              dotHeight: 6,
-                              dotWidth: 40,
-                              activeDotColor: korangeColor,
-                              dotColor: Colors.grey.shade300,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   margin: EdgeInsets.only(left: 15, right: 15),
+                  //   color: kwhiteColor,
 
-                  SizedBox(height: 20),
+                  //   child: Column(
+                  //     children: [
+                  //       Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           CustomText(
+                  //             text: localizations.menuOffers,
+                  //             fontSize: 18,
+                  //             fontWeight: FontWeight.bold,
+                  //             textcolor: KblackColor,
+                  //           ),
+                  //           Text(
+                  //             localizations.home_viewoffers,
+                  //             style: GoogleFonts.poppins(
+                  //               fontSize: 12,
+                  //               fontWeight: FontWeight.w400,
+                  //               color: korangeColor,
+                  //               decoration: TextDecoration.underline,
+                  //               decorationColor: korangeColor,
+                  //               decorationStyle: TextDecorationStyle.solid,
+                  //               decorationThickness: 1.5,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       SizedBox(height: 10),
+                  //       Container(
+                  //         height: 140,
+                  //         child: PageView.builder(
+                  //           controller: _offerPageController,
+                  //           itemCount: offerImages.length,
+                  //           itemBuilder: (context, index) {
+                  //             return Padding(
+                  //               padding: const EdgeInsets.symmetric(
+                  //                 horizontal: 6,
+                  //               ),
+                  //               child: ClipRRect(
+                  //                 borderRadius: BorderRadius.circular(12),
+                  //                 child: Image.asset(
+                  //                   offerImages[index],
+                  //                   fit: BoxFit.cover,
+                  //                 ),
+                  //               ),
+                  //             );
+                  //           },
+                  //         ),
+                  //       ),
+                  //       SizedBox(height: 12),
+                  //       Center(
+                  //         child: SmoothPageIndicator(
+                  //           controller: _offerPageController,
+                  //           count: offerImages.length,
+                  //           effect: WormEffect(
+                  //             dotHeight: 6,
+                  //             dotWidth: 40,
+                  //             activeDotColor: korangeColor,
+                  //             dotColor: Colors.grey.shade300,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  SizedBox(height: 30),
 
                   Container(
                     margin: EdgeInsets.only(left: 15, right: 15),
@@ -1354,7 +1488,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
                 ],
               ),
             ),

@@ -6,6 +6,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -338,6 +339,20 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     e164Key: "",
   );
 
+  String? validateDLNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter Driving Licence Number";
+    }
+
+    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
+
+    if (!dlRegex.hasMatch(value)) {
+      return "Invalid Driving Licence Format (e.g., TS0920201234567)";
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<DriverViewModel>(context);
@@ -484,11 +499,18 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                           color: Colors.grey,
                         ),
                         onPressed: () async {
+                          final DateTime today = DateTime.now();
+                          final DateTime maxAdultDate = DateTime(
+                            today.year - 18,
+                            today.month,
+                            today.day,
+                          );
+
                           final DateTime? picked = await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: maxAdultDate,
                             firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
+                            lastDate: maxAdultDate,
                             builder: (context, child) {
                               return Theme(
                                 data: Theme.of(context).copyWith(
@@ -514,6 +536,38 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                             ).format(picked);
                           }
                         },
+
+                        // onPressed: () async {
+                        //   final DateTime? picked = await showDatePicker(
+                        //     context: context,
+                        //     initialDate: DateTime.now(),
+                        //     firstDate: DateTime(1900),
+                        //     lastDate: DateTime.now(),
+                        //     builder: (context, child) {
+                        //       return Theme(
+                        //         data: Theme.of(context).copyWith(
+                        //           colorScheme: const ColorScheme.light(
+                        //             primary: korangeColor,
+                        //             onPrimary: Colors.white,
+                        //             onSurface: Colors.black,
+                        //           ),
+                        //           textButtonTheme: TextButtonThemeData(
+                        //             style: TextButton.styleFrom(
+                        //               foregroundColor: korangeColor,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         child: child!,
+                        //       );
+                        //     },
+                        //   );
+
+                        //   if (picked != null) {
+                        //     dobController.text = DateFormat(
+                        //       "dd-MM-yyyy",
+                        //     ).format(picked);
+                        //   }
+                        // },
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -549,11 +603,14 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                       items: [
                         DropdownMenuItem(value: 'Light', child: Text('Light')),
                         DropdownMenuItem(
-                          value: 'Premium',
-                          child: Text('Premium'),
+                          value: 'Light-Premium',
+                          child: Text('Light-Premium'),
                         ),
-                        DropdownMenuItem(value: 'Heavy', child: Text('Heavy')),
-                        DropdownMenuItem(value: 'All', child: Text('All')),
+                        DropdownMenuItem(
+                          value: 'Light-Premium-Heavy',
+                          child: Text('Light-Premium-Heavy'),
+                        ),
+                        // DropdownMenuItem(value: 'All', child: Text('All')),
                       ],
                       onChanged: (value) => setState(() => vehicleType = value),
                       dropdownStyleData: DropdownStyleData(
@@ -589,6 +646,8 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                   D_CustomTextField(
                     labelText: "Driving Licence Number",
                     controller: licenceController,
+                    inputFormatters: [UpperCaseTextFormatter()],
+                    validator: validateDLNumber,
                   ),
 
                   const SizedBox(height: 20),
@@ -785,7 +844,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                   D_CustomTextField(
                     controller: ifscController,
                     labelText: "IFSC Code",
-
+                    inputFormatters: [UpperCaseTextFormatter()],
                     onChanged: (value) async {
                       final code = value.toUpperCase().trim();
 
@@ -1041,7 +1100,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
@@ -1059,13 +1118,13 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     if (firstNameController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Please enter first name")));
+      ).showSnackBar(const SnackBar(content: Text("Please enter first name.")));
       return false;
     }
     if (lastNameController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Please enter last name")));
+      ).showSnackBar(const SnackBar(content: Text("Please enter last name.")));
       return false;
     }
 
@@ -1082,26 +1141,79 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
         phoneController.text.length < 10 ||
         phoneController.text.length > 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter valid phone number")),
+        const SnackBar(content: Text("Please enter a valid phone number.")),
       );
       return false;
     }
     if (dobController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select date of birth")),
+        const SnackBar(content: Text("Please select date of birth.")),
       );
       return false;
     }
     if (vehicleType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select vehicle type")),
+        const SnackBar(content: Text("Please select vehicle type.")),
       );
       return false;
     }
 
     if (image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please upload profile image")),
+        const SnackBar(content: Text("Please upload profile image.")),
+      );
+      return false;
+    }
+
+    if (licenceFront == null || licenceBack == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please upload Licence Front & Back.')),
+      );
+      return false;
+    }
+
+    if (aadharFront == null || aadharBack == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please upload Aadhar Front & Back.')),
+      );
+      return false;
+    }
+
+    if (licenceController.text.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
+      );
+      return false;
+    }
+    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
+
+    if (!dlRegex.hasMatch(licenceController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Invalid Driving Licence Format (e.g., TS0920201234567)',
+          ),
+        ),
+      );
+      return false;
+    }
+    if (ifscController.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please enter IFSC code.")));
+      return false;
+    }
+    if (!RegExp(
+      r'^[A-Z]{4}0[A-Z0-9]{6}$',
+    ).hasMatch(ifscController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid IFSC Code format.')),
+      );
+      return false;
+    }
+    if (ifscController.text.isNotEmpty && accountController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter Account Number.")),
       );
       return false;
     }
@@ -1109,49 +1221,39 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter a valid Account Number (9–18 digits).'),
-          backgroundColor: Colors.redAccent,
         ),
       );
       return false;
     }
 
-    if (licenceController.text.length < 8) {
+    if (holderController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(' Please enter a valid Licence Number.'),
-          backgroundColor: Colors.redAccent,
+          content: Text("Please enter the account holder's name."),
         ),
       );
       return false;
     }
 
-    if (!RegExp(
-      r'^[A-Z]{4}0[A-Z0-9]{6}$',
-    ).hasMatch(ifscController.text.trim())) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid IFSC Code format.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return false;
-    }
-    if (holderController.text.isEmpty ||
-        accountController.text.isEmpty ||
-        ifscController.text.isEmpty ||
-        bankController.text.isEmpty ||
-        branchController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all bank details")),
-      );
-      return false;
-    }
     if (!isAgreed) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please accept privacy policy")),
+        const SnackBar(content: Text("Please accept privacy policy.")),
       );
       return false;
     }
     return true;
+  }
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
   }
 }

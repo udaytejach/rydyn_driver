@@ -95,10 +95,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ride accepted successfully!'),
-          backgroundColor: Colors.orange,
-        ),
+        const SnackBar(content: Text('Ride accepted successfully!')),
       );
     } catch (e) {
       debugPrint('Error updating booking status: $e');
@@ -778,8 +775,17 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                 CustomButton(
                                                                   text: 'Yes',
                                                                   onPressed: () {
-                                                                    Navigator.pop(
+                                                                    Navigator.pushReplacement(
                                                                       context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (
+                                                                              context,
+                                                                            ) => BookingDetails(
+                                                                              bookingData: car,
+                                                                              docId: car['id'],
+                                                                            ),
+                                                                      ),
                                                                     );
                                                                     _updateBookingStatus(
                                                                       car['id'],

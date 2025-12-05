@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rydyn/Driver/Login/loginScreen.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/Driver/sidemenu/Driverprofilepage.dart';
 
 class NewDriverDashbaord extends StatefulWidget {
   const NewDriverDashbaord({super.key});
@@ -13,6 +15,9 @@ class NewDriverDashbaord extends StatefulWidget {
 
 class _NewDriverDashbaordState extends State<NewDriverDashbaord> {
   @override
+  final status = SharedPrefServices.getStatus() ?? "";
+  final rejectReason = SharedPrefServices.getrejectReason() ?? "";
+
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -97,14 +102,6 @@ class _NewDriverDashbaordState extends State<NewDriverDashbaord> {
               ),
               SizedBox(height: 10),
 
-              // Center(
-              //   child: CustomText(
-              //     text: "Your account registered successfully",
-              //     textcolor: Colors.green,
-              //     fontSize: 15,
-              //     fontWeight: FontWeight.w500,
-              //   ),
-              // ),
               SizedBox(height: 30),
               Center(
                 child: Card(
@@ -123,39 +120,73 @@ class _NewDriverDashbaordState extends State<NewDriverDashbaord> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.access_time_filled,
+                          status == "Rejected"
+                              ? Icons.error_outline
+                              : Icons.access_time_filled,
                           size: 48,
-                          color: korangeColor,
+                          color: status == "Rejected"
+                              ? korangeColor
+                              : korangeColor,
                         ),
+
                         const SizedBox(height: 16),
                         Text(
-                          "Please Wait",
+                          status == "Rejected" ? "Rejected" : "Please Wait",
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.black87,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 8),
+
+                        SizedBox(height: 8),
+
                         Text(
-                          "Your account has been registered successfully.",
+                          status == "Rejected"
+                              ? (rejectReason.isNotEmpty
+                                    ? rejectReason
+                                    : "Your application has been rejected.")
+                              : "Your documents are under processing. Please wait to get your account activated.",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 13,
-                            color: Colors.black,
+                            color: Colors.black87,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "It is currently under review and will be approved by the admin.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
+
+                        SizedBox(height: 15),
+
+                        if (status == "Rejected")
+                          SizedBox(
+                            height: 45,
+                            width: 250,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: korangeColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => DriversProfilescreen(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Resubmit Documents",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          
                       ],
                     ),
                   ),

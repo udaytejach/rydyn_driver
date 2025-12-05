@@ -160,6 +160,10 @@ class LoginViewModel extends ChangeNotifier {
     await SharedPrefServices.setdrivingLicence(userData['licenceNumber'] ?? "");
     await SharedPrefServices.setlicenceFront(userData['licenceFrontUrl'] ?? "");
     await SharedPrefServices.setlicenceBack(userData['licenceBackUrl'] ?? "");
+    await SharedPrefServices.setaadharFront(userData['aadharFrontUrl'] ?? "");
+    await SharedPrefServices.setaadharBack(userData['aadharBackUrl'] ?? "");
+    await SharedPrefServices.setrejectReason(userData['rejectionReason'] ?? "");
+
     await SharedPrefServices.setislogged(true);
 
     if (userData['bankAccount'] != null) {

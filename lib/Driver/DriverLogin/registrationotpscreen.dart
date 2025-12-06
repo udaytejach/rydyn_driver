@@ -86,6 +86,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       vm.driver.licenceNumber = widget.licenceNumber;
       vm.driver.roleCode = "Driver";
       vm.driver.status = 'Inactive';
+      vm.driver.rejectReason = '';
 
       if (widget.profileImage != null) {
         vm.driver.profileUrl = await vm.uploadImage(

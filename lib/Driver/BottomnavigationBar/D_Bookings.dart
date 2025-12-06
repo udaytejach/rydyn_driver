@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/booking_details.dart';
 import 'package:rydyn/Driver/D_Appbar/d_appbar.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
@@ -120,19 +121,33 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(15),
             ),
             title: const Center(
-              child: Text(
-                "Ride Already Taken",
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: CustomText(
+                text: 'Ride Already Taken',
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                textcolor: KblackColor,
               ),
             ),
-            content: const Text(
-              "This ride has already been accepted by another driver.",
-              textAlign: TextAlign.center,
+            content: Center(
+              child: CustomText(
+                text: 'This ride has already been accepted by another driver.',
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                textcolor: KblackColor,
+              ),
             ),
+
             actions: [
               Center(
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => D_BottomNavigation(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: korangeColor,
                   ),

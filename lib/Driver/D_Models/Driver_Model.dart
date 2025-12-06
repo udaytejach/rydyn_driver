@@ -16,6 +16,7 @@ class DriverModel {
   BankAccount? bankAccount;
   String? roleCode;
   String? countryCode;
+  String? rejectReason;
   bool? isOnline;
 
   DriverModel({
@@ -35,6 +36,7 @@ class DriverModel {
     this.aadharBackUrl,
     this.bankAccount,
     this.roleCode,
+    this.rejectReason,
     this.status,
     this.countryCode,
   });
@@ -47,6 +49,7 @@ class DriverModel {
     'countryCode': countryCode,
     "email": email,
     "phone": phone,
+    'rejectReason': rejectReason,
     "dob": dob,
     "status": status,
     "vehicleType": vehicleType,

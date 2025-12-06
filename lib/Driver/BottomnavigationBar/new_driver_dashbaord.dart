@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/Login/loginScreen.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
@@ -129,6 +130,17 @@ class _NewDriverDashbaordState extends State<NewDriverDashbaord> {
                       final driverData = snapshot.data!;
                       final status = driverData['status'] ?? "";
                       final rejectReason = driverData['rejectReason'] ?? "";
+
+                      if (status == "Active") {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => D_BottomNavigation(),
+                            ),
+                          );
+                        });
+                      }
 
                       return Card(
                         elevation: 1.5,

@@ -222,6 +222,46 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
     }
   }
 
+  Future<String?> _uploadAadhar({
+    required File imageFile,
+    required String type,
+    required String? oldUrl,
+  }) async {
+    try {
+      final phoneNumber = await SharedPrefServices.getNumber();
+
+      if (phoneNumber == null || phoneNumber.isEmpty) {
+        debugPrint("Phone number not found for aadhar upload.");
+        return null;
+      }
+
+      final fileName = '${phoneNumber}_aadhar_$type.jpg';
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('drivers')
+          .child(fileName);
+
+      if (oldUrl != null && oldUrl.isNotEmpty) {
+        try {
+          final oldRef = FirebaseStorage.instance.refFromURL(oldUrl);
+          await oldRef.delete();
+          debugPrint("Deleted old aadhar $type image successfully");
+        } catch (e) {
+          debugPrint("Failed to delete old aadhar $type: $e");
+        }
+      }
+
+      await ref.putFile(imageFile);
+      final downloadUrl = await ref.getDownloadURL();
+
+      debugPrint("Uploaded aadhar $type image: $downloadUrl");
+      return downloadUrl;
+    } catch (e) {
+      debugPrint("Aadhar image upload failed: $e");
+      return null;
+    }
+  }
+
   Future<void> verifyBankAccount(
     BuildContext context,
     String ifsc,
@@ -516,6 +556,24 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
         );
       }
 
+      String? uploadAadharFront = aadharFront;
+      if (aadharFront != null && !aadharFront!.startsWith('http')) {
+        uploadAadharFront = await _uploadAadhar(
+          imageFile: File(aadharFront!),
+          type: 'front',
+          oldUrl: aadharFront,
+        );
+      }
+
+      String? uploadAadharBack = aadharBack;
+      if (aadharBack != null && !aadharBack!.startsWith('http')) {
+        uploadAadharBack = await _uploadAadhar(
+          imageFile: File(aadharBack!),
+          type: 'back',
+          oldUrl: aadharBack,
+        );
+      }
+
       await FirebaseFirestore.instance
           .collection('drivers')
           .doc(driverId)
@@ -529,6 +587,8 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
             'licenceFrontUrl': uploadedLicenceFrontUrl,
             'licenceBackUrl': uploadedLicenceBackUrl,
             'profileUrl': uploadedProfileUrl,
+            'aadharFrontUrl': uploadAadharFront,
+            'aadharBackUrl': uploadAadharBack,
             'bankAccount': {
               'bankName': bank,
               'branch': branch,
@@ -553,13 +613,12 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
       await SharedPrefServices.setaccountNumber(account);
       await SharedPrefServices.setlicenceFront(uploadedLicenceFrontUrl!);
       await SharedPrefServices.setlicenceBack(uploadedLicenceBackUrl!);
-      await SharedPrefServices.setaadharFront(uploadedLicenceFrontUrl!);
-      await SharedPrefServices.setaadharBack(uploadedLicenceBackUrl!);
+      await SharedPrefServices.setaadharFront(uploadAadharFront!);
+      await SharedPrefServices.setaadharBack(uploadAadharBack!);
       if (currentStatus == "Rejected") {
         await SharedPrefServices.setStatus("Inactive");
       }
-      await SharedPrefServices.setaadharFront(aadharFront!);
-      await SharedPrefServices.setaadharBack(aadharBack!);
+
       if (uploadedProfileUrl != null) {
         await SharedPrefServices.setProfileImage(uploadedProfileUrl);
       }

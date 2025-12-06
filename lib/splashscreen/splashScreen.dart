@@ -66,29 +66,19 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: korangeColor,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(),
-          Center(
-            child: Column(
-              children: [
-                Image.asset(
-                  'images/rydyn_captain.png',
-                  height: 400,
-
-                  fit: BoxFit.cover,
-                ),
-              ],
+          Expanded(
+            child: Center(
+              child: Image.asset(
+                'images/rydyn_captain.png',
+                height: 400,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.only(bottom: 40),
-            // child: Image.asset(
-            //   'images/rydyn_logo.png',
-            //   height: 100,
-            //   width: 500,
-            //   fit: BoxFit.contain,
-            // ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

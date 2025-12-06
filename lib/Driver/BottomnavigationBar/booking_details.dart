@@ -364,6 +364,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     String serviceFare = data['serviceFare']?.toString() ?? '0.00';
     String convenienceFee = data['convenienceFee']?.toString() ?? '0.00';
     String status = data['status'] ?? '';
+    bool coupunApplied = data['couponApplied'] ?? false;
     String OwnerOTP = data['ownerOTP'].toString();
     String pickupLat = data['pickupLat'].toString();
     String pickupLng = data['pickupLng'].toString();
@@ -1468,6 +1469,30 @@ class _BookingDetailsState extends State<BookingDetails> {
                             ),
                           ],
                         ),
+
+                        if (data['couponApplied'] == true) ...[
+                          const SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(
+                                text: "Coupon Applied ",
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                textcolor: Colors.green,
+                              ),
+                              CustomText(
+                                text:
+                                    "-₹${((data['appliedDiscount'] ?? 0)).toStringAsFixed(2)}",
+
+                                // "-₹${appliedDiscount.toStringAsFixed(2)}",
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                textcolor: Colors.green,
+                              ),
+                            ],
+                          ),
+                        ],
 
                         const SizedBox(height: 10),
                         const DottedLine(dashColor: kseegreyColor),

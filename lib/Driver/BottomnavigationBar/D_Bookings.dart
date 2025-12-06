@@ -445,10 +445,20 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                         status = 'Cancelled';
                         break;
                     }
+                    final myDriverDocId = SharedPrefServices.getDocId()
+                        .toString();
 
-                    final filteredCars = carList
-                        .where((car) => car['status'] == status)
-                        .toList();
+                    // final filteredCars = carList
+                    //     .where((car) => car['status'] == status)
+                    //     .toList();
+                    final filteredCars = carList.where((car) {
+                      if (status == "New") {
+                        return car['status'] == status;
+                      }
+
+                      return car['status'] == status &&
+                          car['driverdocId'] == myDriverDocId;
+                    }).toList();
 
                     if (filteredCars.isEmpty) {
                       return Center(

@@ -54,7 +54,11 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     "Cancelled",
   ];
   List<Map<String, dynamic>> carList = [];
-  Future<void> _updateBookingStatus(String bookingId, String newStatus) async {
+  Future<void> _updateBookingStatus(
+    var car,
+    String bookingId,
+    String newStatus,
+  ) async {
     try {
       final driverId = await SharedPrefServices.getUserId();
       final driverDocId = await SharedPrefServices.getDocId();
@@ -82,16 +86,28 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
         final random = Random();
         final ownerOTP = (1000 + random.nextInt(9000)).toString();
 
-        transaction.update(bookingRef, {
-          'status': newStatus,
-          'driverdocId': driverDocId,
-          'driverId': driverId,
-          'driverName': driverName,
-          'ownerOTP': ownerOTP,
-          'statusHistory': FieldValue.arrayUnion([
-            {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
-          ]),
-        });
+        if (existingDriverId.isEmpty) {
+          transaction.update(bookingRef, {
+            'status': newStatus,
+            'driverdocId': driverDocId,
+            'driverId': driverId,
+            'driverName': driverName,
+            'ownerOTP': ownerOTP,
+            'statusHistory': FieldValue.arrayUnion([
+              {
+                'status': newStatus,
+                'dateTime': DateTime.now().toIso8601String(),
+              },
+            ]),
+          });
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  BookingDetails(bookingData: car, docId: car['id']),
+            ),
+          );
+        }
       });
 
       if (!mounted) return;
@@ -116,45 +132,52 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
         if (!mounted) return;
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            title: const Center(
-              child: CustomText(
-                text: 'Ride Already Taken',
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                textcolor: KblackColor,
+          builder: (context) => SizedBox(
+            height: 350,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
               ),
-            ),
-            content: Center(
-              child: CustomText(
-                text: 'This ride has already been accepted by another driver.',
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                textcolor: KblackColor,
-              ),
-            ),
-
-            actions: [
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => D_BottomNavigation(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: korangeColor,
-                  ),
-                  child: const Text("OK", style: TextStyle(color: kwhiteColor)),
+              title: const Center(
+                child: CustomText(
+                  text: 'Ride Already Taken',
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  textcolor: KblackColor,
                 ),
               ),
-            ],
+              content: Center(
+                child: CustomText(
+                  text:
+                      'This ride has already been accepted by another driver.',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  textcolor: KblackColor,
+                ),
+              ),
+
+              actions: [
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => D_BottomNavigation(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: korangeColor,
+                    ),
+                    child: const Text(
+                      "OK",
+                      style: TextStyle(color: kwhiteColor),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
         return;
@@ -790,19 +813,8 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                 CustomButton(
                                                                   text: 'Yes',
                                                                   onPressed: () {
-                                                                    Navigator.pushReplacement(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                        builder:
-                                                                            (
-                                                                              context,
-                                                                            ) => BookingDetails(
-                                                                              bookingData: car,
-                                                                              docId: car['id'],
-                                                                            ),
-                                                                      ),
-                                                                    );
                                                                     _updateBookingStatus(
+                                                                      car,
                                                                       car['id'],
                                                                       'Accepted',
                                                                     );

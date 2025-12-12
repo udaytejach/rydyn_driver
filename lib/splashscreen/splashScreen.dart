@@ -190,7 +190,7 @@ class _SplashScreenState extends State<SplashScreen>
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          letterSpacing: 1.0, // tweak for logo-like spacing
+                          letterSpacing: 1.0,
                         ),
                       ),
                     ),

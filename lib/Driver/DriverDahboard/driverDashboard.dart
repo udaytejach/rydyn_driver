@@ -15,6 +15,7 @@ import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
 import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/Driver/notifications/service.dart';
 import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -312,6 +313,8 @@ class _DriverDashboardState extends State<DriverDashboard> {
   //     );
   //   }
   // }
+
+  final fcmService = FCMService();
   Future<void> _updateBookingStatus(
     var car,
     String bookingId,
@@ -366,6 +369,24 @@ class _DriverDashboardState extends State<DriverDashboard> {
       if (!mounted) return;
 
       if (isAccepted) {
+        final ownerId = car['ownerdocId'];
+        print('ownerdocID $ownerId');
+        if (ownerId != null) {
+          final ownerSnap = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(ownerId)
+              .get();
+
+          final ownerToken = ownerSnap.data()?['fcmToken'];
+          print('ownerToken $ownerToken');
+          if (ownerToken != null && ownerToken.isNotEmpty) {
+            await fcmService.sendNotification(
+              recipientFCMToken: ownerToken,
+              title: "Ride Accepted",
+              body: "Your ride has been accepted by $driverName.",
+            );
+          }
+        }
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

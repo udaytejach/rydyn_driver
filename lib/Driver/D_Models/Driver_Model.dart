@@ -17,6 +17,7 @@ class DriverModel {
   String? roleCode;
   String? countryCode;
   String? rejectReason;
+  String? fcmToken;
   bool? isOnline;
 
   DriverModel({
@@ -27,6 +28,7 @@ class DriverModel {
     this.email,
     this.phone,
     this.dob,
+    this.fcmToken,
     this.vehicleType,
     this.licenceNumber,
     this.profileUrl,
@@ -49,6 +51,7 @@ class DriverModel {
     'countryCode': countryCode,
     "email": email,
     "phone": phone,
+    'fcmToken': fcmToken,
     'rejectReason': rejectReason,
     "dob": dob,
     "status": status,

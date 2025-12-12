@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/models/loginState.dart';
@@ -98,6 +99,9 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchLoggedInUser(String phoneNumber) async {
+    final token = await FirebaseMessaging.instance.getToken();
+    print('FCM Token on login: $token');
+    String? fcmToken = token;
     try {
       final withCode = normalizedPhone(phoneNumber);
       final withoutCode = phoneNumber;
@@ -110,8 +114,14 @@ class LoginViewModel extends ChangeNotifier {
 
       if (driverSnap.docs.isNotEmpty) {
         final userData = driverSnap.docs.first.data();
+        final driverDocId = driverSnap.docs.first.id;
         _loggedInUser = userData;
         notifyListeners();
+
+        await FirebaseFirestore.instance
+            .collection('drivers')
+            .doc(driverDocId)
+            .update({"fcmToken": fcmToken});
 
         await _saveDriverDataToSharedPrefs(userData, driverSnap.docs.first.id);
         print("Driver details stored in SharedPreferences");
@@ -163,7 +173,7 @@ class LoginViewModel extends ChangeNotifier {
     await SharedPrefServices.setaadharFront(userData['aadharFrontUrl'] ?? "");
     await SharedPrefServices.setaadharBack(userData['aadharBackUrl'] ?? "");
     await SharedPrefServices.setrejectReason(userData['rejectionReason'] ?? "");
-
+    await SharedPrefServices.setFcmToken(userData['fcmToken'] ?? "");
     await SharedPrefServices.setislogged(true);
 
     if (userData['bankAccount'] != null) {

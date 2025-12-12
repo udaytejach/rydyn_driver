@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:country_picker/country_picker.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +17,7 @@ import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/Driver/notifications/service.dart';
 
 class DriverOtpScreen extends StatefulWidget {
   final String firstName,
@@ -59,6 +61,12 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
   final TextEditingController otpController = TextEditingController();
   bool isLoading = false;
 
+  final fcmService = FCMService();
+  String capitalizeFirst(String value) {
+    if (value.isEmpty) return value;
+    return value[0].toUpperCase() + value.substring(1).toLowerCase();
+  }
+
   Future<void> _verifyOtp() async {
     if (otpController.text.trim() != "1234") {
       ScaffoldMessenger.of(
@@ -68,7 +76,9 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
     }
 
     setState(() => isLoading = true);
-
+    final token = await FirebaseMessaging.instance.getToken();
+    print('FCM Token on login: $token');
+    String? fcmToken = token;
     try {
       final vm = Provider.of<DriverViewModel>(context, listen: false);
 
@@ -87,6 +97,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       vm.driver.roleCode = "Driver";
       vm.driver.status = 'Inactive';
       vm.driver.rejectReason = '';
+      vm.driver.fcmToken = fcmToken;
 
       if (widget.profileImage != null) {
         vm.driver.profileUrl = await vm.uploadImage(
@@ -156,6 +167,18 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       await SharedPrefServices.setifscCode(widget.ifsc);
 
       await SharedPrefServices.setislogged(true);
+
+      if (fcmToken != null && fcmToken.isNotEmpty) {
+        await fcmService.sendNotification(
+          recipientFCMToken: fcmToken,
+          title: "Welcome to Rydyn Captain!",
+          body:
+              "${capitalizeFirst(widget.firstName)} your registration was successful.Please log in to continue.",
+        );
+        print("Registration Success Notification Sent!");
+      } else {
+        print("FCM token is null or empty; skipping notification.");
+      }
 
       if (mounted) {
         showDialog(

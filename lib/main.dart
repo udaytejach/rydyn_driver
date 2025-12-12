@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/Driver/notifications/firebase_api.dart';
 import 'package:rydyn/Driver/services/locale_provider.dart';
 import 'package:rydyn/Driver/services/repository.dart';
 import 'package:rydyn/Driver/viewmodels/login_viewmodel.dart';
@@ -20,10 +23,32 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Geolocator.requestPermission();
   await Geolocator.isLocationServiceEnabled();
+  await _requestNotificationPermission();
+  await FirebaseApi().initNotifications();
 
-  // await FirebaseAuth.instance.signInAnonymously();
+  if (Platform.isAndroid) {
+    // Code specific to Android
+    print("Running on Android");
+  } else if (Platform.isIOS) {
+    // Code specific to iOS
+    await FirebaseApi().iosNotifications();
+    print("Running on iOS");
+  }
   runApp(const MyApp());
 }
+
+Future<void> _requestNotificationPermission() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  print('User granted permission: ${settings.authorizationStatus}');
+}
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

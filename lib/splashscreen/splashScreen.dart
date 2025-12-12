@@ -1,10 +1,14 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/Login/selectLanguage.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/Driver/notifications/firebase_api.dart';
+import 'package:rydyn/Driver/notifications/service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,10 +18,92 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final fcmService = FCMService();
+  final FirebaseApi _firebaseApi = FirebaseApi();
   @override
   void initState() {
     super.initState();
-    _navigateNext();
+    startSplashFlow();
+  }
+
+  Future<void> startSplashFlow() async {
+    await fetchServiceKeys();
+    await runApp();
+    await _navigateNext();
+  }
+
+  Future<void> fetchServiceKeys() async {
+    try {
+      final snap = await FirebaseFirestore.instance
+          .collection("serviceKeys")
+          .doc('p5xZLhdsUezpgluOIzSY')
+          .get();
+
+      if (!snap.exists) {
+        print("Service keys document not found");
+        return;
+      }
+
+      final data = snap.data()!;
+
+      await SharedPrefServices.setAuthProvider(data["authProvider"] ?? "");
+      await SharedPrefServices.setAuthUri(data["authUri"] ?? "");
+      await SharedPrefServices.setClientEmail(data["clientEmail"] ?? "");
+      await SharedPrefServices.setClientId(data["clientId"] ?? "");
+      await SharedPrefServices.setClientUrl(data["clientUrl"] ?? "");
+      await SharedPrefServices.setPrimaryKey(data["primaryKey"] ?? "");
+      await SharedPrefServices.setPrivateKey(data["privateKey"] ?? "");
+      await SharedPrefServices.setTokenUri(data["tokenUri"] ?? "");
+      await SharedPrefServices.setUniverseDomain(data["universeDomain"] ?? "");
+
+      print("Service keys saved to SharedPreferences!");
+    } catch (e) {
+      print("Error loading service keys: $e");
+    }
+  }
+
+  Future<void> runApp() async {
+    await _firebaseApi.initNotifications();
+
+    final token = await FirebaseMessaging.instance.getToken();
+    print('FCM Token on Splash: $token');
+
+    if (token != null && token.isNotEmpty) {
+      String? userId = SharedPrefServices.getUserId();
+      String? docId = SharedPrefServices.getDocId();
+
+      print("DOCID from SharedPref: $docId");
+      print("USER ID from SharedPref: $userId");
+
+      if (userId != null &&
+          userId.isNotEmpty &&
+          docId != null &&
+          docId.isNotEmpty) {
+        try {
+          final docSnapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(docId)
+              .get();
+          if (docSnapshot.exists) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(docId)
+                .update({'fcmToken': token});
+            print("FCM Token saved to Firestore for docId: $docId");
+          } else {
+            print(" Document with docId: $docId does not exist");
+          }
+        } catch (error) {
+          print("Failed to save FCM Token: $error");
+        }
+      } else {
+        print(" userId or docId is null/empty. Cannot update FCM token.");
+      }
+    } else {
+      print(' Failed to get device FCM token');
+    }
+
+    await Future.delayed(const Duration(seconds: 3));
   }
 
   Future<void> _navigateNext() async {

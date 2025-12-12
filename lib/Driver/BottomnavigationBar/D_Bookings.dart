@@ -9,6 +9,7 @@ import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
+import 'package:rydyn/Driver/notifications/service.dart';
 import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
 import 'dart:math';
 
@@ -39,6 +40,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     // _fetchCars();
   }
 
+  final fcmService = FCMService();
   @override
   void dispose() {
     _bikeAnimationController.dispose();
@@ -54,6 +56,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     "Cancelled",
   ];
   List<Map<String, dynamic>> carList = [];
+  
   Future<void> _updateBookingStatus(
     var car,
     String bookingId,
@@ -108,6 +111,24 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
       if (!mounted) return;
 
       if (isAccepted) {
+        final ownerId = car['ownerdocId'];
+        print('ownerdocID $ownerId');
+        if (ownerId != null) {
+          final ownerSnap = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(ownerId)
+              .get();
+
+          final ownerToken = ownerSnap.data()?['fcmToken'];
+          print('ownerToken $ownerToken');
+          if (ownerToken != null && ownerToken.isNotEmpty) {
+            await fcmService.sendNotification(
+              recipientFCMToken: ownerToken,
+              title: "Ride Accepted",
+              body: "Your ride has been accepted by $driverName.",
+            );
+          }
+        }
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

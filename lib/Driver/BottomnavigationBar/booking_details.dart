@@ -11,6 +11,7 @@ import 'package:rydyn/Driver/DriverDahboard/driverDashboard.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/Driver/notifications/service.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -128,6 +129,25 @@ class _BookingDetailsState extends State<BookingDetails> {
               },
             ]),
           });
+      final ownerId = widget.bookingData['ownerdocId'];
+      print('ownerdocID $ownerId');
+      if (ownerId != null) {
+        final ownerSnap = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(ownerId)
+            .get();
+
+        final ownerToken = ownerSnap.data()?['fcmToken'];
+        print('ownerToken $ownerToken');
+        if (ownerToken != null && ownerToken.isNotEmpty) {
+          await fcmService.sendNotification(
+            recipientFCMToken: ownerToken,
+            title: "Ride Cancelled",
+            body:
+                "Your ride has been cancelled by ${widget.bookingData['driverName']}.",
+          );
+        }
+      }
 
       debugPrint("Booking updated successfully!");
 
@@ -301,6 +321,25 @@ class _BookingDetailsState extends State<BookingDetails> {
             },
           ]),
         });
+    final ownerId = widget.bookingData['ownerdocId'];
+    print('ownerdocID $ownerId');
+    if (ownerId != null) {
+      final ownerSnap = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(ownerId)
+          .get();
+
+      final ownerToken = ownerSnap.data()?['fcmToken'];
+      print('ownerToken $ownerToken');
+      if (ownerToken != null && ownerToken.isNotEmpty) {
+        await fcmService.sendNotification(
+          recipientFCMToken: ownerToken,
+          title: "Ride Cancelled",
+          body:
+              "Your ride has been cancelled by ${widget.bookingData['driverName']}.",
+        );
+      }
+    }
 
     if (mounted) {
       Navigator.pushReplacement(
@@ -2025,6 +2064,28 @@ class _BookingDetailsState extends State<BookingDetails> {
                                           },
                                         ]),
                                       });
+                                  final ownerId =
+                                      widget.bookingData['ownerdocId'];
+                                  if (ownerId != null) {
+                                    final ownerSnap = await FirebaseFirestore
+                                        .instance
+                                        .collection('users')
+                                        .doc(ownerId)
+                                        .get();
+
+                                    final ownerToken = ownerSnap
+                                        .data()?['fcmToken'];
+
+                                    if (ownerToken != null &&
+                                        ownerToken.isNotEmpty) {
+                                      await fcmService.sendNotification(
+                                        recipientFCMToken: ownerToken,
+                                        title: "Ride Completed",
+                                        body:
+                                            "Your ride has been completed.Thank you for choosing Rydyn!",
+                                      );
+                                    }
+                                  }
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -2166,6 +2227,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     );
   }
 
+  final fcmService = FCMService();
   void _showOtpDialog(BuildContext context, String ownerOTP, String docID) {
     final TextEditingController otpController = TextEditingController();
 
@@ -2263,6 +2325,24 @@ class _BookingDetailsState extends State<BookingDetails> {
                             },
                           ]),
                         });
+                    final ownerId = widget.bookingData['ownerdocId'];
+                    print('ownerdocID $ownerId');
+                    if (ownerId != null) {
+                      final ownerSnap = await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(ownerId)
+                          .get();
+
+                      final ownerToken = ownerSnap.data()?['fcmToken'];
+                      print('ownerToken $ownerToken');
+                      if (ownerToken != null && ownerToken.isNotEmpty) {
+                        await fcmService.sendNotification(
+                          recipientFCMToken: ownerToken,
+                          title: "Ride Started",
+                          body: "Your ride has started.Have a safe journey!",
+                        );
+                      }
+                    }
 
                     Navigator.pop(context);
 

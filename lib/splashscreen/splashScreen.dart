@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/Login/selectLanguage.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
@@ -17,13 +18,34 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
   final fcmService = FCMService();
   final FirebaseApi _firebaseApi = FirebaseApi();
+
   @override
   void initState() {
     super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4), // adjust speed
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.0, // start at normal size
+      end: 1.0, // shrink to nothing (zoom out)
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _controller.forward(); // start animation automatically
     startSplashFlow();
+  }
+
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> startSplashFlow() async {
@@ -155,11 +177,43 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Expanded(
             child: Center(
-              child: Image.asset(
-                'images/rydyn_captain.png',
-                height: 400,
-                fit: BoxFit.contain,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'rydyn',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 1.0, // tweak for logo-like spacing
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'Captain',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 1.0, // tweak for logo-like spacing
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+
+              //   Image.asset(
+              //     'images/rydyn_captain.png',
+              //     height: 400,
+              //     fit: BoxFit.contain,
+              //   ),
             ),
           ),
 

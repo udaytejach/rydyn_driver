@@ -776,57 +776,59 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                       ),
                                     ),
                                   ),
-
+                                  const Spacer(),
                                   const SizedBox(width: 12),
 
                                   // Help Icon
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
+                                  // Container(
+                                  //   padding: const EdgeInsets.all(10),
+                                  //   decoration: BoxDecoration(
+                                  //     shape: BoxShape.circle,
 
-                                      border: Border.all(
-                                        color: kwhiteColor,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: Image.asset("images/contactUs.png"),
-                                    // child:
-                                    // const Icon(
-                                    //   Icons.headphones,
-                                    //   size: 24,
-                                    //   color: kwhiteColor,
-                                    // ),
-                                  ),
+                                  //     border: Border.all(
+                                  //       color: kwhiteColor,
+                                  //       width: 1,
+                                  //     ),
+                                  //   ),
+                                  //   child: Image.asset("images/contactUs.png"),
+                                  //   // child:
+                                  //   // const Icon(
+                                  //   //   Icons.headphones,
+                                  //   //   size: 24,
+                                  //   //   color: kwhiteColor,
+                                  //   // ),
+                                  // ),
+                                  Container(),
                                   const SizedBox(width: 12),
                                   // Notification Icon
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //     builder: (_) => NotificationScreen(),
-                                      //   ),
-                                      // );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        // color: Colors.white,
-                                        border: Border.all(
-                                          color: KnotificationcircleColor,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Image.asset(
-                                        'images/notification_D.png',
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ),
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     // Navigator.push(
+                                  //     //   context,
+                                  //     //   MaterialPageRoute(
+                                  //     //     builder: (_) => NotificationScreen(),
+                                  //     //   ),
+                                  //     // );
+                                  //   },
+                                  //   child: Container(
+                                  //     padding: const EdgeInsets.all(10),
+                                  //     decoration: BoxDecoration(
+                                  //       shape: BoxShape.circle,
+                                  //       // color: Colors.white,
+                                  //       border: Border.all(
+                                  //         color: KnotificationcircleColor,
+                                  //         width: 1,
+                                  //       ),
+                                  //     ),
+                                  //     child: Image.asset(
+                                  //       'images/notification_D.png',
+                                  //       width: 24,
+                                  //       height: 24,
+                                  //       fit: BoxFit.contain,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  Container(),
                                 ],
                               ),
 

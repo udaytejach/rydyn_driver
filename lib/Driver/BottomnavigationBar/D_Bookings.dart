@@ -56,7 +56,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     "Cancelled",
   ];
   List<Map<String, dynamic>> carList = [];
-  
+
   Future<void> _updateBookingStatus(
     var car,
     String bookingId,
@@ -292,7 +292,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                         Scaffold.of(context).openDrawer();
                       },
                       child: Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(color: KblackColor, width: 1),

@@ -124,6 +124,7 @@ class LoginViewModel extends ChangeNotifier {
             .update({"fcmToken": fcmToken});
 
         await _saveDriverDataToSharedPrefs(userData, driverSnap.docs.first.id);
+        print(SharedPrefServices.getdocumentId().toString());
         print("Driver details stored in SharedPreferences");
         return;
       }
@@ -155,7 +156,7 @@ class LoginViewModel extends ChangeNotifier {
     String docId,
   ) async {
     await SharedPrefServices.setRoleCode(userData['roleCode'] ?? "");
-
+   
     await SharedPrefServices.setProfileImage(userData['profileUrl'] ?? "");
     await SharedPrefServices.setStatus(userData['status'] ?? "");
     await SharedPrefServices.setFirstName(userData['firstName'] ?? "");

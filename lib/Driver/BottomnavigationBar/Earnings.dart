@@ -22,10 +22,10 @@ class _MyEarningsState extends State<MyEarnings> {
   void initState() {
     super.initState();
     _loadUser();
-    loadAllOwners(); // 🔥 PRELOAD USERS
+    loadAllOwners(); 
   }
 
-  // 🔥 FETCH USERS ONE TIME ONLY
+  
   Future<void> loadAllOwners() async {
     final snap = await FirebaseFirestore.instance.collection('users').get();
 
@@ -49,7 +49,7 @@ class _MyEarningsState extends State<MyEarnings> {
             children: [
               SizedBox(
                 height: 250,
-                child: ClipPath(
+                child:   ClipPath(
                   clipper: VShapeClipper(),
                   child: Container(
                     width: double.infinity,

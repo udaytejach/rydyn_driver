@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class D_HelpAndSupport extends StatefulWidget {
@@ -15,6 +16,7 @@ class _D_HelpAndSupportState extends State<D_HelpAndSupport> {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.transparent,
+      drawer: const D_SideMenu(),
       body: Stack(
         children: [
           Container(
@@ -39,18 +41,26 @@ class _D_HelpAndSupportState extends State<D_HelpAndSupport> {
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            alignment: Alignment.centerLeft,
-                            child: Image.asset(
-                              "images/chevronLeft.png",
-                              width: 24,
-                              height: 24,
-                              color: kwhiteColor,
+                        child: Builder(
+                          builder: (context) => GestureDetector(
+                            onTap: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: kwhiteColor,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Image.asset(
+                                "images/Menu_D.png",
+                                color: kwhiteColor,
+                                width: 20,
+                                height: 20,
+                              ),
                             ),
                           ),
                         ),

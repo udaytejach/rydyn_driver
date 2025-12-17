@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/Login/loginScreen.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
@@ -47,14 +48,13 @@ class D_SideMenu extends StatelessWidget {
                             bottom: -5,
                             right: 0,
                             child: Container(
-                              // decoration: BoxDecoration(shape: BoxShape.circle),
+                             // decoration: BoxDecoration(shape: BoxShape.circle),
                               padding: const EdgeInsets.all(2),
                               child: const CircleAvatar(
                                 radius: 12,
-
                                 backgroundImage: const AssetImage(
                                   "images/verified.png",
-                                ),
+                                 ),
                               ),
                             ),
                           ),
@@ -216,7 +216,11 @@ class D_SideMenu extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('drivers')
+                        .doc(SharedPrefServices.getDocId().toString())
+                        .update({'fcmToken': ''});
                     SharedPrefServices.clearUserFromSharedPrefs();
 
                     Navigator.push(
@@ -224,7 +228,7 @@ class D_SideMenu extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
+                  style: ElevatedButton.styleFrom( 
                     backgroundColor: korangeColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

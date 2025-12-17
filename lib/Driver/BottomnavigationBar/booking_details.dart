@@ -365,6 +365,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     String ownerContact = ownerData != null
         ? "${ownerData!['phone'] ?? ''}"
         : 'Owner Phone';
+
     String vehicleName = vehicleData != null
         ? "${vehicleData!['brand'] ?? ''} ${vehicleData!['model'] ?? ''}"
         : 'Vehicle Name';
@@ -658,7 +659,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   bookingId: widget.docId,
                                   driverId: SharedPrefServices.getUserId()
                                       .toString(),
-                                  ownerId: bookingData['ownerId'],
+                                  ownerId: bookingData['ownerdocId'],
                                   ownerName: ownerFullName,
                                   ownerProfile: ownerData?['profilePic'] ?? '',
                                 ),

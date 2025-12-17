@@ -9,6 +9,7 @@ import 'package:rydyn/Driver/BottomnavigationBar/settings.dart';
 import 'package:rydyn/Driver/DriverDahboard/driverDashboard.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/Driver/sidemenu/D_Helpandsupport.dart';
 
 class D_BottomNavigation extends StatefulWidget {
   @override
@@ -22,8 +23,7 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
     DriverDashboard(),
     D_Bookings(),
     MyEarnings(),
-
-    D_Settinds(),
+    D_HelpAndSupport(),
   ];
 
   void _onItemTapped(int index) {
@@ -99,7 +99,7 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
                 ),
                 _buildNavItem("Bookings", 'images/my_rides.png', 1),
                 _buildNavItem("Earnings", 'images/D_Earnings.png', 2),
-                _buildNavItem("Settings", 'images/D_Settings.png', 3),
+                _buildNavItem("Help", 'images/contactUs.png', 3),
               ],
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,

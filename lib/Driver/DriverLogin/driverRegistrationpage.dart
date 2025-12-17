@@ -1176,6 +1176,25 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
       return false;
     }
 
+    if (licenceController.text.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
+      );
+      return false;
+    }
+    // final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
+    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[- ]?[0-9]{4}[- ]?[0-9]{7,10}$');
+
+    if (!dlRegex.hasMatch(licenceController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Invalid Driving Licence Format (e.g., TS0920201234567890)',
+          ),
+        ),
+      );
+      return false;
+    }
     if (licenceFront == null || licenceBack == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please upload Licence Front & Back.')),
@@ -1186,25 +1205,6 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     if (aadharFront == null || aadharBack == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please upload Aadhar Front & Back.')),
-      );
-      return false;
-    }
-
-    if (licenceController.text.length < 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
-      );
-      return false;
-    }
-    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
-
-    if (!dlRegex.hasMatch(licenceController.text.trim())) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Invalid Driving Licence Format (e.g., TS0920201234567)',
-          ),
-        ),
       );
       return false;
     }

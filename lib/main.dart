@@ -17,10 +17,18 @@ import 'package:rydyn/Driver/viewmodels/register_viewmodel.dart';
 import 'package:rydyn/firebase_options.dart';
 import 'package:rydyn/splashscreen/splashScreen.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  debugPrint('BG message: ${message.messageId}');
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefServices.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await Geolocator.requestPermission();
   await Geolocator.isLocationServiceEnabled();
   await _requestNotificationPermission();
@@ -48,7 +56,7 @@ Future<void> _requestNotificationPermission() async {
   print('User granted permission: ${settings.authorizationStatus}');
 }
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+// final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

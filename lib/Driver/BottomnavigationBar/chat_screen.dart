@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:rydyn/Driver/full_image_view.dart';
+import 'package:rydyn/Driver/notifications/service.dart';
 
 class ChatScreen extends StatefulWidget {
   final String bookingId;
@@ -157,6 +159,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
   }
 
+  final fcmService = FCMService();
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(
@@ -208,6 +211,27 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         });
 
     messageController.clear();
+    String? ownerToken;
+
+    final ownerDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.ownerId)
+        .get();
+
+    if (ownerDoc.exists) {
+      ownerToken = ownerDoc.data()?['fcmToken'];
+    }
+
+    print('ownerToken $ownerToken');
+
+    if (ownerToken != null && ownerToken.isNotEmpty) {
+      await fcmService.sendNotification(
+        recipientFCMToken: ownerToken,
+        title: "New message received from captain",
+        body: messageText.isNotEmpty ? messageText : "📷 Photo",
+      );
+    }
+
     setState(() {
       selectedImage = null;
       isImageUploading = false;
@@ -226,7 +250,8 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final currentUserId = SharedPrefServices.getUserId().toString();
-
+    print(widget.ownerName);
+    print(widget.ownerId);
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: PreferredSize(
@@ -238,11 +263,26 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           titleSpacing: 0,
           title: Row(
             children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: widget.ownerProfile.isNotEmpty
-                    ? NetworkImage(widget.ownerProfile)
-                    : const AssetImage("images/person.png") as ImageProvider,
+              GestureDetector(
+                onTap: (widget.ownerProfile.toString().isNotEmpty)
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => FullImageView(
+                              imagePath: widget.ownerProfile,
+                              isAsset: false,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
+                child: CircleAvatar(
+                  radius: 22,
+                  backgroundImage: widget.ownerProfile.isNotEmpty
+                      ? NetworkImage(widget.ownerProfile)
+                      : const AssetImage("images/person.png") as ImageProvider,
+                ),
               ),
               const SizedBox(width: 10),
               Column(
@@ -256,74 +296,74 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       color: Colors.black87,
                     ),
                   ),
-                  StreamBuilder<DocumentSnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('userStatus')
-                        .doc(widget.ownerId)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData || !snapshot.data!.exists) {
-                        return Text(
-                          "Ofline",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        );
-                      }
-                      final data =
-                          snapshot.data!.data() as Map<String, dynamic>;
-                      final bool isOnline = data['isOnline'] ?? false;
-                      final Timestamp? lastSeen = data['lastSeen'];
-                      if (isOnline) {
-                        return Text(
-                          "Online",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        );
-                      } else if (lastSeen != null) {
-                        final lastSeenDate = lastSeen.toDate();
-                        final now = DateTime.now();
+                  // StreamBuilder<DocumentSnapshot>(
+                  //   stream: FirebaseFirestore.instance
+                  //       .collection('userStatus')
+                  //       .doc(widget.ownerId)
+                  //       .snapshots(),
+                  //   builder: (context, snapshot) {
+                  //     if (!snapshot.hasData || !snapshot.data!.exists) {
+                  //       return Text(
+                  //         "Ofline",
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       );
+                  //     }
+                  //     final data =
+                  //         snapshot.data!.data() as Map<String, dynamic>;
+                  //     final bool isOnline = data['isOnline'] ?? false;
+                  //     final Timestamp? lastSeen = data['lastSeen'];
+                  //     if (isOnline) {
+                  //       return Text(
+                  //         "Online",
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.green,
+                  //           fontWeight: FontWeight.w500,
+                  //         ),
+                  //       );
+                  //     } else if (lastSeen != null) {
+                  //       final lastSeenDate = lastSeen.toDate();
+                  //       final now = DateTime.now();
 
-                        final difference = now.difference(lastSeenDate).inDays;
-                        final timeFormat = DateFormat(
-                          'hh:mm a',
-                        ).format(lastSeenDate);
-                        String displayText;
+                  //       final difference = now.difference(lastSeenDate).inDays;
+                  //       final timeFormat = DateFormat(
+                  //         'hh:mm a',
+                  //       ).format(lastSeenDate);
+                  //       String displayText;
 
-                        if (difference == 0) {
-                          displayText = "last seen today at $timeFormat";
-                        } else if (difference == 1) {
-                          displayText = "last seen yesterday at $timeFormat";
-                        } else if (difference > 1 && difference <= 6) {
-                          displayText =
-                              "last seen on ${DateFormat('EEEE').format(lastSeenDate)} at $timeFormat";
-                        } else {
-                          displayText =
-                              "last seen on ${DateFormat('MMM d, hh:mm a').format(lastSeenDate)}";
-                        }
+                  //       if (difference == 0) {
+                  //         displayText = "last seen today at $timeFormat";
+                  //       } else if (difference == 1) {
+                  //         displayText = "last seen yesterday at $timeFormat";
+                  //       } else if (difference > 1 && difference <= 6) {
+                  //         displayText =
+                  //             "last seen on ${DateFormat('EEEE').format(lastSeenDate)} at $timeFormat";
+                  //       } else {
+                  //         displayText =
+                  //             "last seen on ${DateFormat('MMM d, hh:mm a').format(lastSeenDate)}";
+                  //       }
 
-                        return Text(
-                          displayText,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        );
-                      } else {
-                        return Text(
-                          "Offline",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        );
-                      }
-                    },
-                  ),
+                  //       return Text(
+                  //         displayText,
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       );
+                  //     } else {
+                  //       return Text(
+                  //         "Offline",
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       );
+                  //     }
+                  //   },
+                  // ),
                 ],
               ),
             ],
@@ -387,35 +427,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
             ),
           ),
 
-          // if (selectedImage != null)
-          //   Container(
-          //     margin: const EdgeInsets.only(bottom: 8),
-          //     child: Stack(
-          //       children: [
-          //         ClipRRect(
-          //           borderRadius: BorderRadius.circular(10),
-          //           child: Image.file(
-          //             selectedImage!,
-          //             width: 120,
-          //             height: 120,
-          //             fit: BoxFit.cover,
-          //           ),
-          //         ),
-          //         Positioned(
-          //           top: 4,
-          //           right: 4,
-          //           child: GestureDetector(
-          //             onTap: () => setState(() => selectedImage = null),
-          //             child: const CircleAvatar(
-          //               radius: 12,
-          //               backgroundColor: Colors.black54,
-          //               child: Icon(Icons.close, color: Colors.white, size: 14),
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
           if (selectedImage != null)
             Container(
               margin: const EdgeInsets.only(bottom: 8),

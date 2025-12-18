@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   final fcmService = FCMService();
-  final FirebaseApi _firebaseApi = FirebaseApi();
+  // final FirebaseApi _firebaseApi = FirebaseApi();
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> startSplashFlow() async {
     await fetchServiceKeys();
-    await runApp();
+    await setFCM();
     await _navigateNext();
   }
 
@@ -84,8 +84,8 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  Future<void> runApp() async {
-    await _firebaseApi.initNotifications();
+  Future<void> setFCM() async {
+    // await _firebaseApi.initNotifications();
 
     final token = await FirebaseMessaging.instance.getToken();
     print('FCM Token on Splash: $token');
@@ -129,6 +129,12 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _navigateNext() async {
+    RemoteMessage? message = await FirebaseMessaging.instance
+        .getInitialMessage();
+
+    if (message != null) {
+      print("App opened via notification");
+    }
     await Future.delayed(const Duration(seconds: 3));
 
     await SharedPrefServices.init();

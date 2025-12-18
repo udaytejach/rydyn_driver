@@ -6,7 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
+import 'package:rydyn/Driver/Login/loginScreen.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/notifications/firebase_api.dart';
@@ -27,7 +29,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefServices.init();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await Geolocator.requestPermission();
   await Geolocator.isLocationServiceEnabled();
@@ -76,6 +80,7 @@ class MyApp extends StatelessWidget {
         builder: (context, localeProvider, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
             theme: ThemeData(
               scaffoldBackgroundColor: Colors.white,
               textTheme: GoogleFonts.poppinsTextTheme(),
@@ -95,7 +100,12 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            home: const SplashScreen(),
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const SplashScreen(),
+              '/dashboard': (context) => D_BottomNavigation(),
+              '/login': (context) => const LoginScreen(),
+            },
           );
         },
       ),

@@ -1392,23 +1392,30 @@ class _BookingDetailsState extends State<BookingDetails> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Image.asset(
-                              "images/email_drvr.png",
-                              height: 20,
-                              width: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            CustomText(
-                              text: ownerEmail,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
-                          ],
-                        ),
+
+                        if (ownerEmail.isNotEmpty)
+                          Column(
+                            children: [
+                              const SizedBox(height: 10),
+
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "images/email_drvr.png",
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  CustomText(
+                                    text: ownerEmail,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    textcolor: KblackColor,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         const SizedBox(height: 10),
                         Row(
                           children: [

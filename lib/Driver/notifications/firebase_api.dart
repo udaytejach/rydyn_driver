@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:rydyn/main.dart';
 
 class FirebaseApi {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -32,7 +33,23 @@ class FirebaseApi {
       android: androidSettings,
     );
 
-    await _localNotifications.initialize(settings);
+    await _localNotifications.initialize(
+      settings,
+
+      // ---------- route start ----------
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        // Handle notification tap
+        if (response.payload != null) {
+          // Navigate to Dashboard when tapped
+          navigatorKey.currentState?.pushNamed('/');
+        } else {
+          // Default navigation if no payload
+          navigatorKey.currentState?.pushNamed('/');
+        }
+      },
+
+      // ---------- route end ----------
+    );
 
     await _localNotifications
         .resolvePlatformSpecificImplementation<

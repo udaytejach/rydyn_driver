@@ -54,6 +54,9 @@ class FCMService {
       "message": {
         "token": recipientFCMToken,
         "notification": {"title": title, "body": body},
+        "data": {
+          "route": "/", // custom key for navigation
+        },
         "android": {
           "notification": {"click_action": "FLUTTER_NOTIFICATION_CLICK"},
         },

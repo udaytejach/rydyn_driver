@@ -736,4 +736,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get confirm => 'पुष्टि करें';
+
+  @override
+  String get drivingLicence => 'ड्राइविंग लाइसेंस';
+
+  @override
+  String get uploaded => 'अपलोड किया गया';
+
+  @override
+  String get notUploaded => 'अपलोड नहीं किया गया';
+
+  @override
+  String get aadharCard => 'आधार कार्ड';
+
+  @override
+  String get noImageAvailable => 'कोई छवि उपलब्ध नहीं है';
+
+  @override
+  String get failedToLoadImage => 'छवि लोड करने में विफल';
 }

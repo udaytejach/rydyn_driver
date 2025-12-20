@@ -736,4 +736,22 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get confirm => 'నిర్ధారించండి';
+
+  @override
+  String get drivingLicence => 'డ్రైవింగ్ లైసెన్స్';
+
+  @override
+  String get uploaded => 'అప్‌లోడ్ చేయబడింది';
+
+  @override
+  String get notUploaded => 'అప్‌లోడ్ చేయబడలేదు';
+
+  @override
+  String get aadharCard => 'ఆధార్ కార్డు';
+
+  @override
+  String get noImageAvailable => 'చిత్రం అందుబాటులో లేదు';
+
+  @override
+  String get failedToLoadImage => 'చిత్రాన్ని లోడ్ చేయడంలో విఫలమైంది';
 }

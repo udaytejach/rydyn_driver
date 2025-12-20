@@ -248,6 +248,13 @@
   "rideStartedSuccess": "రైడ్ విజయవంతంగా ప్రారంభించబడింది — సురక్షిత డ్రైవ్!",
   "errorUpdatingStatus": "స్థితిని నవీకరించడంలో లోపం:",
   "invalidOtp": "చెల్లని OTP. దయచేసి మళ్లీ ప్రయత్నించండి.",
-  "confirm": "నిర్ధారించండి"
+  "confirm": "నిర్ధారించండి",
+  "documents": "పత్రాలు",
+  "drivingLicence": "డ్రైవింగ్ లైసెన్స్",
+  "uploaded": "అప్‌లోడ్ చేయబడింది",
+  "notUploaded": "అప్‌లోడ్ చేయబడలేదు",
+  "aadharCard": "ఆధార్ కార్డు",
+  "noImageAvailable": "చిత్రం అందుబాటులో లేదు",
+  "failedToLoadImage": "చిత్రాన్ని లోడ్ చేయడంలో విఫలమైంది"
 
 }

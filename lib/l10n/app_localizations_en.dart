@@ -736,4 +736,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm => 'Confirm';
+
+  @override
+  String get drivingLicence => 'Driving Licence';
+
+  @override
+  String get uploaded => 'Uploaded';
+
+  @override
+  String get notUploaded => 'Not uploaded';
+
+  @override
+  String get aadharCard => 'Aadhar Card';
+
+  @override
+  String get noImageAvailable => 'No Image Available';
+
+  @override
+  String get failedToLoadImage => 'Failed to load image';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 
 class DocumentsPage extends StatefulWidget {
   const DocumentsPage({super.key});
@@ -53,6 +54,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -86,7 +88,7 @@ class _DocumentsPageState extends State<DocumentsPage> {
               ),
               Center(
                 child: CustomText(
-                  text: "Documents",
+                  text: localizations.documents,
                   textcolor: KblackColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,
@@ -108,12 +110,12 @@ class _DocumentsPageState extends State<DocumentsPage> {
                     color: Colors.orange,
                     size: 32,
                   ),
-                  title: const Text("Driving Licence"),
+                  title: Text(localizations.drivingLicence),
                   subtitle: Text(
                     (licenceFrontUrl?.isNotEmpty ?? false) ||
                             (licenceBackUrl?.isNotEmpty ?? false)
-                        ? "Uploaded"
-                        : "Not uploaded",
+                        ? localizations.uploaded
+                        : localizations.notUploaded,
                     style: TextStyle(
                       color: (licenceFrontUrl?.isNotEmpty ?? false)
                           ? Colors.green
@@ -131,12 +133,12 @@ class _DocumentsPageState extends State<DocumentsPage> {
                     color: Colors.orange,
                     size: 32,
                   ),
-                  title: const Text("Aadhar Card"),
+                  title: Text(localizations.aadharCard),
                   subtitle: Text(
                     (aadharFront?.isNotEmpty ?? false) ||
                             (aadharBack?.isNotEmpty ?? false)
-                        ? "Uploaded"
-                        : "Not uploaded",
+                        ? localizations.uploaded
+                        : localizations.notUploaded,
                     style: TextStyle(
                       color: (aadharBack?.isNotEmpty ?? false)
                           ? Colors.green
@@ -191,6 +193,7 @@ class LicenceDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
@@ -223,7 +226,7 @@ class LicenceDetailPage extends StatelessWidget {
               ),
               Center(
                 child: CustomText(
-                  text: "Driving Licence",
+                  text: localizations.drivingLicence,
                   textcolor: KblackColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,
@@ -240,17 +243,32 @@ class LicenceDetailPage extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            _buildLicenceCard(title: "", imageUrl: frontUrl),
+            _buildLicenceCard(
+              title: "",
+              imageUrl: frontUrl,
+              failed: localizations.failedToLoadImage,
+              noimage: localizations.noImageAvailable,
+            ),
             const SizedBox(height: 20),
 
-            _buildLicenceCard(title: "", imageUrl: backUrl),
+            _buildLicenceCard(
+              title: "",
+              imageUrl: backUrl,
+              failed: localizations.failedToLoadImage,
+              noimage: localizations.noImageAvailable,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLicenceCard({required String title, String? imageUrl}) {
+  Widget _buildLicenceCard({
+    required String title,
+    String? imageUrl,
+    required String failed,
+    required String noimage,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -287,18 +305,15 @@ class LicenceDetailPage extends StatelessWidget {
                     return Container(
                       height: 200,
                       color: Colors.grey.shade200,
-                      child: const Center(child: Text("Failed to load image")),
+                      child: Center(child: Text(failed)),
                     );
                   },
                 )
               : Container(
                   height: 200,
                   color: Colors.grey.shade100,
-                  child: const Center(
-                    child: Text(
-                      "No Image Available",
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                  child: Center(
+                    child: Text(noimage, style: TextStyle(color: Colors.grey)),
                   ),
                 ),
         ),
@@ -315,6 +330,7 @@ class AadharDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
@@ -347,7 +363,7 @@ class AadharDetails extends StatelessWidget {
               ),
               Center(
                 child: CustomText(
-                  text: "Aadhar Card",
+                  text: localizations.aadharCard,
                   textcolor: KblackColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,
@@ -364,17 +380,32 @@ class AadharDetails extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            _buildLicenceCard(title: "", imageUrl: frontUrl),
+            _buildLicenceCard(
+              title: "",
+              imageUrl: frontUrl,
+              failed: localizations.failedToLoadImage,
+              noimage: localizations.noImageAvailable,
+            ),
             const SizedBox(height: 20),
 
-            _buildLicenceCard(title: "", imageUrl: backUrl),
+            _buildLicenceCard(
+              title: "",
+              imageUrl: backUrl,
+              failed: localizations.failedToLoadImage,
+              noimage: localizations.noImageAvailable,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLicenceCard({required String title, String? imageUrl}) {
+  Widget _buildLicenceCard({
+    required String title,
+    String? imageUrl,
+    required String failed,
+    required String noimage,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -411,18 +442,15 @@ class AadharDetails extends StatelessWidget {
                     return Container(
                       height: 200,
                       color: Colors.grey.shade200,
-                      child: const Center(child: Text("Failed to load image")),
+                      child: Center(child: Text(failed)),
                     );
                   },
                 )
               : Container(
                   height: 200,
                   color: Colors.grey.shade100,
-                  child: const Center(
-                    child: Text(
-                      "No Image Available",
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                  child: Center(
+                    child: Text(noimage, style: TextStyle(color: Colors.grey)),
                   ),
                 ),
         ),

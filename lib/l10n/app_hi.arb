@@ -247,5 +247,12 @@
   "rideStartedSuccess": "राइड सफलतापूर्वक शुरू हुई — सुरक्षित ड्राइव!",
   "errorUpdatingStatus": "स्थिति अपडेट करने में त्रुटि:",
   "invalidOtp": "अमान्य OTP। कृपया पुनः प्रयास करें।",
-  "confirm": "पुष्टि करें"
+  "confirm": "पुष्टि करें",
+  "documents": "दस्तावेज़",
+  "drivingLicence": "ड्राइविंग लाइसेंस",
+  "uploaded": "अपलोड किया गया",
+  "notUploaded": "अपलोड नहीं किया गया",
+  "aadharCard": "आधार कार्ड",
+  "noImageAvailable": "कोई छवि उपलब्ध नहीं है",
+  "failedToLoadImage": "छवि लोड करने में विफल"
 }

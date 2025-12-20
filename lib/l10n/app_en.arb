@@ -249,5 +249,12 @@
   "rideStartedSuccess": "Ride started successfully — Safe drive!",
   "errorUpdatingStatus": "Error updating status: ",
   "invalidOtp": "Invalid OTP. Please try again.",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "documents": "Documents",
+  "drivingLicence": "Driving Licence",
+  "uploaded": "Uploaded",
+  "notUploaded": "Not uploaded",
+  "aadharCard": "Aadhar Card",
+  "noImageAvailable": "No Image Available",
+  "failedToLoadImage": "Failed to load image"
 }

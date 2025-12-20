@@ -1554,6 +1554,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get confirm;
+
+  /// No description provided for @drivingLicence.
+  ///
+  /// In en, this message translates to:
+  /// **'Driving Licence'**
+  String get drivingLicence;
+
+  /// No description provided for @uploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get uploaded;
+
+  /// No description provided for @notUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not uploaded'**
+  String get notUploaded;
+
+  /// No description provided for @aadharCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhar Card'**
+  String get aadharCard;
+
+  /// No description provided for @noImageAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No Image Available'**
+  String get noImageAvailable;
+
+  /// No description provided for @failedToLoadImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load image'**
+  String get failedToLoadImage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

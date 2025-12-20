@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/Login/loginScreen.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/services/locale_provider.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {

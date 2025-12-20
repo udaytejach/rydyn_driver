@@ -10,7 +10,7 @@ import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
 import 'package:rydyn/Driver/Login/loginScreen.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/notifications/firebase_api.dart';
 import 'package:rydyn/Driver/services/locale_provider.dart';
 import 'package:rydyn/Driver/services/repository.dart';

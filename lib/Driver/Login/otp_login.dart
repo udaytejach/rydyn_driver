@@ -12,6 +12,7 @@ import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/notifications/service.dart';
 import 'package:rydyn/Driver/viewmodels/login_viewmodel.dart';
 
@@ -71,6 +72,7 @@ class _OtpLoginState extends State<OtpLogin> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -91,7 +93,7 @@ class _OtpLoginState extends State<OtpLogin> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: "Enter Your OTP",
+                            text: localizations.enterOtp,
                             fontSize: 32,
                             fontWeight: FontWeight.w700,
                             textcolor: korangeColor,
@@ -105,14 +107,11 @@ class _OtpLoginState extends State<OtpLogin> {
                                 color: kgreyColor,
                               ),
                               children: [
-                                const TextSpan(text: "OTP sent to "),
                                 TextSpan(
                                   text: widget.phoneNumber,
                                   style: TextStyle(color: korangeColor),
                                 ),
-                                const TextSpan(
-                                  text: " this OTP will get auto entering",
-                                ),
+                                TextSpan(text: localizations.otpSent),
                               ],
                             ),
                           ),
@@ -168,11 +167,9 @@ class _OtpLoginState extends State<OtpLogin> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 children: [
-                                  const TextSpan(
-                                    text: "You didn’t receive OTP? ",
-                                  ),
+                                  TextSpan(text: localizations.noOtp),
                                   TextSpan(
-                                    text: "Resend OTP",
+                                    text: localizations.resentOtp,
                                     style: TextStyle(
                                       color: korangeColor,
                                       fontWeight: FontWeight.w600,
@@ -189,7 +186,7 @@ class _OtpLoginState extends State<OtpLogin> {
                     _isLoading
                         ? const CircularProgressIndicator(color: korangeColor)
                         : CustomButton(
-                            text: 'Verify OTP',
+                            text: localizations.verifyOtp,
                             onPressed: () async {
                               setState(() => _isLoading = true);
 
@@ -206,57 +203,6 @@ class _OtpLoginState extends State<OtpLogin> {
 
                                 if (!mounted) return;
 
-                                // if (status == "Inactive") {
-                                //   setState(() => _isLoading = false);
-                                //   showDialog(
-                                //     context: context,
-                                //     builder: (context) {
-                                //       return AlertDialog(
-                                //         shape: RoundedRectangleBorder(
-                                //           borderRadius: BorderRadius.circular(
-                                //             10,
-                                //           ),
-                                //         ),
-                                //         content: Text(
-                                //           "Your status is inactive. Please contact the admin to update your account status.",
-                                //           style: GoogleFonts.poppins(
-                                //             color: Colors.black,
-                                //             fontSize: 14,
-                                //             fontWeight: FontWeight.w500,
-                                //           ),
-                                //         ),
-                                //         title: Center(
-                                //           child: Text(
-                                //             "Account Inactive",
-                                //             style: GoogleFonts.poppins(
-                                //               color: korangeColor,
-                                //               fontSize: 15,
-                                //               fontWeight: FontWeight.w600,
-                                //             ),
-                                //           ),
-                                //         ),
-
-                                //         actions: [
-                                //           TextButton(
-                                //             onPressed: () {
-                                //               Navigator.pop(context);
-                                //             },
-                                //             child: Text(
-                                //               'OK',
-                                //               style: GoogleFonts.poppins(
-                                //                 color: korangeColor,
-                                //                 fontSize: 14,
-                                //                 fontWeight: FontWeight.w600,
-                                //               ),
-                                //             ),
-                                //           ),
-                                //         ],
-                                //       );
-                                //     },
-                                //   );
-
-                                //   return;
-                                // }
                                 if (status == "Inactive" ||
                                     status == "Rejected") {
                                   Navigator.pushReplacement(
@@ -285,9 +231,8 @@ class _OtpLoginState extends State<OtpLogin> {
                                       if (driverToken.isNotEmpty) {
                                         await fcmService.sendNotification(
                                           recipientFCMToken: driverToken,
-                                          title: "Welcome Back,Captain!",
-                                          body:
-                                              "You're now logged in and ready to go.",
+                                          title: localizations.fcmotptitle,
+                                          body: localizations.fcmotpbody,
                                         );
                                         print(
                                           "Login success notification sent!",

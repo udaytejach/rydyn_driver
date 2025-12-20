@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_Bookings.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/booking_details.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
@@ -14,7 +12,7 @@ import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
-import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/notifications/service.dart';
 import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
 import 'package:animated_flip_counter/animated_flip_counter.dart';
@@ -212,113 +210,20 @@ class _DriverDashboardState extends State<DriverDashboard> {
     }
   }
 
-  // Future<void> _updateBookingStatus(String bookingId, String newStatus) async {
-  //   try {
-  //     final driverId = await SharedPrefServices.getUserId();
-  //     final driverDocId = await SharedPrefServices.getDocId();
-  //     final driverName =
-  //         "${await SharedPrefServices.getFirstName()} ${await SharedPrefServices.getLastName()}";
-
-  //     final bookingRef = FirebaseFirestore.instance
-  //         .collection('bookings')
-  //         .doc(bookingId);
-
-  //     await FirebaseFirestore.instance.runTransaction((transaction) async {
-  //       final snap = await transaction.get(bookingRef);
-
-  //       if (!snap.exists) {
-  //         throw Exception('BOOKING_NOT_FOUND');
-  //       }
-
-  //       final data = snap.data() as Map<String, dynamic>;
-  //       final existingDriverId = (data['driverId'] ?? '') as String;
-
-  //       if (existingDriverId.isNotEmpty && existingDriverId != driverId) {
-  //         throw Exception('RIDE_ALREADY_TAKEN');
-  //       }
-
-  //       final random = Random();
-  //       final ownerOTP = (1000 + random.nextInt(9000)).toString();
-
-  //       transaction.update(bookingRef, {
-  //         'status': newStatus,
-  //         'driverdocId': driverDocId,
-  //         'driverId': driverId,
-  //         'driverName': driverName,
-  //         'ownerOTP': ownerOTP,
-  //         'statusHistory': FieldValue.arrayUnion([
-  //           {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
-  //         ]),
-  //       });
-  //     });
-
-  //     if (!mounted) return;
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Ride accepted successfully!')),
-  //     );
-  //   } catch (e) {
-  //     debugPrint('Error updating booking status: $e');
-
-  //     if (e.toString().contains('BOOKING_NOT_FOUND')) {
-  //       if (!mounted) return;
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Booking not found.'),
-  //           backgroundColor: Colors.red,
-  //         ),
-  //       );
-  //       return;
-  //     }
-
-  //     if (e.toString().contains('RIDE_ALREADY_TAKEN')) {
-  //       if (!mounted) return;
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) => AlertDialog(
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(15),
-  //           ),
-  //           title: const Center(
-  //             child: Text(
-  //               "Ride Already Taken",
-  //               style: TextStyle(fontWeight: FontWeight.bold),
-  //             ),
-  //           ),
-  //           content: const Text(
-  //             "This ride has already been accepted by another driver.",
-  //             textAlign: TextAlign.center,
-  //           ),
-  //           actions: [
-  //             Center(
-  //               child: ElevatedButton(
-  //                 onPressed: () => Navigator.pop(context),
-  //                 style: ElevatedButton.styleFrom(
-  //                   backgroundColor: korangeColor,
-  //                 ),
-  //                 child: const Text("OK", style: TextStyle(color: kwhiteColor)),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //       return;
-  //     }
-
-  //     if (!mounted) return;
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Failed to update status: $e'),
-  //         backgroundColor: Colors.redAccent,
-  //       ),
-  //     );
-  //   }
-  // }
-
   final fcmService = FCMService();
   Future<void> _updateBookingStatus(
     var car,
     String bookingId,
     String newStatus,
+    String fcmtitleRideAccepted,
+    String fcmbodyRideAccepted,
+    String snackBarRideAccepted,
+    String snackBarRideAcceptedFailed,
+    String rideAlreadyTaken,
+    String rideAlreadyTakenMessage,
+    String snackBarRideAlreadyTaken,
+    String okText,
+    String failedToUpdateStatusText,
   ) async {
     try {
       final driverId = await SharedPrefServices.getUserId();
@@ -382,8 +287,8 @@ class _DriverDashboardState extends State<DriverDashboard> {
           if (ownerToken != null && ownerToken.isNotEmpty) {
             await fcmService.sendNotification(
               recipientFCMToken: ownerToken,
-              title: "Ride Accepted",
-              body: "Your ride has been accepted by $driverName.",
+              title: fcmtitleRideAccepted,
+              body: "$fcmbodyRideAccepted $driverName.",
             );
           }
         }
@@ -395,9 +300,9 @@ class _DriverDashboardState extends State<DriverDashboard> {
           ),
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ride accepted successfully!')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(snackBarRideAccepted)));
       }
     } catch (e) {
       debugPrint('Error updating booking status: $e');
@@ -406,8 +311,8 @@ class _DriverDashboardState extends State<DriverDashboard> {
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Booking not found.'),
+          SnackBar(
+            content: Text(snackBarRideAcceptedFailed),
             backgroundColor: Colors.red,
           ),
         );
@@ -435,16 +340,15 @@ class _DriverDashboardState extends State<DriverDashboard> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const CustomText(
-                    text: 'Ride Already Taken',
+                  CustomText(
+                    text: rideAlreadyTaken,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     textcolor: KblackColor,
                   ),
 
-                  const CustomText(
-                    text:
-                        'This ride has already been accepted by another driver.',
+                  CustomText(
+                    text: rideAlreadyTakenMessage,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     textcolor: KblackColor,
@@ -468,10 +372,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
-                        "OK",
-                        style: TextStyle(color: kwhiteColor),
-                      ),
+                      child: Text(okText, style: TextStyle(color: kwhiteColor)),
                     ),
                   ),
                 ],
@@ -487,7 +388,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to update status: $e'),
+          content: Text('$failedToUpdateStatusText $e'),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -578,8 +479,14 @@ class _DriverDashboardState extends State<DriverDashboard> {
     }
   }
 
-  void _showOnlineDialog() {
-    final nextStatus = isOnline ? "Offline" : "Online";
+  void _showOnlineDialog(
+    String title,
+    String yesText,
+    String noText,
+    String online,
+    String offline,
+  ) {
+    final nextStatus = isOnline ? offline : online;
     showDialog(
       context: context,
       builder: (context) {
@@ -589,7 +496,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
           ),
           title: Center(
             child: Text(
-              'Are you sure you want to be   $nextStatus?',
+              '$title $nextStatus?',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
@@ -602,7 +509,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CustomCancelButton(
-                  text: 'No',
+                  text: noText,
                   onPressed: () => Navigator.pop(context),
                 ),
 
@@ -619,7 +526,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                     await _updateOnlineStatusOnServer(isOnline);
                   },
 
-                  text: 'Yes',
+                  text: yesText,
                 ),
               ],
             ),
@@ -718,7 +625,13 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
                                   GestureDetector(
                                     onTap: () {
-                                      _showOnlineDialog();
+                                      _showOnlineDialog(
+                                        localizations.confirmOnlineStatus,
+                                        localizations.yes,
+                                        localizations.no,
+                                        localizations.online,
+                                        localizations.offline,
+                                      );
                                     },
                                     child: AnimatedContainer(
                                       duration: const Duration(
@@ -763,7 +676,9 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                     horizontal: 10,
                                                   ),
                                               child: Text(
-                                                isOnline ? "Online" : "Offline",
+                                                isOnline
+                                                    ? localizations.online
+                                                    : localizations.offline,
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.w600,
@@ -839,7 +754,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CustomText(
-                                    text: "Namaskaram",
+                                    text: localizations.namaskaram,
                                     textcolor: kwhiteColor,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
@@ -900,7 +815,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           CustomText(
-                                            text: "My Earnings",
+                                            text: localizations.myEarnings,
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             textcolor: kgreyColor,
@@ -1034,9 +949,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                     // ),
                                   ],
                                 ),
-                                SizedBox(height: 3),
-
-                                SizedBox(height: 3),
+                                SizedBox(height: 6),
                               ],
                             ),
                           ),
@@ -1052,29 +965,29 @@ class _DriverDashboardState extends State<DriverDashboard> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             CustomText(
-                              text: "My Bookings",
+                              text: localizations.myBookings,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               textcolor: KblackColor,
                             ),
-                            GestureDetector(
-                              onTap: () {},
-                              child: Text(
-                                "View All",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: korangeColor,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: korangeColor,
-                                  decorationStyle: TextDecorationStyle.solid,
-                                  decorationThickness: 1.5,
-                                ),
-                              ),
-                            ),
+                            // GestureDetector(
+                            //   onTap: () {},
+                            //   child: Text(
+                            //     localizations.viewAll,
+                            //     style: GoogleFonts.poppins(
+                            //       fontSize: 12,
+                            //       fontWeight: FontWeight.w400,
+                            //       color: korangeColor,
+                            //       decoration: TextDecoration.underline,
+                            //       decorationColor: korangeColor,
+                            //       decorationStyle: TextDecorationStyle.solid,
+                            //       decorationThickness: 1.5,
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                         SizedBox(height: 20),
@@ -1300,7 +1213,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                     children: [
                                                                       CustomText(
                                                                         text:
-                                                                            '${car['distance'] ?? '45'} Km',
+                                                                            '${car['distance'] ?? '45 Km'}',
                                                                         fontSize:
                                                                             12,
                                                                         fontWeight:
@@ -1362,10 +1275,10 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                             15,
                                                                           ),
                                                                         ),
-                                                                        title: const Center(
+                                                                        title: Center(
                                                                           child: CustomText(
                                                                             text:
-                                                                                "Cannot Accept Booking",
+                                                                                localizations.cannotAcceptBooking,
                                                                             fontSize:
                                                                                 15,
                                                                             fontWeight:
@@ -1374,9 +1287,9 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                                 Colors.black,
                                                                           ),
                                                                         ),
-                                                                        content: const CustomText(
+                                                                        content: CustomText(
                                                                           text:
-                                                                              'Please turn online first to accept bookings.',
+                                                                              localizations.turnOnlineFirst,
                                                                           fontSize:
                                                                               14,
                                                                           fontWeight:
@@ -1387,7 +1300,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                         actions: [
                                                                           CustomButton(
                                                                             text:
-                                                                                'OK',
+                                                                                localizations.ok,
                                                                             onPressed: () {
                                                                               Navigator.pop(
                                                                                 context,
@@ -1407,10 +1320,10 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                             15,
                                                                           ),
                                                                         ),
-                                                                        title: const Center(
+                                                                        title: Center(
                                                                           child: CustomText(
                                                                             text:
-                                                                                "Confirm Ride",
+                                                                                localizations.confirmRide,
                                                                             fontSize:
                                                                                 16,
                                                                             fontWeight:
@@ -1419,9 +1332,9 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                                 Colors.black,
                                                                           ),
                                                                         ),
-                                                                        content: const CustomText(
+                                                                        content: CustomText(
                                                                           text:
-                                                                              "Are you sure you want to accept this ride?",
+                                                                              localizations.acceptRideQuestion,
                                                                           fontSize:
                                                                               14,
                                                                           fontWeight:
@@ -1435,7 +1348,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                                 MainAxisAlignment.spaceEvenly,
                                                                             children: [
                                                                               CustomCancelButton(
-                                                                                text: 'No',
+                                                                                text: localizations.no,
                                                                                 onPressed: () {
                                                                                   Navigator.pop(
                                                                                     context,
@@ -1443,12 +1356,22 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                                 },
                                                                               ),
                                                                               CustomButton(
-                                                                                text: 'Yes',
+                                                                                text: localizations.yes,
                                                                                 onPressed: () {
                                                                                   _updateBookingStatus(
                                                                                     car,
                                                                                     car['id'],
                                                                                     'Accepted',
+                                                                                    localizations.rideAccepted,
+                                                                                    localizations.rideAcceptedBy,
+                                                                                    localizations.rideAcceptedSuccess,
+                                                                                    localizations.bookingNotFound,
+
+                                                                                    localizations.rideAlreadyTaken,
+                                                                                    localizations.rideAlreadyTakenByOther,
+                                                                                    localizations.failedToUpdateStatus,
+                                                                                    localizations.ok,
+                                                                                    localizations.failedToUpdateStatus,
                                                                                   );
                                                                                 },
                                                                               ),
@@ -1459,8 +1382,9 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                                                     );
                                                                   }
                                                                 },
-                                                                child: const Text(
-                                                                  "Accept",
+                                                                child: Text(
+                                                                  localizations
+                                                                      .accept,
                                                                   style: TextStyle(
                                                                     color:
                                                                         kwhiteColor,
@@ -1654,122 +1578,122 @@ class _DriverDashboardState extends State<DriverDashboard> {
     );
   }
 
-  Widget _vehicleCard() {
-    return Container(
-      width: 320, // fixed width for each card
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        border: Border.all(color: kbordergreyColor, width: 1),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Car details row
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.grey.shade100,
-                  ),
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        "https://via.placeholder.com/150",
-                        fit: BoxFit.cover,
-                        width: 130,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.car_crash),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: "Toyota Corolla",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        textcolor: KblackColor,
-                      ),
-                      const SizedBox(height: 5),
-                      Wrap(
-                        spacing: 6,
-                        children: [
-                          _infoChip("Automatic"),
-                          _infoChip("Petrol"),
-                          _infoChip("Sedan"),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      _infoChip("MH12AB1234"),
-                    ],
-                  ),
-                ),
-                const Align(
-                  alignment: Alignment.center,
-                  child: Icon(Icons.arrow_forward_ios, size: 18),
-                ),
-              ],
-            ),
+  // Widget _vehicleCard() {
+  //   return Container(
+  //     width: 320, // fixed width for each card
+  //     margin: const EdgeInsets.only(right: 12),
+  //     decoration: BoxDecoration(
+  //       border: Border.all(color: kbordergreyColor, width: 1),
+  //       borderRadius: BorderRadius.circular(16),
+  //     ),
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           // Car details row
+  //           Row(
+  //             crossAxisAlignment: CrossAxisAlignment.center,
+  //             children: [
+  //               Container(
+  //                 width: 70,
+  //                 height: 70,
+  //                 decoration: BoxDecoration(
+  //                   borderRadius: BorderRadius.circular(16),
+  //                   color: Colors.grey.shade100,
+  //                 ),
+  //                 child: Center(
+  //                   child: ClipRRect(
+  //                     borderRadius: BorderRadius.circular(12),
+  //                     child: Image.network(
+  //                       "https://via.placeholder.com/150",
+  //                       fit: BoxFit.cover,
+  //                       width: 130,
+  //                       errorBuilder: (context, error, stackTrace) =>
+  //                           const Icon(Icons.car_crash),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               const SizedBox(width: 10),
+  //               Expanded(
+  //                 child: Column(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     CustomText(
+  //                       text: "Toyota Corolla",
+  //                       fontSize: 14,
+  //                       fontWeight: FontWeight.w600,
+  //                       textcolor: KblackColor,
+  //                     ),
+  //                     const SizedBox(height: 5),
+  //                     Wrap(
+  //                       spacing: 6,
+  //                       children: [
+  //                         _infoChip("Automatic"),
+  //                         _infoChip("Petrol"),
+  //                         _infoChip("Sedan"),
+  //                       ],
+  //                     ),
+  //                     const SizedBox(height: 5),
+  //                     _infoChip("MH12AB1234"),
+  //                   ],
+  //                 ),
+  //               ),
+  //               const Align(
+  //                 alignment: Alignment.center,
+  //                 child: Icon(Icons.arrow_forward_ios, size: 18),
+  //               ),
+  //             ],
+  //           ),
 
-            const SizedBox(height: 5),
-            const Divider(), // Divider below content
-            const SizedBox(height: 5),
+  //           const SizedBox(height: 5),
+  //           const Divider(), // Divider below content
+  //           const SizedBox(height: 5),
 
-            // Buttons row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: KorangeColorNew,
-                      ), // green border
-                    ),
-                    onPressed: () {},
-                    child: const CustomText(
-                      text: "Decline",
-                      textcolor: KorangeColorNew,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: KbtngreenColor,
-                    ),
-                    onPressed: () {
-                      // Handle accept action
-                    },
-                    child: const Text(
-                      "Accept",
-                      style: TextStyle(color: kwhiteColor),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //           // Buttons row
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Expanded(
+  //                 child: OutlinedButton(
+  //                   style: OutlinedButton.styleFrom(
+  //                     side: const BorderSide(
+  //                       color: KorangeColorNew,
+  //                     ), // green border
+  //                   ),
+  //                   onPressed: () {},
+  //                   child: const CustomText(
+  //                     text: "Decline",
+  //                     textcolor: KorangeColorNew,
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w500,
+  //                   ),
+  //                 ),
+  //               ),
+  //               const SizedBox(width: 10),
+  //               Expanded(
+  //                 child: ElevatedButton(
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor: KbtngreenColor,
+  //                   ),
+  //                   onPressed: () {
+  //                     // Handle accept action
+  //                   },
+  //                   child: const Text(
+  //                     "Accept",
+  //                     style: TextStyle(color: kwhiteColor),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 // final List<String> watchLearnImages = [

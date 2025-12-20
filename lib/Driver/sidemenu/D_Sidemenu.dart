@@ -9,12 +9,14 @@ import 'package:rydyn/Driver/sidemenu/D_Termsandconditions.dart';
 import 'package:rydyn/Driver/sidemenu/Driverprofilepage.dart';
 import 'package:rydyn/Driver/sidemenu/MyDocuments.dart';
 import 'package:rydyn/Driver/sidemenu/privacy_policy.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 
 class D_SideMenu extends StatelessWidget {
   const D_SideMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Drawer(
       backgroundColor: kwhiteColor,
       child: ListView(
@@ -48,13 +50,13 @@ class D_SideMenu extends StatelessWidget {
                             bottom: -5,
                             right: 0,
                             child: Container(
-                             // decoration: BoxDecoration(shape: BoxShape.circle),
+                              // decoration: BoxDecoration(shape: BoxShape.circle),
                               padding: const EdgeInsets.all(2),
                               child: const CircleAvatar(
                                 radius: 12,
                                 backgroundImage: const AssetImage(
                                   "images/verified.png",
-                                 ),
+                                ),
                               ),
                             ),
                           ),
@@ -83,7 +85,7 @@ class D_SideMenu extends StatelessWidget {
                           ),
                           CustomText(
                             text:
-                                "${SharedPrefServices.getvehicletypee()} Driver",
+                                "${SharedPrefServices.getvehicletypee()} ${localizations.driver}",
                             textcolor: kseegreyColor,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -105,8 +107,8 @@ class D_SideMenu extends StatelessWidget {
 
           ListTile(
             leading: Image.asset("images/documents.png"),
-            title: const CustomText(
-              text: "Documents",
+            title: CustomText(
+              text: localizations.documents,
               textcolor: kcocoblack,
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -120,8 +122,8 @@ class D_SideMenu extends StatelessWidget {
           ),
           ListTile(
             leading: Image.asset("images/help&support.png"),
-            title: const CustomText(
-              text: "Help & Support",
+            title: CustomText(
+              text: localizations.helpSupport,
               textcolor: kcocoblack,
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -135,8 +137,8 @@ class D_SideMenu extends StatelessWidget {
           ),
           ListTile(
             leading: Image.asset("images/Terms&conditions.png"),
-            title: const CustomText(
-              text: "Terms & Conditions",
+            title: CustomText(
+              text: localizations.termsConditions,
               textcolor: kcocoblack,
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -150,8 +152,8 @@ class D_SideMenu extends StatelessWidget {
           ),
           ListTile(
             leading: Image.asset("images/privacy.png"),
-            title: const CustomText(
-              text: "Privacy policy",
+            title: CustomText(
+              text: localizations.privacyPolicy,
               textcolor: kcocoblack,
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -165,8 +167,8 @@ class D_SideMenu extends StatelessWidget {
           ),
           ListTile(
             leading: Image.asset("images/D_logout.png"),
-            title: const CustomText(
-              text: "Logout",
+            title: CustomText(
+              text: localizations.menuLogout,
               textcolor: korangeColor,
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -181,6 +183,7 @@ class D_SideMenu extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) {
@@ -188,9 +191,9 @@ class D_SideMenu extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          title: const Center(
+          title: Center(
             child: Text(
-              'Are you sure you want to logout ?',
+              localizations.logoutQuestion,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
@@ -210,8 +213,8 @@ class D_SideMenu extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
-                    'Cancel',
+                  child: Text(
+                    localizations.cancel,
                     style: TextStyle(color: korangeColor, fontFamily: "inter"),
                   ),
                 ),
@@ -228,14 +231,14 @@ class D_SideMenu extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
-                  style: ElevatedButton.styleFrom( 
+                  style: ElevatedButton.styleFrom(
                     backgroundColor: korangeColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
-                    'Logout',
+                  child: Text(
+                    localizations.menuLogout,
                     style: TextStyle(color: Colors.white, fontFamily: "inter"),
                   ),
                 ),

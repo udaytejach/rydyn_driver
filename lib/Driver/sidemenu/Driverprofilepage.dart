@@ -5,17 +5,14 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
-import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/Widgets/customTextField.dart';
-import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
 import 'package:http/http.dart' as http;
 
 class DriversProfilescreen extends StatefulWidget {
@@ -721,13 +718,13 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                   ),
                 ],
               ),
-              bottom: const TabBar(
+              bottom: TabBar(
                 labelColor: korangeColor,
                 unselectedLabelColor: kseegreyColor,
                 indicatorColor: korangeColor,
                 tabs: [
-                  Tab(text: "Basic Details"),
-                  Tab(text: "Bank Details"),
+                  Tab(text: localizations.basicDetails),
+                  Tab(text: localizations.bankDetails),
                 ],
               ),
             ),
@@ -863,7 +860,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                         child: AbsorbPointer(
                           child: CustomTextField(
                             controller: dobController,
-                            labelText: "Date of Birth",
+                            labelText: localizations.dateOfBirth,
                           ),
                         ),
                       ),
@@ -875,15 +872,15 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                           isExpanded: true,
                           value:
                               [
-                                'Light',
-                                'Light-Premium',
-                                'Light-Premium-Heavy',
+                                localizations.light,
+                                localizations.lightPremium,
+                                localizations.lightPremiumHeavy,
                               ].contains(vehicleController.text)
                               ? vehicleController.text
                               : null,
 
                           hint: Text(
-                            "Choose Vehicle Type",
+                            localizations.chooseVehicleType,
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 15,
@@ -893,15 +890,15 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                           items: [
                             DropdownMenuItem(
                               value: 'Light',
-                              child: Text('Light'),
+                              child: Text(localizations.light),
                             ),
                             DropdownMenuItem(
                               value: 'Light-Premium',
-                              child: Text('Light-Premium'),
+                              child: Text(localizations.lightPremium),
                             ),
                             DropdownMenuItem(
                               value: 'Light-Premium-Heavy',
-                              child: Text('Light-Premium-Heavy'),
+                              child: Text(localizations.lightPremiumHeavy),
                             ),
                             // DropdownMenuItem(value: 'All', child: Text('All')),
                           ],
@@ -945,14 +942,14 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                       const SizedBox(height: 20),
                       CustomTextField(
                         controller: licenceController,
-                        labelText: "Licence Number",
+                        labelText: localizations.licenceNumber,
                         readOnly: !isEditing,
                         inputFormatters: [UpperCaseTextFormatter()],
                         validator: validateDLNumber,
                       ),
                       const SizedBox(height: 10),
                       CustomText(
-                        text: " Driving Licence (Front & Back)",
+                        text: localizations.drivingLicenceFrontBack,
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         textcolor: KblackColor,
@@ -993,9 +990,9 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                   child:
                                       (licenceFrontUrl == null ||
                                           licenceFrontUrl!.isEmpty)
-                                      ? const Center(
+                                      ? Center(
                                           child: Text(
-                                            "Front Side",
+                                            localizations.frontSide,
                                             style: TextStyle(
                                               color: Colors.grey,
                                             ),
@@ -1017,10 +1014,22 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                               licenceFrontUrl = "";
                                             });
                                           } else {
-                                            pickLicenceImage(isFront: true);
+                                            pickLicenceImage(
+                                              isFront: true,
+                                              title:
+                                                  localizations.selectImageFrom,
+                                              cam: localizations.camera,
+                                              gal: localizations.gallery,
+                                            );
                                           }
                                         } else {
-                                          pickLicenceImage(isFront: true);
+                                          pickLicenceImage(
+                                            isFront: true,
+                                            title:
+                                                localizations.selectImageFrom,
+                                            cam: localizations.camera,
+                                            gal: localizations.gallery,
+                                          );
                                         }
                                       },
                                       child: CircleAvatar(
@@ -1084,9 +1093,9 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                   child:
                                       (licenceBackUrl == null ||
                                           licenceBackUrl!.isEmpty)
-                                      ? const Center(
+                                      ? Center(
                                           child: Text(
-                                            "Back Side",
+                                            localizations.backSide,
                                             style: TextStyle(
                                               color: Colors.grey,
                                             ),
@@ -1108,10 +1117,22 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                               licenceBackUrl = "";
                                             });
                                           } else {
-                                            pickLicenceImage(isFront: false);
+                                            pickLicenceImage(
+                                              isFront: false,
+                                              title:
+                                                  localizations.selectImageFrom,
+                                              cam: localizations.camera,
+                                              gal: localizations.gallery,
+                                            );
                                           }
                                         } else {
-                                          pickLicenceImage(isFront: false);
+                                          pickLicenceImage(
+                                            isFront: false,
+                                            title:
+                                                localizations.selectImageFrom,
+                                            cam: localizations.camera,
+                                            gal: localizations.gallery,
+                                          );
                                         }
                                       },
                                       child: CircleAvatar(
@@ -1146,7 +1167,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
 
                       const SizedBox(height: 15),
                       CustomText(
-                        text: " Aadhar Card (Front & Back)",
+                        text: localizations.aadharFrontBack,
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         textcolor: KblackColor,
@@ -1183,9 +1204,9 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                   child:
                                       (aadharFront == null ||
                                           aadharFront!.isEmpty)
-                                      ? const Center(
+                                      ? Center(
                                           child: Text(
-                                            "Front Side",
+                                            localizations.frontSide,
                                             style: TextStyle(
                                               color: Colors.grey,
                                             ),
@@ -1207,10 +1228,22 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                               aadharFront = "";
                                             });
                                           } else {
-                                            pickAadharImage(isFront: true);
+                                            pickAadharImage(
+                                              isFront: true,
+                                              title:
+                                                  localizations.selectImageFrom,
+                                              cam: localizations.camera,
+                                              gal: localizations.gallery,
+                                            );
                                           }
                                         } else {
-                                          pickAadharImage(isFront: true);
+                                          pickAadharImage(
+                                            isFront: true,
+                                            title:
+                                                localizations.selectImageFrom,
+                                            cam: localizations.camera,
+                                            gal: localizations.gallery,
+                                          );
                                         }
                                       },
                                       child: CircleAvatar(
@@ -1267,9 +1300,9 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                   child:
                                       (aadharBack == null ||
                                           aadharBack!.isEmpty)
-                                      ? const Center(
+                                      ? Center(
                                           child: Text(
-                                            "Back Side",
+                                            localizations.backSide,
                                             style: TextStyle(
                                               color: Colors.grey,
                                             ),
@@ -1291,10 +1324,22 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                               aadharBack = "";
                                             });
                                           } else {
-                                            pickAadharImage(isFront: false);
+                                            pickAadharImage(
+                                              isFront: false,
+                                              title:
+                                                  localizations.selectImageFrom,
+                                              cam: localizations.camera,
+                                              gal: localizations.gallery,
+                                            );
                                           }
                                         } else {
-                                          pickAadharImage(isFront: false);
+                                          pickAadharImage(
+                                            isFront: false,
+                                            title:
+                                                localizations.selectImageFrom,
+                                            cam: localizations.camera,
+                                            gal: localizations.gallery,
+                                          );
                                         }
                                       },
                                       child: CircleAvatar(
@@ -1346,8 +1391,8 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Bank Details",
+                              Text(
+                                localizations.bankDetails,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -1358,7 +1403,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                           const SizedBox(height: 10),
                           CustomTextField(
                             controller: ifscController,
-                            labelText: "IFSC",
+                            labelText: localizations.ifsc,
                             readOnly: !isEditing,
                             inputFormatters: [UpperCaseTextFormatter()],
                             onChanged: (value) async {
@@ -1380,9 +1425,9 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                 } else {
                                   setState(() {});
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                       content: Text(
-                                        ' Invalid IFSC Code Format.',
+                                        localizations.invalidIfscFormat,
                                       ),
                                       backgroundColor: Colors.redAccent,
                                     ),
@@ -1392,10 +1437,8 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
 
                               if (code.length > 11) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'IFSC code cannot exceed 11 characters.',
-                                    ),
+                                  SnackBar(
+                                    content: Text(localizations.ifscMaxLength),
                                     backgroundColor: Colors.orangeAccent,
                                   ),
                                 );
@@ -1406,26 +1449,26 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                           const SizedBox(height: 10),
                           CustomTextField(
                             controller: bankController,
-                            labelText: "Bank Name",
+                            labelText: localizations.bankName,
                             readOnly: true,
                           ),
                           const SizedBox(height: 10),
                           CustomTextField(
                             controller: branchController,
-                            labelText: "Branch",
+                            labelText: localizations.branch,
                             readOnly: true,
                           ),
                           const SizedBox(height: 10),
 
                           CustomTextField(
                             controller: accountController,
-                            labelText: "Account Number",
+                            labelText: localizations.accountNumber,
                             readOnly: !isEditing,
                           ),
                           const SizedBox(height: 10),
                           CustomTextField(
                             controller: holderController,
-                            labelText: "Account Holder Name",
+                            labelText: localizations.accountHolderName,
                             readOnly: !isEditing,
                           ),
 
@@ -1448,8 +1491,8 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                     vertical: 12,
                                   ),
                                 ),
-                                child: const Text(
-                                  "Update",
+                                child: Text(
+                                  localizations.menuUpdate,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -1481,16 +1524,21 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
     );
   }
 
-  Future<void> pickLicenceImage({required bool isFront}) async {
+  Future<void> pickLicenceImage({
+    required bool isFront,
+    required String title,
+    required String cam,
+    required String gal,
+  }) async {
     if (!isEditing) return;
 
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: const Center(
+        title: Center(
           child: Text(
-            "Select Image From",
+            title,
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
         ),
@@ -1515,11 +1563,11 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                     });
                   }
                 },
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(Icons.camera_alt, color: korangeColor, size: 20),
                     SizedBox(width: 8),
-                    Text("Camera"),
+                    Text(cam),
                   ],
                 ),
               ),
@@ -1540,11 +1588,11 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                     });
                   }
                 },
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(Icons.photo_library, color: korangeColor, size: 20),
                     SizedBox(width: 8),
-                    Text("Gallery"),
+                    Text(gal),
                   ],
                 ),
               ),
@@ -1555,16 +1603,21 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
     );
   }
 
-  Future<void> pickAadharImage({required bool isFront}) async {
+  Future<void> pickAadharImage({
+    required bool isFront,
+    required String title,
+    required String cam,
+    required String gal,
+  }) async {
     if (!isEditing) return;
 
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: const Center(
+        title: Center(
           child: Text(
-            "Select Image From",
+            title,
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
         ),
@@ -1591,11 +1644,11 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                     });
                   }
                 },
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(Icons.camera_alt, color: korangeColor, size: 20),
                     SizedBox(width: 8),
-                    Text("Camera"),
+                    Text(cam),
                   ],
                 ),
               ),
@@ -1619,11 +1672,11 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                     });
                   }
                 },
-                child: const Row(
+                child: Row(
                   children: [
                     Icon(Icons.photo_library, color: korangeColor, size: 20),
                     SizedBox(width: 8),
-                    Text("Gallery"),
+                    Text(gal),
                   ],
                 ),
               ),

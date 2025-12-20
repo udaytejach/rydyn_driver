@@ -1,5 +1,4 @@
 //
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/chat_screen.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/payment_gateway.dart';
-import 'package:rydyn/Driver/DriverDahboard/driverDashboard.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/notifications/service.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -351,6 +350,7 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     print('docid');
     print(widget.docId);
     String ownerFullName =
@@ -512,7 +512,7 @@ class _BookingDetailsState extends State<BookingDetails> {
               ),
               Center(
                 child: CustomText(
-                  text: "Ride Details",
+                  text: localizations.rideDetails,
                   textcolor: KblackColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,
@@ -671,8 +671,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             color: Colors.grey,
                             size: 20,
                           ),
-                          label: const Text(
-                            "Chat",
+                          label: Text(
+                            localizations.chat,
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 14,
@@ -708,8 +708,10 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 await launchUrl(callUri);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Unable to open dialer."),
+                                  SnackBar(
+                                    content: Text(
+                                      localizations.unableToOpenDialer,
+                                    ),
                                     behavior: SnackBarBehavior.floating,
                                     backgroundColor: Colors.redAccent,
                                   ),
@@ -717,9 +719,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                               }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    "Owner phone number not available.",
+                                    localizations.ownerPhoneUnavailable,
                                   ),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: Colors.redAccent,
@@ -732,8 +734,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             color: Colors.white,
                             size: 20,
                           ),
-                          label: const Text(
-                            "Call",
+                          label: Text(
+                            localizations.call,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 14,
@@ -782,8 +784,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CustomText(
-                      text: "Route Information",
+                    CustomText(
+                      text: localizations.routeInformation,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       textcolor: korangeColor,
@@ -797,8 +799,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                           children: [
                             _buildDot(Colors.green),
                             const SizedBox(width: 10),
-                            const CustomText(
-                              text: "Pickup Location",
+                            CustomText(
+                              text: localizations.pickupLocation,
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               textcolor: Colors.green,
@@ -865,8 +867,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             const SizedBox(width: 10),
                             CustomText(
                               text: drop2Location.isEmpty
-                                  ? "Drop Location"
-                                  : "Drop Location 1",
+                                  ? localizations.dropLocation
+                                  : localizations.dropLocation1,
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               textcolor: drop2Location.isEmpty
@@ -883,7 +885,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                               ),
                               const SizedBox(width: 4),
                               CustomText(
-                                text: "ETA: ${_calculateETA(time, duration)}",
+                                text:
+                                    "${localizations.eta} ${_calculateETA(time, duration)}",
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,
                                 textcolor: Colors.grey,
@@ -930,8 +933,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 children: [
                                   _buildDot(Colors.red),
                                   const SizedBox(width: 8),
-                                  const CustomText(
-                                    text: "Drop Location 2",
+                                  CustomText(
+                                    text: localizations.dropLocation2,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     textcolor: KredColor,
@@ -945,7 +948,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   const SizedBox(width: 4),
                                   CustomText(
                                     text:
-                                        "ETA: ${_calculateETA(time, duration)}",
+                                        "${localizations.eta} ${_calculateETA(time, duration)}",
                                     fontSize: 13,
                                     fontWeight: FontWeight.w400,
                                     textcolor: Colors.grey,
@@ -995,8 +998,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                       children: [
                         Column(
                           children: [
-                            const CustomText(
-                              text: "Distance",
+                            CustomText(
+                              text: localizations.distance,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               textcolor: kseegreyColor,
@@ -1018,7 +1021,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                         Column(
                           children: [
                             CustomText(
-                              text: "Duration",
+                              text: localizations.duration,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               textcolor: kseegreyColor,
@@ -1091,9 +1094,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                      "Unable to open Google Maps.",
+                                      localizations.unableToOpenMaps,
                                     ),
                                     behavior: SnackBarBehavior.floating,
                                     backgroundColor: Colors.redAccent,
@@ -1105,7 +1108,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    "Error opening directions: ${e.toString()}",
+                                    "${localizations.errorOpeningDirections} ${e.toString()}",
                                   ),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: Colors.redAccent,
@@ -1114,8 +1117,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             }
                           },
 
-                          child: const CustomText(
-                            text: "Get Directions",
+                          child: CustomText(
+                            text: localizations.getDirections,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             textcolor: kwhiteColor,
@@ -1152,8 +1155,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomText(
-                          text: "Trip Details",
+                        CustomText(
+                          text: localizations.tripDetails,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           textcolor: korangeColor,
@@ -1204,7 +1207,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                               ),
                               const SizedBox(width: 8),
                               CustomText(
-                                text: 'City Limit : $citylimithours Hours',
+                                text:
+                                    '${localizations.cityLimit} $citylimithours ${localizations.hours}',
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 textcolor: KblackColor,
@@ -1236,8 +1240,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomText(
-                          text: "Slot Details",
+                        CustomText(
+                          text: localizations.slotDetails,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           textcolor: korangeColor,
@@ -1252,7 +1256,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                               children: [
                                 if (tripMode == "Round Trip")
                                   CustomText(
-                                    text: "Depature",
+                                    text: localizations.departure,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                     textcolor: Colors.grey.shade700,
@@ -1298,7 +1302,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CustomText(
-                                    text: "Arrival",
+                                    text: localizations.arrival,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                     textcolor: Colors.grey.shade700,
@@ -1365,8 +1369,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomText(
-                          text: "Owner Details",
+                        CustomText(
+                          text: localizations.ownerDetails,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           textcolor: korangeColor,
@@ -1444,8 +1448,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomText(
-                          text: "Payment Summary",
+                        CustomText(
+                          text: localizations.paymentSummary,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           textcolor: korangeColor,
@@ -1454,8 +1458,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const CustomText(
-                              text: "Distance",
+                            CustomText(
+                              text: localizations.distance,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,
@@ -1472,8 +1476,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const CustomText(
-                              text: "Service Price",
+                            CustomText(
+                              text: localizations.servicePrice,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,
@@ -1493,8 +1497,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const CustomText(
-                              text: "Convenience Fee",
+                            CustomText(
+                              text: localizations.convenienceFee,
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               textcolor: KblackColor,
@@ -1516,7 +1520,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomText(
-                                text: "Coupon Applied ",
+                                text: localizations.couponApplied,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                                 textcolor: Colors.green,
@@ -1540,8 +1544,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const CustomText(
-                              text: "Total Price",
+                            CustomText(
+                              text: localizations.totalPrice,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               textcolor: korangeColor,
@@ -1628,8 +1632,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const CustomText(
-                              text: "Customer Review",
+                            CustomText(
+                              text: localizations.customerReview,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               textcolor: korangeColor,
@@ -1639,8 +1643,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             // ⭐ Rating Row
                             Row(
                               children: [
-                                const CustomText(
-                                  text: "Rating :",
+                                CustomText(
+                                  text: localizations.rating,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   textcolor: KblackColor,
@@ -1674,8 +1678,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const CustomText(
-                                  text: "Feedback : ",
+                                CustomText(
+                                  text: localizations.feedback,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   textcolor: KblackColor,
@@ -1700,8 +1704,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const CustomText(
-                                  text: "Comment : ",
+                                CustomText(
+                                  text: localizations.comment,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   textcolor: KblackColor,
@@ -1753,7 +1757,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 ),
                                 title: Center(
                                   child: CustomText(
-                                    text: "Cancel Ride",
+                                    text: localizations.cancelRide,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                     textcolor: korangeColor,
@@ -1762,8 +1766,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                                 backgroundColor: kwhiteColor,
                                 content: Text(
                                   isFree
-                                      ? "You can cancel this ride for FREE.\nAre you sure?"
-                                      : "Cancelling now will charge ₹39.\nDo you want to proceed?",
+                                      ? localizations.cancelFree
+                                      : localizations.cancelCharge,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
@@ -1789,7 +1793,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                       ),
                                     ),
                                     child: Text(
-                                      "No",
+                                      localizations.no,
                                       style: TextStyle(
                                         color: korangeColor,
                                         fontWeight: FontWeight.w600,
@@ -1820,7 +1824,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                                     },
 
                                     child: Text(
-                                      isFree ? "Cancel Ride" : "Pay ₹39",
+                                      isFree
+                                          ? localizations.cancelMyRide
+                                          : localizations.pay39,
                                       style: TextStyle(
                                         color: kwhiteColor,
                                         fontWeight: FontWeight.w600,
@@ -1853,7 +1859,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                               Icon(Icons.block, color: Colors.white, size: 26),
                               const SizedBox(width: 10),
                               Text(
-                                "Cancel My Ride",
+                                localizations.cancelMyRide,
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
@@ -1909,8 +1915,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                     elevation: 4,
                   ),
                   onPressed: null,
-                  child: const Text(
-                    "Ride Cancelled",
+                  child: Text(
+                    localizations.rideCancelled,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -1923,14 +1929,14 @@ class _BookingDetailsState extends State<BookingDetails> {
           }
 
           if (ridestatus == 'Completed') {
-            String buttonText = "Waiting for Payment";
+            String buttonText = localizations.waitingForPayment;
             Color buttonColor = Colors.orange;
 
             if (paymentStatus == "Success") {
-              buttonText = "Payment Received";
+              buttonText = localizations.paymentReceived;
               buttonColor = Colors.green;
             } else if (paymentStatus == "Failed") {
-              buttonText = "Payment Failed";
+              buttonText = localizations.paymentFailed;
               buttonColor = Colors.red;
             }
 
@@ -1950,8 +1956,10 @@ class _BookingDetailsState extends State<BookingDetails> {
                   onPressed: () {
                     if (paymentStatus == 'Waiting for Payment') {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Waiting for payment confirmation...'),
+                        SnackBar(
+                          content: Text(
+                            localizations.waitingPaymentConfirmation,
+                          ),
                         ),
                       );
                     }
@@ -1990,8 +1998,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                     size: 20,
                   ),
                   text: ridestatus == 'Ongoing'
-                      ? "Swipe to Complete Ride"
-                      : "Swipe to Start Ride",
+                      ? localizations.swipeCompleteRide
+                      : localizations.swipeStartRide,
                   textStyle: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -2010,7 +2018,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                             ),
                             title: Center(
                               child: CustomText(
-                                text: "Complete Ride",
+                                text: localizations.completeRide,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 textcolor: korangeColor,
@@ -2018,8 +2026,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                             ),
                             backgroundColor: kwhiteColor,
                             content: CustomText(
-                              text:
-                                  "Are you sure you want to complete this ride?",
+                              text: localizations.confirmCompleteRide,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                               textcolor: KblackColor,
@@ -2038,7 +2045,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   ),
                                 ),
                                 child: Text(
-                                  "No",
+                                  localizations.no,
                                   style: TextStyle(color: korangeColor),
                                 ),
                               ),
@@ -2081,23 +2088,23 @@ class _BookingDetailsState extends State<BookingDetails> {
                                         ownerToken.isNotEmpty) {
                                       await fcmService.sendNotification(
                                         recipientFCMToken: ownerToken,
-                                        title: "Ride Completed",
+                                        title: localizations.rideCompleted,
                                         body:
-                                            "Your ride has been completed.Thank you for choosing Rydyn!",
+                                            localizations.rideCompletedMessage,
                                       );
                                     }
                                   }
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                       content: Text(
-                                        "Ride completed successfully!",
+                                        localizations.rideCompletedSuccess,
                                       ),
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  "Yes",
+                                  localizations.yes,
                                   style: TextStyle(color: kwhiteColor),
                                 ),
                               ),
@@ -2184,14 +2191,16 @@ class _BookingDetailsState extends State<BookingDetails> {
 
     showDialog(
       context: context,
+
       builder: (context) {
+        final localizations = AppLocalizations.of(context)!;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           title: Center(
             child: CustomText(
-              text: "Cancellation",
+              text: localizations.cancellation,
               fontSize: 16,
               fontWeight: FontWeight.w600,
               textcolor: korangeColor,
@@ -2199,15 +2208,15 @@ class _BookingDetailsState extends State<BookingDetails> {
           ),
           content: Text(
             isFree
-                ? "You can cancel this ride for FREE."
-                : "Cancelling now will charge ₹39.",
+                ? localizations.cancelFreeShort
+                : localizations.cancelChargeShort,
             style: TextStyle(fontSize: 14),
           ),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("No"),
+              child: Text(localizations.no),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: korangeColor),
@@ -2220,7 +2229,10 @@ class _BookingDetailsState extends State<BookingDetails> {
                   _openCheckout(39.0);
                 }
               },
-              child: Text("Proceed", style: TextStyle(color: Colors.white)),
+              child: Text(
+                localizations.proceed,
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -2235,13 +2247,14 @@ class _BookingDetailsState extends State<BookingDetails> {
     showDialog(
       context: context,
       builder: (context) {
+        final localizations = AppLocalizations.of(context)!;
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           title: Center(
             child: CustomText(
-              text: "Enter 4-Digit OTP",
+              text: localizations.enterOtp4,
               fontSize: 16,
               fontWeight: FontWeight.w600,
               textcolor: korangeColor,
@@ -2279,7 +2292,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                 ),
               ),
               child: Text(
-                "Cancel",
+                localizations.cancel,
                 style: TextStyle(
                   color: korangeColor,
                   fontWeight: FontWeight.w600,
@@ -2304,8 +2317,8 @@ class _BookingDetailsState extends State<BookingDetails> {
 
                 if (enteredOTP.isEmpty || enteredOTP.length != 4) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Please enter a valid 4-digit OTP."),
+                    SnackBar(
+                      content: Text(localizations.invalidOtp4),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
@@ -2365,13 +2378,13 @@ class _BookingDetailsState extends State<BookingDetails> {
                             horizontal: 20,
                             vertical: 15,
                           ),
-                          content: const Row(
+                          content: Row(
                             children: [
                               Icon(Icons.check_circle, color: Colors.white),
                               SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  "Ride started successfully — Safe drive! ",
+                                  localizations.rideStartedSuccess,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
@@ -2387,7 +2400,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text("Error updating status: $e"),
+                        content: Text(
+                          "${localizations.errorUpdatingStatus} $e",
+                        ),
                         behavior: SnackBarBehavior.floating,
                         backgroundColor: Colors.red,
                       ),
@@ -2395,16 +2410,16 @@ class _BookingDetailsState extends State<BookingDetails> {
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Invalid OTP. Please try again."),
+                    SnackBar(
+                      content: Text(localizations.invalidOtp),
                       behavior: SnackBarBehavior.floating,
                       backgroundColor: Colors.redAccent,
                     ),
                   );
                 }
               },
-              child: const Text(
-                "Confirm",
+              child: Text(
+                localizations.confirm,
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,

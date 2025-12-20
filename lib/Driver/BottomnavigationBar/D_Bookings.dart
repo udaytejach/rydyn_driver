@@ -13,6 +13,8 @@ import 'package:rydyn/Driver/notifications/service.dart';
 import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
 import 'dart:math';
 
+import 'package:rydyn/l10n/app_localizations.dart';
+
 class D_Bookings extends StatefulWidget {
   const D_Bookings({super.key});
 
@@ -48,13 +50,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
   }
 
   int selectedIndex = 0;
-  final List<String> buttonLabels = [
-    "Upcoming",
-    "Accepted",
-    "Ongoing",
-    "Completed",
-    "Cancelled",
-  ];
+
   List<Map<String, dynamic>> carList = [];
 
   Future<void> _updateBookingStatus(
@@ -274,6 +270,16 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    final List<String> buttonLabels = [
+      localizations.upcoming,
+      localizations.accepted,
+      localizations.ongoing,
+      localizations.completed,
+      localizations.cancelled,
+    ];
+
     return Scaffold(
       drawer: const D_SideMenu(),
       appBar: PreferredSize(
@@ -309,8 +315,8 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
 
                   const Spacer(),
 
-                  const CustomText(
-                    text: "My Bookings",
+                  CustomText(
+                    text: localizations.myBookings,
                     fontSize: 23,
                     fontWeight: FontWeight.w600,
                     textcolor: KblackColor,
@@ -405,8 +411,8 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                "Your Bookings",
+              Text(
+                localizations.yourBookings,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -431,7 +437,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                       return Center(
                         child: Text(
-                          "No bookings available",
+                          localizations.noAcceptedBookings,
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
                       );
@@ -484,7 +490,8 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                     if (filteredCars.isEmpty) {
                       return Center(
                         child: Text(
-                          "No ${buttonLabels[selectedIndex]} bookings available",
+                          localizations.noAcceptedBookings,
+                          // "No ${buttonLabels[selectedIndex]} bookings available",
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
                       );
@@ -696,10 +703,10 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                   15,
                                                                 ),
                                                           ),
-                                                          title: const Center(
+                                                          title: Center(
                                                             child: CustomText(
-                                                              text:
-                                                                  "Cannot Accept Booking",
+                                                              text: localizations
+                                                                  .cannotAcceptBooking,
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -708,9 +715,9 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                   Colors.black,
                                                             ),
                                                           ),
-                                                          content: const CustomText(
-                                                            text:
-                                                                'Please turn online first to accept bookings.',
+                                                          content: CustomText(
+                                                            text: localizations
+                                                                .turnOnlineFirst,
                                                             fontSize: 14,
                                                             fontWeight:
                                                                 FontWeight.w400,
@@ -719,7 +726,9 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                           ),
                                                           actions: [
                                                             CustomButton(
-                                                              text: 'OK',
+                                                              text:
+                                                                  localizations
+                                                                      .ok,
                                                               onPressed: () {
                                                                 Navigator.pop(
                                                                   context,
@@ -739,10 +748,10 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                   15,
                                                                 ),
                                                           ),
-                                                          title: const Center(
+                                                          title: Center(
                                                             child: CustomText(
-                                                              text:
-                                                                  "Confirm Ride",
+                                                              text: localizations
+                                                                  .confirmRide,
                                                               fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
@@ -751,9 +760,9 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                   Colors.black,
                                                             ),
                                                           ),
-                                                          content: const CustomText(
-                                                            text:
-                                                                "Are you sure you want to accept this ride?",
+                                                          content: CustomText(
+                                                            text: localizations
+                                                                .acceptRideQuestion,
                                                             fontSize: 14,
                                                             fontWeight:
                                                                 FontWeight.w400,
@@ -767,7 +776,9 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                       .spaceEvenly,
                                                               children: [
                                                                 CustomCancelButton(
-                                                                  text: 'No',
+                                                                  text:
+                                                                      localizations
+                                                                          .no,
                                                                   onPressed: () {
                                                                     print(
                                                                       car['id'],
@@ -778,7 +789,9 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                                   },
                                                                 ),
                                                                 CustomButton(
-                                                                  text: 'Yes',
+                                                                  text:
+                                                                      localizations
+                                                                          .yes,
                                                                   onPressed: () {
                                                                     _updateBookingStatus(
                                                                       car,
@@ -794,8 +807,8 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                       );
                                                     }
                                                   },
-                                                  child: const Text(
-                                                    "Accept",
+                                                  child: Text(
+                                                    localizations.accept,
                                                     style: TextStyle(
                                                       color: kwhiteColor,
                                                     ),

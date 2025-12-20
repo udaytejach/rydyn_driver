@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 
 class D_TermsAndConditions extends StatelessWidget {
   @override

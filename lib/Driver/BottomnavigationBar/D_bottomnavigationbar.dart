@@ -1,14 +1,11 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_Bookings.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/Earnings.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/settings.dart';
 import 'package:rydyn/Driver/DriverDahboard/driverDashboard.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/sidemenu/D_Helpandsupport.dart';
 
 class D_BottomNavigation extends StatefulWidget {
@@ -67,11 +64,17 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        bool exitApp = await _showExitDialog(context);
+        bool exitApp = await _showExitDialog(
+          context,
+          localizations.exitAppQuestion,
+          localizations.cancel,
+          localizations.exit,
+        );
         if (exitApp) {
           Navigator.of(context).pop(true);
         }
@@ -97,9 +100,13 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
                   'images/D_Home.png',
                   0,
                 ),
-                _buildNavItem("Bookings", 'images/my_rides.png', 1),
-                _buildNavItem("Earnings", 'images/D_Earnings.png', 2),
-                _buildNavItem("Help", 'images/contactUs.png', 3),
+                _buildNavItem(localizations.bookings, 'images/my_rides.png', 1),
+                _buildNavItem(
+                  localizations.earnings,
+                  'images/D_Earnings.png',
+                  2,
+                ),
+                _buildNavItem(localizations.help, 'images/contactUs.png', 3),
               ],
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
@@ -112,7 +119,12 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
     );
   }
 
-  Future<bool> _showExitDialog(BuildContext context) async {
+  Future<bool> _showExitDialog(
+    BuildContext context,
+    String question,
+    String cancel,
+    String dialogexit,
+  ) async {
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -120,7 +132,7 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
               borderRadius: BorderRadius.circular(10),
             ),
             content: Text(
-              'Do you want to exit the app ?',
+              question,
               style: GoogleFonts.poppins(
                 color: Colors.black,
                 fontSize: 15,
@@ -131,7 +143,7 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(
-                  'Cancel',
+                  cancel,
                   style: GoogleFonts.poppins(
                     color: korangeColor,
                     fontSize: 14,
@@ -145,7 +157,7 @@ class _BottomNavigationState extends State<D_BottomNavigation> {
                   exit(0);
                 },
                 child: Text(
-                  'Exit',
+                  dialogexit,
                   style: GoogleFonts.poppins(
                     color: korangeColor,
                     fontSize: 14,

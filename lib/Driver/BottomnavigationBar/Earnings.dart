@@ -4,6 +4,7 @@ import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 
 class MyEarnings extends StatefulWidget {
   const MyEarnings({super.key});
@@ -22,10 +23,9 @@ class _MyEarningsState extends State<MyEarnings> {
   void initState() {
     super.initState();
     _loadUser();
-    loadAllOwners(); 
+    loadAllOwners();
   }
 
-  
   Future<void> loadAllOwners() async {
     final snap = await FirebaseFirestore.instance.collection('users').get();
 
@@ -41,6 +41,7 @@ class _MyEarningsState extends State<MyEarnings> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       drawer: const D_SideMenu(),
       body: Column(
@@ -49,7 +50,7 @@ class _MyEarningsState extends State<MyEarnings> {
             children: [
               SizedBox(
                 height: 250,
-                child:   ClipPath(
+                child: ClipPath(
                   clipper: VShapeClipper(),
                   child: Container(
                     width: double.infinity,
@@ -59,8 +60,8 @@ class _MyEarningsState extends State<MyEarnings> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 50),
-                        const CustomText(
-                          text: "Total earnings",
+                        CustomText(
+                          text: localizations.totalEarnings,
                           textcolor: korangeColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
@@ -75,11 +76,10 @@ class _MyEarningsState extends State<MyEarnings> {
                         ),
 
                         const SizedBox(height: 5),
-                        const Padding(
+                        Padding(
                           padding: EdgeInsets.all(8.0),
                           child: CustomText(
-                            text:
-                                "The ride payment will be auto-debited to your account once the customer pays for the booking in cash.",
+                            text: localizations.ridePaymentNote,
                             textcolor: korangeColor,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -118,8 +118,8 @@ class _MyEarningsState extends State<MyEarnings> {
                       ),
                     ),
                     const Spacer(),
-                    const CustomText(
-                      text: 'My Earnings',
+                    CustomText(
+                      text: localizations.myEarnings,
                       fontSize: 23,
                       fontWeight: FontWeight.w600,
                       textcolor: KblackColor,
@@ -138,8 +138,8 @@ class _MyEarningsState extends State<MyEarnings> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Transactions",
+                Text(
+                  localizations.transactions,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Container(
@@ -239,9 +239,9 @@ class _MyEarningsState extends State<MyEarnings> {
                           });
 
                           if (finalList.isEmpty) {
-                            return const Center(
+                            return Center(
                               child: CustomText(
-                                text: "No Transactions Found",
+                                text: localizations.noTransactionsFound,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 textcolor: KblackColor,

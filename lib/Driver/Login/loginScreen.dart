@@ -9,11 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:rydyn/Driver/DriverLogin/driverRegistrationpage.dart';
 import 'package:rydyn/Driver/Login/otp_login.dart';
-import 'package:rydyn/Driver/l10n/app_localizations.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 import 'package:rydyn/Driver/services/repository.dart';
 import 'package:rydyn/Driver/viewmodels/login_viewmodel.dart';
 
-import 'otpscreen.dart';
 import '../Widgets/colors.dart';
 import '../Widgets/customButton.dart';
 import '../Widgets/customText.dart';
@@ -37,7 +36,9 @@ class _LoginScreenBody extends StatefulWidget {
 }
 
 class _LoginScreenBodyState extends State<_LoginScreenBody> {
-  final TextEditingController phoneController = TextEditingController(text: "");
+  final TextEditingController phoneController = TextEditingController(
+    text: "7569643560",
+  );
   bool _isLoading = false;
 
   @override
@@ -63,18 +64,18 @@ class _LoginScreenBodyState extends State<_LoginScreenBody> {
               Column(
                 children: [
                   const Spacer(),
-                  // CustomText(
-                  //   text: "rydyn",
-                  //   fontSize: 32,
-                  //   fontWeight: FontWeight.w700,
-                  //   textcolor: korangeColor,
-                  // ),
-                  Image.asset(
-                    'images/rydyn.png',
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.contain,
+                  CustomText(
+                    text: "rydyn Captain",
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
+                    textcolor: korangeColor,
                   ),
+                  // Image.asset(
+                  //   'images/rydyn.png',
+                  //   width: 100,
+                  //   height: 100,
+                  //   fit: BoxFit.contain,
+                  // ),
                   const Spacer(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),

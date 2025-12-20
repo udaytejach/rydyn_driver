@@ -9,6 +9,7 @@ class SharedPrefServices {
   static const _keyemail = 'email';
   static const _keyfcmToken = 'fcmToken';
   static const _keyprofileImage = 'profileimage';
+  static const _keysavelanguage = 'savelanguage';
 
   static const _keynumber = 'number';
   static const _keystatus = 'Inactive';
@@ -50,6 +51,9 @@ class SharedPrefServices {
   static Future setisOnline(bool isOnline) async {
     await prefs!.setBool(_keyisOnline, isOnline);
   }
+
+  static Future setSaveLanguage(String savelanguage) async =>
+      await prefs!.setString(_keysavelanguage, savelanguage);
 
   static Future setUserId(String userId) async =>
       await prefs!.setString(_keyuserId, userId);
@@ -200,10 +204,12 @@ class SharedPrefServices {
   static String? getPrivateKey() => prefs!.getString(_keyprivateKey);
 
   static String? getUniverseDomain() => prefs!.getString(_keyuniverseDomain);
+  static String? getSaveLanguage() => prefs!.getString(_keysavelanguage);
 
   static Future<void> clearUserFromSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
 
+    await prefs!.setString(_keysavelanguage, "");
     await prefs!.setString(_keyuserId, "");
     await prefs!.setString(_keyfcmToken, "");
     await prefs!.setString(_keyfirstName, "");

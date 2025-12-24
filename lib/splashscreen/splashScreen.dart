@@ -31,15 +31,15 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4), // adjust speed
+      duration: const Duration(seconds: 4), 
     );
 
     _scaleAnimation = Tween<double>(
-      begin: 0.0, // start at normal size
-      end: 1.0, // shrink to nothing (zoom out)
+      begin: 0.0, 
+      end: 1.0, 
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _controller.forward(); // start animation automatically
+    _controller.forward(); 
     startSplashFlow();
   }
 
@@ -207,7 +207,7 @@ class _SplashScreenState extends State<SplashScreen>
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          letterSpacing: 1.0, // tweak for logo-like spacing
+                          letterSpacing: 1.0,
                         ),
                       ),
                     ),
@@ -249,19 +249,3 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
-  // SizedBox(
-                //   width: MediaQuery.of(context).size.width * 0.8,
-                //   child: AnimatedTextKit(
-                //     repeatForever: true,
-                //     animatedTexts: [
-                //       ColorizeAnimatedText(
-                //         'rydyn',
-                //         textStyle: colorizeTextStyle,
-                //         colors: colorizeColors,
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ],
-                //     isRepeatingAnimation: true,
-                //     pause: const Duration(milliseconds: 200),
-                //   ),
-                // ),

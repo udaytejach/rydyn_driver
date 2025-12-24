@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 import 'package:rydyn/Driver/BottomnavigationBar/booking_details.dart';
+import 'package:rydyn/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
 import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customButton.dart';
@@ -46,6 +47,9 @@ class _DriverDashboardState extends State<DriverDashboard> {
   int _bounceIndex = 0;
   late Timer _iconTimer;
 
+  Timer? _statusTimer;
+  String? _lastKnownStatus;
+
   @override
   void initState() {
     super.initState();
@@ -54,7 +58,54 @@ class _DriverDashboardState extends State<DriverDashboard> {
     // _startAutoScroll();
     _startOfferAutoScroll();
     _startIconBounce();
+    _startStatusCheckService();
     // _fetchTotalEarnings();
+  }
+
+  void _startStatusCheckService() {
+    _statusTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+      try {
+        final driverDocId = await SharedPrefServices.getDocId();
+        if (driverDocId == null) return;
+
+        final snap = await FirebaseFirestore.instance
+            .collection("drivers")
+            .doc(driverDocId)
+            .get(const GetOptions(source: Source.server));
+
+        final status = snap.data()?["status"];
+        if (status == null) return;
+
+        if (status == _lastKnownStatus) return;
+        _lastKnownStatus = status;
+
+        if (status == "Inactive") {
+          _handleDriverDeactivated();
+        }
+
+        if (status == "Rejected") {
+          _handleDriverRejected();
+        }
+      } catch (_) {}
+    });
+  }
+
+  void _handleDriverDeactivated() {
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const NewDriverDashbaord()),
+    );
+  }
+
+  void _handleDriverRejected() {
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const NewDriverDashbaord()),
+    );
   }
 
   void _loadOnlineStatus() async {
@@ -938,15 +989,6 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                         ],
                                       ),
                                     ),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.all(8.0),
-                                    //   child: Image.asset(
-                                    //     'images/backarrow.png',
-                                    //     width: 28,
-                                    //     height: 28,
-                                    //     fit: BoxFit.contain,
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                                 SizedBox(height: 6),
@@ -1430,75 +1472,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
 
                   SizedBox(height: 20),
                   Divider(height: 4, color: KdeviderColor, thickness: 5),
-                  // SizedBox(height: 20),
 
-                  // Container(
-                  //   margin: EdgeInsets.only(left: 15, right: 15),
-                  //   color: kwhiteColor,
-
-                  //   child: Column(
-                  //     children: [
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           CustomText(
-                  //             text: localizations.menuOffers,
-                  //             fontSize: 18,
-                  //             fontWeight: FontWeight.bold,
-                  //             textcolor: KblackColor,
-                  //           ),
-                  //           Text(
-                  //             localizations.home_viewoffers,
-                  //             style: GoogleFonts.poppins(
-                  //               fontSize: 12,
-                  //               fontWeight: FontWeight.w400,
-                  //               color: korangeColor,
-                  //               decoration: TextDecoration.underline,
-                  //               decorationColor: korangeColor,
-                  //               decorationStyle: TextDecorationStyle.solid,
-                  //               decorationThickness: 1.5,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       SizedBox(height: 10),
-                  //       Container(
-                  //         height: 140,
-                  //         child: PageView.builder(
-                  //           controller: _offerPageController,
-                  //           itemCount: offerImages.length,
-                  //           itemBuilder: (context, index) {
-                  //             return Padding(
-                  //               padding: const EdgeInsets.symmetric(
-                  //                 horizontal: 6,
-                  //               ),
-                  //               child: ClipRRect(
-                  //                 borderRadius: BorderRadius.circular(12),
-                  //                 child: Image.asset(
-                  //                   offerImages[index],
-                  //                   fit: BoxFit.cover,
-                  //                 ),
-                  //               ),
-                  //             );
-                  //           },
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: 12),
-                  //       Center(
-                  //         child: SmoothPageIndicator(
-                  //           controller: _offerPageController,
-                  //           count: offerImages.length,
-                  //           effect: WormEffect(
-                  //             dotHeight: 6,
-                  //             dotWidth: 40,
-                  //             activeDotColor: korangeColor,
-                  //             dotColor: Colors.grey.shade300,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   SizedBox(height: 30),
 
                   Container(
@@ -1577,130 +1551,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
       ),
     );
   }
-
-  // Widget _vehicleCard() {
-  //   return Container(
-  //     width: 320, // fixed width for each card
-  //     margin: const EdgeInsets.only(right: 12),
-  //     decoration: BoxDecoration(
-  //       border: Border.all(color: kbordergreyColor, width: 1),
-  //       borderRadius: BorderRadius.circular(16),
-  //     ),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(8),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           // Car details row
-  //           Row(
-  //             crossAxisAlignment: CrossAxisAlignment.center,
-  //             children: [
-  //               Container(
-  //                 width: 70,
-  //                 height: 70,
-  //                 decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.circular(16),
-  //                   color: Colors.grey.shade100,
-  //                 ),
-  //                 child: Center(
-  //                   child: ClipRRect(
-  //                     borderRadius: BorderRadius.circular(12),
-  //                     child: Image.network(
-  //                       "https://via.placeholder.com/150",
-  //                       fit: BoxFit.cover,
-  //                       width: 130,
-  //                       errorBuilder: (context, error, stackTrace) =>
-  //                           const Icon(Icons.car_crash),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               const SizedBox(width: 10),
-  //               Expanded(
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     CustomText(
-  //                       text: "Toyota Corolla",
-  //                       fontSize: 14,
-  //                       fontWeight: FontWeight.w600,
-  //                       textcolor: KblackColor,
-  //                     ),
-  //                     const SizedBox(height: 5),
-  //                     Wrap(
-  //                       spacing: 6,
-  //                       children: [
-  //                         _infoChip("Automatic"),
-  //                         _infoChip("Petrol"),
-  //                         _infoChip("Sedan"),
-  //                       ],
-  //                     ),
-  //                     const SizedBox(height: 5),
-  //                     _infoChip("MH12AB1234"),
-  //                   ],
-  //                 ),
-  //               ),
-  //               const Align(
-  //                 alignment: Alignment.center,
-  //                 child: Icon(Icons.arrow_forward_ios, size: 18),
-  //               ),
-  //             ],
-  //           ),
-
-  //           const SizedBox(height: 5),
-  //           const Divider(), // Divider below content
-  //           const SizedBox(height: 5),
-
-  //           // Buttons row
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //             children: [
-  //               Expanded(
-  //                 child: OutlinedButton(
-  //                   style: OutlinedButton.styleFrom(
-  //                     side: const BorderSide(
-  //                       color: KorangeColorNew,
-  //                     ), // green border
-  //                   ),
-  //                   onPressed: () {},
-  //                   child: const CustomText(
-  //                     text: "Decline",
-  //                     textcolor: KorangeColorNew,
-  //                     fontSize: 12,
-  //                     fontWeight: FontWeight.w500,
-  //                   ),
-  //                 ),
-  //               ),
-  //               const SizedBox(width: 10),
-  //               Expanded(
-  //                 child: ElevatedButton(
-  //                   style: ElevatedButton.styleFrom(
-  //                     backgroundColor: KbtngreenColor,
-  //                   ),
-  //                   onPressed: () {
-  //                     // Handle accept action
-  //                   },
-  //                   child: const Text(
-  //                     "Accept",
-  //                     style: TextStyle(color: kwhiteColor),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }
-
-// final List<String> watchLearnImages = [
-//   'images/driver.png',
-//   'images/driver.png',
-//   'images/driver.png',
-// ];
 
 final List<String> offerImages = [
   'images/offer.png',
@@ -1752,427 +1603,3 @@ class CarModel {
     required this.price,
   });
 }
-
-
- // this code is future builder realted  fetch bookings //
-// if (carList.isNotEmpty) ...[
-                        //   SizedBox(
-                        //     height: 170,
-                        //     child: PageView.builder(
-                        //       itemCount: carList.length,
-                        //       controller: _pageController,
-
-                        //       itemBuilder: (context, index) {
-                        //         final car = carList[index];
-                        //         // final isSelected = selectedCarIndex == index;
-
-                        //         final vehicle = car['vehicleDetails'] ?? {};
-
-                        //         final brandModelText =
-                        //             '${vehicle['brand'] ?? 'NA'} ${vehicle['model'] ?? 'NA'}';
-                        //         final extraHeight = brandModelText.length > 20
-                        //             ? 10.0
-                        //             : 0.0;
-
-                        //         return GestureDetector(
-                        //           onTap: () {
-                        //             Navigator.push(
-                        //               context,
-                        //               MaterialPageRoute(
-                        //                 builder: (_) => BookingDetails(
-                        //                   bookingData: car,
-                        //                   docId: car['id'],
-                        //                 ),
-                        //               ),
-                        //             );
-                        //             // setState(() {
-                        //             //   selectedCarIndex = index;
-                        //             // });
-                        //           },
-                        //           child: Stack(
-                        //             clipBehavior: Clip.none,
-                        //             children: [
-                        //               Container(
-                        //                 margin: const EdgeInsets.only(right: 8),
-                        //                 decoration: BoxDecoration(
-                        //                   border: Border.all(
-                        //                     color: Colors.grey.shade300,
-                        //                     width: 1.5,
-                        //                   ),
-                        //                   borderRadius: BorderRadius.circular(
-                        //                     16,
-                        //                   ),
-                        //                 ),
-                        //                 child: Padding(
-                        //                   padding: const EdgeInsets.all(7),
-                        //                   child: Column(
-                        //                     children: [
-                        //                       Row(
-                        //                         crossAxisAlignment:
-                        //                             CrossAxisAlignment.center,
-                        //                         children: [
-                        //                           Container(
-                        //                             width: 80,
-                        //                             height: 70,
-                        //                             decoration: BoxDecoration(
-                        //                               borderRadius:
-                        //                                   BorderRadius.circular(
-                        //                                     16,
-                        //                                   ),
-                        //                               color:
-                        //                                   Colors.grey.shade100,
-                        //                             ),
-                        //                             child: Center(
-                        //                               child: ClipRRect(
-                        //                                 borderRadius:
-                        //                                     BorderRadius.circular(
-                        //                                       12,
-                        //                                     ),
-                        //                                 child:
-                        //                                     (vehicle['images'] !=
-                        //                                             null &&
-                        //                                         vehicle['images']
-                        //                                             is List &&
-                        //                                         vehicle['images']
-                        //                                             .isNotEmpty)
-                        //                                     ? Image.network(
-                        //                                         vehicle['images'][0] ??
-                        //                                             '',
-                        //                                         fit: BoxFit
-                        //                                             .cover,
-                        //                                         width: 130,
-                        //                                         errorBuilder:
-                        //                                             (
-                        //                                               context,
-                        //                                               error,
-                        //                                               stackTrace,
-                        //                                             ) => const Icon(
-                        //                                               Icons
-                        //                                                   .car_crash,
-                        //                                             ),
-                        //                                       )
-                        //                                     : const Icon(
-                        //                                         Icons
-                        //                                             .directions_car,
-                        //                                       ),
-                        //                               ),
-                        //                             ),
-                        //                           ),
-                        //                           const SizedBox(width: 10),
-                        //                           Expanded(
-                        //                             child: Column(
-                        //                               mainAxisSize:
-                        //                                   MainAxisSize.min,
-
-                        //                               crossAxisAlignment:
-                        //                                   CrossAxisAlignment
-                        //                                       .start,
-                        //                               children: [
-                        //                                 const SizedBox(
-                        //                                   height: 8,
-                        //                                 ),
-                        //                                 CustomText(
-                        //                                   text:
-                        //                                       '${vehicle['brand'] ?? 'NA'} ${vehicle['model'] ?? 'NA'}',
-                        //                                   fontSize: 14,
-                        //                                   fontWeight:
-                        //                                       FontWeight.w600,
-                        //                                   textcolor:
-                        //                                       KblackColor,
-                        //                                 ),
-                        //                                 const SizedBox(
-                        //                                   height: 5,
-                        //                                 ),
-                        //                                 Row(
-                        //                                   children: [
-                        //                                     Image.asset(
-                        //                                       'images/onTime.png',
-                        //                                       width: 14,
-                        //                                       height: 14,
-                        //                                     ),
-                        //                                     const SizedBox(
-                        //                                       width: 2,
-                        //                                     ),
-                        //                                     CustomText(
-                        //                                       text:
-                        //                                           '${car['date'] != null ? formatDate(car['date']) : 'NA'},',
-                        //                                       fontSize: 12,
-                        //                                       fontWeight:
-                        //                                           FontWeight
-                        //                                               .w500,
-                        //                                       textcolor:
-                        //                                           kseegreyColor,
-                        //                                     ),
-
-                        //                                     // Image.asset(
-                        //                                     //   'images/onTime.png',
-                        //                                     //   width: 14,
-                        //                                     //   height: 14,
-                        //                                     // ),
-                        //                                     const SizedBox(
-                        //                                       width: 2,
-                        //                                     ),
-                        //                                     CustomText(
-                        //                                       text:
-                        //                                           car['time'] ??
-                        //                                           'NA',
-                        //                                       fontSize: 12,
-                        //                                       fontWeight:
-                        //                                           FontWeight
-                        //                                               .w500,
-                        //                                       textcolor:
-                        //                                           kseegreyColor,
-                        //                                     ),
-                        //                                   ],
-                        //                                 ),
-                        //                                 const SizedBox(
-                        //                                   height: 5,
-                        //                                 ),
-                        //                                 Row(
-                        //                                   children: [
-                        //                                     CustomText(
-                        //                                       text:
-                        //                                           '${car['distance'] ?? '45'} Km',
-                        //                                       fontSize: 12,
-                        //                                       fontWeight:
-                        //                                           FontWeight
-                        //                                               .w500,
-                        //                                       textcolor:
-                        //                                           kseegreyColor,
-                        //                                     ),
-                        //                                   ],
-                        //                                 ),
-                        //                               ],
-                        //                             ),
-                        //                           ),
-                        //                           const Align(
-                        //                             alignment: Alignment.center,
-                        //                             child: Icon(
-                        //                               Icons.arrow_forward_ios,
-                        //                               size: 18,
-                        //                             ),
-                        //                           ),
-                        //                         ],
-                        //                       ),
-                        //                       SizedBox(height: 10),
-                        //                       DottedLine(
-                        //                         dashColor: kbordergreyColor,
-                        //                         dashLength: 10,
-                        //                         dashGapLength: 6,
-                        //                       ),
-
-                        //                       const SizedBox(height: 10),
-
-                        //                       Row(
-                        //                         mainAxisAlignment:
-                        //                             MainAxisAlignment
-                        //                                 .spaceBetween,
-                        //                         children: [
-                        //                           const SizedBox(width: 10),
-                        //                           Expanded(
-                        //                             child: ElevatedButton(
-                        //                               style:
-                        //                                   ElevatedButton.styleFrom(
-                        //                                     backgroundColor:
-                        //                                         KbtngreenColor,
-                        //                                   ),
-                        //                               onPressed: () async {
-                        //                                 final isOnline =
-                        //                                     await SharedPrefServices.getisOnline();
-
-                        //                                 if (!isOnline) {
-                        //                                   showDialog(
-                        //                                     context: context,
-                        //                                     builder: (context) => AlertDialog(
-                        //                                       shape: RoundedRectangleBorder(
-                        //                                         borderRadius:
-                        //                                             BorderRadius.circular(
-                        //                                               15,
-                        //                                             ),
-                        //                                       ),
-                        //                                       title: const Center(
-                        //                                         child: CustomText(
-                        //                                           text:
-                        //                                               "Cannot Accept Booking",
-                        //                                           fontSize: 15,
-                        //                                           fontWeight:
-                        //                                               FontWeight
-                        //                                                   .w500,
-                        //                                           textcolor:
-                        //                                               Colors
-                        //                                                   .black,
-                        //                                         ),
-                        //                                       ),
-                        //                                       content: const CustomText(
-                        //                                         text:
-                        //                                             'Please turn online first to accept bookings.',
-                        //                                         fontSize: 14,
-                        //                                         fontWeight:
-                        //                                             FontWeight
-                        //                                                 .w400,
-                        //                                         textcolor:
-                        //                                             Colors
-                        //                                                 .black,
-                        //                                       ),
-                        //                                       actions: [
-                        //                                         CustomButton(
-                        //                                           text: 'OK',
-                        //                                           onPressed: () {
-                        //                                             Navigator.pop(
-                        //                                               context,
-                        //                                             );
-                        //                                           },
-                        //                                         ),
-                        //                                       ],
-                        //                                     ),
-                        //                                   );
-                        //                                 } else {
-                        //                                   showDialog(
-                        //                                     context: context,
-                        //                                     builder: (context) => AlertDialog(
-                        //                                       shape: RoundedRectangleBorder(
-                        //                                         borderRadius:
-                        //                                             BorderRadius.circular(
-                        //                                               15,
-                        //                                             ),
-                        //                                       ),
-                        //                                       title: const Center(
-                        //                                         child: CustomText(
-                        //                                           text:
-                        //                                               "Confirm Ride",
-                        //                                           fontSize: 16,
-                        //                                           fontWeight:
-                        //                                               FontWeight
-                        //                                                   .w600,
-                        //                                           textcolor:
-                        //                                               Colors
-                        //                                                   .black,
-                        //                                         ),
-                        //                                       ),
-                        //                                       content: const CustomText(
-                        //                                         text:
-                        //                                             "Are you sure you want to accept this ride?",
-                        //                                         fontSize: 14,
-                        //                                         fontWeight:
-                        //                                             FontWeight
-                        //                                                 .w400,
-                        //                                         textcolor:
-                        //                                             Colors
-                        //                                                 .black,
-                        //                                       ),
-                        //                                       actions: [
-                        //                                         Row(
-                        //                                           mainAxisAlignment:
-                        //                                               MainAxisAlignment
-                        //                                                   .spaceEvenly,
-                        //                                           children: [
-                        //                                             CustomCancelButton(
-                        //                                               text:
-                        //                                                   'No',
-                        //                                               onPressed: () {
-                        //                                                 Navigator.pop(
-                        //                                                   context,
-                        //                                                 );
-                        //                                               },
-                        //                                             ),
-                        //                                             CustomButton(
-                        //                                               text:
-                        //                                                   'Yes',
-                        //                                               onPressed: () {
-                        //                                                 Navigator.pop(
-                        //                                                   context,
-                        //                                                 );
-                        //                                                 _updateBookingStatus(
-                        //                                                   car['id'],
-                        //                                                   'Accepted',
-                        //                                                 );
-                        //                                               },
-                        //                                             ),
-                        //                                           ],
-                        //                                         ),
-                        //                                       ],
-                        //                                     ),
-                        //                                   );
-                        //                                 }
-                        //                               },
-                        //                               child: const Text(
-                        //                                 "Accept",
-                        //                                 style: TextStyle(
-                        //                                   color: kwhiteColor,
-                        //                                 ),
-                        //                               ),
-                        //                             ),
-                        //                           ),
-                        //                         ],
-                        //                       ),
-                        //                     ],
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           ),
-                        //         );
-                        //       },
-                        //     ),
-                        //   ),
-
-                        //   const SizedBox(height: 15),
-                        //   SmoothPageIndicator(
-                        //     controller: _pageController,
-                        //     count: carList.length,
-                        //     effect: WormEffect(
-                        //       dotHeight: 6,
-                        //       dotWidth: 30,
-                        //       activeDotColor: korangeColor,
-                        //       dotColor: Colors.grey.shade300,
-                        //     ),
-                        //   ),
-                        // ] else ...[
-
-
-
-  // isEarningsLoading
-                                          //     ? SizedBox(
-                                          //         height: 40,
-                                          //         child: Row(
-                                          //           mainAxisAlignment:
-                                          //               MainAxisAlignment.start,
-                                          //           children: List.generate(
-                                          //             3,
-                                          //             (
-                                          //               index,
-                                          //             ) => AnimatedPadding(
-                                          //               duration:
-                                          //                   const Duration(
-                                          //                     milliseconds: 400,
-                                          //                   ),
-                                          //               padding: EdgeInsets.only(
-                                          //                 top:
-                                          //                     index ==
-                                          //                         _bounceIndex
-                                          //                     ? 0
-                                          //                     : 10,
-                                          //               ),
-                                          //               child: const Icon(
-                                          //                 Icons.currency_rupee,
-                                          //                 color: korangeColor,
-                                          //                 size: 24,
-                                          //               ),
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       )
-                                          //     : AnimatedFlipCounter(
-                                          //         duration: const Duration(
-                                          //           milliseconds: 800,
-                                          //         ),
-                                          //         value: totalEarnings,
-                                          //         prefix: "₹",
-                                          //         fractionDigits: 2,
-                                          //         thousandSeparator: ",",
-                                          //         textStyle: const TextStyle(
-                                          //           fontSize: 28,
-                                          //           fontWeight: FontWeight.w700,
-                                          //           color: korangeColor,
-                                          //         ),
-                                          //       ),

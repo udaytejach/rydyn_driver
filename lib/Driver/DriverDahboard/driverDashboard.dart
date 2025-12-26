@@ -1057,7 +1057,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: kgreyColor,
-                                  ),
+                                  ),   
                                 ),
                               );
                             }

@@ -48,6 +48,8 @@ class _BookingDetailsState extends State<BookingDetails> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     // getPaymentStatus(widget.docId);
     print(widget.docId);
+    print('driverName');
+    print(widget.bookingData['driverName']);
   }
 
   List<Map<String, dynamic>> reviewsList = [];
@@ -147,7 +149,7 @@ class _BookingDetailsState extends State<BookingDetails> {
           );
         }
       }
-
+      debugPrint("driver name: ${widget.bookingData['driverName']}");
       debugPrint("Booking updated successfully!");
 
       if (mounted) {
@@ -1747,8 +1749,12 @@ class _BookingDetailsState extends State<BookingDetails> {
                           snapshot.data!.data() as Map<String, dynamic>? ?? {};
                       final status = bookingData['status'] ?? '';
 
-                      if (status != 'New' && status != 'Accepted') {
-                        return SizedBox();
+                      // if (status != 'New' && status != 'Accepted') {
+                      //   return SizedBox();
+                      // }
+
+                      if (status != 'Accepted') {
+                        return const SizedBox();
                       }
 
                       return GestureDetector(

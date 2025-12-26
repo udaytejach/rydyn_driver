@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:provider/provider.dart';
 import 'package:rydyn/Driver/Login/loginScreen.dart';
+import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/l10n/app_localizations.dart';
@@ -98,6 +99,10 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                               } else if (newValue == 'Telugu') {
                                 localeProvider.setLocale(const Locale('te'));
                               }
+
+                              SharedPrefServices.setSaveLanguage(
+                                selectedLanguage,
+                              );
                             },
 
                             dropdownStyleData: DropdownStyleData(

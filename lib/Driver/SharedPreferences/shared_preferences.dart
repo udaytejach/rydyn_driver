@@ -209,7 +209,7 @@ class SharedPrefServices {
   static Future<void> clearUserFromSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
 
-    await prefs!.setString(_keysavelanguage, "");
+    // await prefs!.setString(_keysavelanguage, "");
     await prefs!.setString(_keyuserId, "");
     await prefs!.setString(_keyfcmToken, "");
     await prefs!.setString(_keyfirstName, "");

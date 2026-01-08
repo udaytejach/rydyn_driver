@@ -42,6 +42,10 @@ class SharedPrefServices {
   static const _keyprivateKey = 'privateKey';
   static const _keyuniverseDomain = 'universeDomain';
 
+  static const _keyrazorapiKey = 'razorapiKey';
+
+  static const _keyrazorsecretkey = 'razorsecretkey';
+
   static Future init() async => prefs = await SharedPreferences.getInstance();
 
   static Future setislogged(bool islogged) async {
@@ -86,6 +90,13 @@ class SharedPrefServices {
 
   static Future setUniverseDomain(String universeDomain) async =>
       await prefs!.setString(_keyuniverseDomain, universeDomain);
+
+  static Future setRazorapiKey(String razorapiKey) async =>
+      await prefs!.setString(_keyrazorapiKey, razorapiKey);
+
+  static Future setRazorsecretKey(String razorsecretKey) async =>
+      await prefs!.setString(_keyrazorsecretkey, razorsecretKey);
+
   static Future setProfileImage(String profileimage) async =>
       await prefs!.setString(_keyprofileImage, profileimage);
 
@@ -206,6 +217,9 @@ class SharedPrefServices {
   static String? getUniverseDomain() => prefs!.getString(_keyuniverseDomain);
   static String? getSaveLanguage() => prefs!.getString(_keysavelanguage);
 
+  static String? getRazorapiKey() => prefs!.getString(_keyrazorapiKey);
+  static String? getRazorsecretKey() => prefs!.getString(_keyrazorsecretkey);
+
   static Future<void> clearUserFromSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
 
@@ -247,6 +261,8 @@ class SharedPrefServices {
     await prefs!.setString(_keytokenUri, "");
     await prefs!.setString(_keyprivateKey, "");
     await prefs!.setString(_keyuniverseDomain, "");
+    await prefs!.setString(_keyrazorapiKey, "");
+    await prefs!.setString(_keyrazorsecretkey, "");
 
     print('All user data cleared from SharedPreferences.');
   }

@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,8 +22,13 @@ import 'package:rydyn/Driver/viewmodels/login_viewmodel.dart';
 
 class OtpLogin extends StatefulWidget {
   final String phoneNumber;
+  final String verificationId;
 
-  const OtpLogin({super.key, required this.phoneNumber});
+  const OtpLogin({
+    super.key,
+    required this.phoneNumber,
+    required this.verificationId,
+  });
 
   @override
   State<OtpLogin> createState() => _OtpLoginState();
@@ -28,7 +37,50 @@ class OtpLogin extends StatefulWidget {
 class _OtpLoginState extends State<OtpLogin> {
   final TextEditingController otpController = TextEditingController();
   bool _isLoading = false;
+  String? _currentVerificationId;
+  bool _isResending = false;
+
+  int _secondsLeft = 60;
+  Timer? _timer;
+  String? _otpErrorMessage;
   final FCMService fcmService = FCMService();
+
+  Future<void> _resendOtp() async {
+    if (_isResending) return;
+
+    setState(() => _isResending = true);
+
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: "+91${widget.phoneNumber}",
+        timeout: const Duration(seconds: 60),
+
+        verificationCompleted: (PhoneAuthCredential credential) async {},
+
+        verificationFailed: (FirebaseAuthException e) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.message ?? "Resend failed")));
+        },
+
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            _currentVerificationId = verificationId;
+            _otpErrorMessage = null;
+          });
+          _startTimer();
+
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("OTP resent")));
+        },
+
+        codeAutoRetrievalTimeout: (_) {},
+      );
+    } finally {
+      setState(() => _isResending = false);
+    }
+  }
 
   Future<void> fetchServiceKeys() async {
     try {
@@ -53,6 +105,8 @@ class _OtpLoginState extends State<OtpLogin> {
       await SharedPrefServices.setPrivateKey(data["privateKey"] ?? "");
       await SharedPrefServices.setTokenUri(data["tokenUri"] ?? "");
       await SharedPrefServices.setUniverseDomain(data["universeDomain"] ?? "");
+      await SharedPrefServices.setRazorapiKey(data["razor_apiKey"] ?? "");
+      await SharedPrefServices.setRazorsecretKey(data["razor_secretKey"] ?? "");
 
       print("Service keys saved to SharedPreferences!");
 
@@ -68,6 +122,27 @@ class _OtpLoginState extends State<OtpLogin> {
     } catch (e) {
       print("Error loading service keys: $e");
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print('OTP ${widget.verificationId}');
+    _currentVerificationId = widget.verificationId;
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    setState(() => _secondsLeft = 60);
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsLeft == 0) {
+        timer.cancel();
+      } else {
+        setState(() => _secondsLeft--);
+      }
+    });
   }
 
   @override
@@ -118,7 +193,7 @@ class _OtpLoginState extends State<OtpLogin> {
                           const SizedBox(height: 50),
                           Pinput(
                             controller: otpController,
-                            length: 4,
+                            length: 6,
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -135,9 +210,7 @@ class _OtpLoginState extends State<OtpLogin> {
                                 border: Border.all(color: kbordergreyColor),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
+                              margin: const EdgeInsets.symmetric(horizontal: 5),
                             ),
                             focusedPinTheme: PinTheme(
                               width: 60,
@@ -169,12 +242,28 @@ class _OtpLoginState extends State<OtpLogin> {
                                 children: [
                                   TextSpan(text: localizations.noOtp),
                                   TextSpan(
-                                    text: localizations.resentOtp,
+                                    text: _secondsLeft > 0
+                                        ? "Resend OTP in 00:${_secondsLeft.toString().padLeft(2, '0')}"
+                                        : "Resend OTP",
                                     style: TextStyle(
-                                      color: korangeColor,
+                                      color: _secondsLeft > 0
+                                          ? kgreyColor
+                                          : korangeColor,
                                       fontWeight: FontWeight.w600,
                                     ),
+                                    recognizer: _secondsLeft > 0
+                                        ? null
+                                        : (TapGestureRecognizer()
+                                            ..onTap = _resendOtp),
                                   ),
+
+                                  // TextSpan(
+                                  //   text: localizations.resendOtp,
+                                  //   style: TextStyle(
+                                  //     color: korangeColor,
+                                  //     fontWeight: FontWeight.w600,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -188,9 +277,26 @@ class _OtpLoginState extends State<OtpLogin> {
                         : CustomButton(
                             text: localizations.verifyOtp,
                             onPressed: () async {
+                              if (otpController.text.length != 6) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Enter valid OTP"),
+                                  ),
+                                );
+                                return;
+                              }
+
                               setState(() => _isLoading = true);
 
                               try {
+                                final credential = PhoneAuthProvider.credential(
+                                  // verificationId: widget.verificationId,
+                                  verificationId: _currentVerificationId!,
+                                  smsCode: otpController.text.trim(),
+                                );
+
+                                await FirebaseAuth.instance
+                                    .signInWithCredential(credential);
                                 final vm = context.read<LoginViewModel>();
 
                                 await vm.fetchLoggedInUser(widget.phoneNumber);
@@ -254,9 +360,23 @@ class _OtpLoginState extends State<OtpLogin> {
                                     ),
                                   );
                                 }
-                              } catch (e) {
+                              } on FirebaseAuthException catch (e) {
+                                String message =
+                                    "OTP verification failed. Please try again.";
+
+                                if (e.code == 'invalid-verification-code') {
+                                  message = "Incorrect OTP. Please try again.";
+                                } else if (e.code == 'session-expired') {
+                                  message =
+                                      "OTP expired. Please request a new one.";
+                                }
+
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Error: $e")),
+                                  SnackBar(
+                                    content: Text(message),
+                                    behavior: SnackBarBehavior.floating,
+                                    duration: const Duration(seconds: 2),
+                                  ),
                                 );
                               } finally {
                                 setState(() => _isLoading = false);

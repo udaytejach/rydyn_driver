@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:country_picker/country_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,6 +31,8 @@ class DriverOtpScreen extends StatefulWidget {
       vehicleType,
       licenceNumber;
   final String countryCode;
+  final String verificationId;
+  final String fcmToken;
   final File? profileImage, licenceFront, licenceBack, aadharFront, aadharBack;
   final String holderName, accountNumber, ifsc, bankName, branchName;
 
@@ -51,6 +56,8 @@ class DriverOtpScreen extends StatefulWidget {
     required this.bankName,
     required this.branchName,
     required this.countryCode,
+    required this.verificationId,
+    required this.fcmToken,
   });
 
   @override
@@ -59,7 +66,70 @@ class DriverOtpScreen extends StatefulWidget {
 
 class _DriverOtpScreenState extends State<DriverOtpScreen> {
   final TextEditingController otpController = TextEditingController();
-  bool isLoading = false;
+  bool _isLoading = false;
+  String? _currentVerificationId;
+  bool _isResending = false;
+  String? _otpErrorMessage;
+
+  int _secondsLeft = 60;
+  Timer? _timer;
+  @override
+  void initState() {
+    super.initState();
+    print('OTP ${widget.verificationId}');
+    _currentVerificationId = widget.verificationId;
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    setState(() => _secondsLeft = 60);
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsLeft == 0) {
+        timer.cancel();
+      } else {
+        setState(() => _secondsLeft--);
+      }
+    });
+  }
+
+  Future<void> _resendOtp() async {
+    if (_isResending) return;
+
+    setState(() => _isResending = true);
+
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: "+91${widget.phoneNumber}",
+        timeout: const Duration(seconds: 60),
+
+        verificationCompleted: (PhoneAuthCredential credential) async {},
+
+        verificationFailed: (FirebaseAuthException e) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.message ?? "Resend failed")));
+        },
+
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            _currentVerificationId = verificationId;
+            _otpErrorMessage = null;
+          });
+          _startTimer();
+
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("OTP resent")));
+        },
+
+        codeAutoRetrievalTimeout: (_) {},
+      );
+    } finally {
+      setState(() => _isResending = false);
+    }
+  }
 
   final fcmService = FCMService();
   String capitalizeFirst(String value) {
@@ -67,18 +137,64 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
     return value[0].toUpperCase() + value.substring(1).toLowerCase();
   }
 
+  String removeCountryCode(String phone, String countryCode) {
+    if (phone.startsWith('+$countryCode')) {
+      return phone.substring(countryCode.length + 1);
+    }
+    return phone;
+  }
+
   Future<void> _verifyOtp() async {
-    if (otpController.text.trim() != "1234") {
+    final token = await FirebaseMessaging.instance.getToken();
+    print('FCM Token on login: $token');
+    final String purePhone = removeCountryCode(
+      widget.phoneNumber,
+      widget.countryCode,
+    );
+    String? fcmToken = token;
+    final otp = otpController.text.trim();
+
+    if (otpController.text.length != 6) {
+      setState(() => _isLoading = false);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Invalid OTP")));
+      ).showSnackBar(const SnackBar(content: Text("Enter valid OTP")));
+
       return;
     }
 
-    setState(() => isLoading = true);
-    final token = await FirebaseMessaging.instance.getToken();
-    print('FCM Token on login: $token');
-    String? fcmToken = token;
+    try {
+      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: _currentVerificationId!,
+
+        smsCode: otp,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      String message = "OTP verification failed. Please try again.";
+
+      if (e.code == 'invalid-verification-code') {
+        message = "Incorrect OTP. Please try again.";
+      } else if (e.code == 'session-expired') {
+        message = "OTP expired. Please request a new one.";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+
+          behavior: SnackBarBehavior.floating,
+
+          duration: const Duration(seconds: 2),
+        ),
+      );
+
+      return;
+    }
+
+    setState(() => _isLoading = true);
     try {
       final vm = Provider.of<DriverViewModel>(context, listen: false);
 
@@ -90,7 +206,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       vm.driver.lastName = widget.lastName;
       vm.driver.email = widget.email;
       vm.driver.countryCode = widget.countryCode;
-      vm.driver.phone = widget.phoneNumber;
+      vm.driver.phone = purePhone;
       vm.driver.dob = widget.dob;
       vm.driver.vehicleType = widget.vehicleType;
       vm.driver.licenceNumber = widget.licenceNumber;
@@ -149,7 +265,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       await SharedPrefServices.setLastName(widget.lastName);
       await SharedPrefServices.setisOnline(false);
       await SharedPrefServices.setEmail(widget.email);
-      await SharedPrefServices.setNumber(widget.phoneNumber);
+      await SharedPrefServices.setNumber(purePhone);
       await SharedPrefServices.setCountryCode(
         widget.countryCode,
       ); // fixed India code
@@ -235,7 +351,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text("Error: $e")));
     } finally {
-      setState(() => isLoading = false);
+      setState(() => _isLoading = false);
     }
   }
 
@@ -289,7 +405,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                           const SizedBox(height: 50),
                           Pinput(
                             controller: otpController,
-                            length: 4,
+                            length: 6,
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -300,15 +416,13 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                               textStyle: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
-                                color: korangeColor,
+                                color: KblackColor,
                               ),
                               decoration: BoxDecoration(
                                 border: Border.all(color: kbordergreyColor),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
+                              margin: const EdgeInsets.symmetric(horizontal: 5),
                             ),
                             focusedPinTheme: PinTheme(
                               width: 60,
@@ -338,16 +452,30 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 children: [
-                                  const TextSpan(
-                                    text: "You didn’t receive OTP? ",
-                                  ),
+                                  TextSpan(text: 'You didn\'t receive OTP? '),
                                   TextSpan(
-                                    text: "Resend OTP",
+                                    text: _secondsLeft > 0
+                                        ? "Resend OTP in 00:${_secondsLeft.toString().padLeft(2, '0')}"
+                                        : "Resend OTP",
                                     style: TextStyle(
-                                      color: korangeColor,
+                                      color: _secondsLeft > 0
+                                          ? kgreyColor
+                                          : korangeColor,
                                       fontWeight: FontWeight.w600,
                                     ),
+                                    recognizer: _secondsLeft > 0
+                                        ? null
+                                        : (TapGestureRecognizer()
+                                            ..onTap = _resendOtp),
                                   ),
+
+                                  // TextSpan(
+                                  //   text: localizations.resendOtp,
+                                  //   style: TextStyle(
+                                  //     color: korangeColor,
+                                  //     fontWeight: FontWeight.w600,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -356,7 +484,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                       ),
                     ),
                     const Spacer(),
-                    isLoading
+                    _isLoading
                         ? const CircularProgressIndicator(color: korangeColor)
                         : CustomButton(
                             text: 'Verify OTP',

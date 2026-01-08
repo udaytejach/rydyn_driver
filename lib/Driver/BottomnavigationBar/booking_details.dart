@@ -35,11 +35,13 @@ class _BookingDetailsState extends State<BookingDetails> {
   Map<String, dynamic>? vehicleData;
   Map<String, dynamic>? ownerData;
   late Razorpay _razorpay;
+  final TextEditingController otpController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     data = widget.bookingData;
-    fetchReviews();
+    fetchReviews(); 
     fetchVehicleData();
     fetchOwnerData();
     _razorpay = Razorpay();
@@ -47,6 +49,14 @@ class _BookingDetailsState extends State<BookingDetails> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     // getPaymentStatus(widget.docId);
+    // otpController.addListener(() {
+    //   if (isOtpInvalid) {
+    //     setState(() {
+    //       isOtpInvalid = false;
+    //     });
+    //   }
+    // }); 
+
     print(widget.docId);
     print('driverName');
     print(widget.bookingData['driverName']);
@@ -349,6 +359,8 @@ class _BookingDetailsState extends State<BookingDetails> {
       );
     }
   }
+
+  bool isOtpInvalid = false;
 
   @override
   Widget build(BuildContext context) {
@@ -2255,191 +2267,211 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   final fcmService = FCMService();
   void _showOtpDialog(BuildContext context, String ownerOTP, String docID) {
-    final TextEditingController otpController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (context) {
         final localizations = AppLocalizations.of(context)!;
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: Center(
-            child: CustomText(
-              text: localizations.enterOtp4,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              textcolor: korangeColor,
+        return SizedBox(
+          height: 150,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
             ),
-          ),
-          backgroundColor: kwhiteColor,
-          content: TextField(
-            controller: otpController,
-            maxLength: 4,
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            decoration: InputDecoration(
-              counterText: "",
-              hintText: "••••",
-              filled: true,
-              fillColor: Colors.grey.shade100,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade400),
+            title: Center(
+              child: CustomText(
+                text: localizations.enterOtp4,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                textcolor: korangeColor,
               ),
             ),
-          ),
-          actionsAlignment: MainAxisAlignment.spaceEvenly,
-          actions: [
-            OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: korangeColor, width: 1.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 10,
-                ),
-              ),
-              child: Text(
-                localizations.cancel,
-                style: TextStyle(
-                  color: korangeColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+            backgroundColor: kwhiteColor,
+            content: TextField(
+              controller: otpController,
+              maxLength: 4,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                counterText: "",
+                hintText: "••••",
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade400),
                 ),
               ),
             ),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: korangeColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actions: [
+              OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: korangeColor, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 10,
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 10,
+                child: Text(
+                  localizations.cancel,
+                  style: TextStyle(
+                    color: korangeColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
                 ),
               ),
-              onPressed: () async {
-                String enteredOTP = otpController.text.trim();
 
-                if (enteredOTP.isEmpty || enteredOTP.length != 4) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(localizations.invalidOtp4),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                  return;
-                }
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: korangeColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 10,
+                  ),
+                ),
+                onPressed: () async {
+                  String enteredOTP = otpController.text.trim();
 
-                if (enteredOTP == ownerOTP) {
-                  try {
-                    await FirebaseFirestore.instance
-                        .collection('bookings')
-                        .doc(docID)
-                        .update({
-                          'status': 'Ongoing',
-                          'statusHistory': FieldValue.arrayUnion([
-                            {
-                              'status': 'Ongoing',
-                              'dateTime': DateTime.now().toIso8601String(),
-                            },
-                          ]),
-                        });
-                    final ownerId = widget.bookingData['ownerdocId'];
-                    print('ownerdocID $ownerId');
-                    if (ownerId != null) {
-                      final ownerSnap = await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(ownerId)
-                          .get();
-
-                      final ownerToken = ownerSnap.data()?['fcmToken'];
-                      print('ownerToken $ownerToken');
-                      if (ownerToken != null && ownerToken.isNotEmpty) {
-                        await fcmService.sendNotification(
-                          recipientFCMToken: ownerToken,
-                          title: "Ride Started",
-                          body: "Your ride has started.Have a safe journey!",
-                        );
-                      }
-                    }
-
-                    Navigator.pop(context);
-
-                    // Navigator.pushAndRemoveUntil(
-                    //   context,
-                    //   MaterialPageRoute(builder: (_) => D_BottomNavigation()),
-                    //   (route) => false,
-                    // );
-
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: Colors.green.shade600,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 15,
-                          ),
-                          content: Row(
-                            children: [
-                              Icon(Icons.check_circle, color: Colors.white),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  localizations.rideStartedSuccess,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          duration: Duration(seconds: 3),
-                        ),
-                      );
-                    });
-                  } catch (e) {
+                  if (enteredOTP.isEmpty || enteredOTP.length != 4) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(
-                          "${localizations.errorUpdatingStatus} $e",
-                        ),
+                        content: Text(localizations.invalidOtp4),
                         behavior: SnackBarBehavior.floating,
-                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (enteredOTP == ownerOTP) {
+                    setState(() {
+                      isOtpInvalid = false;
+                    });
+                    try {
+                      await FirebaseFirestore.instance
+                          .collection('bookings')
+                          .doc(docID)
+                          .update({
+                            'status': 'Ongoing',
+                            'statusHistory': FieldValue.arrayUnion([
+                              {
+                                'status': 'Ongoing',
+                                'dateTime': DateTime.now().toIso8601String(),
+                              },
+                            ]),
+                          });
+                      final ownerId = widget.bookingData['ownerdocId'];
+                      print('ownerdocID $ownerId');
+                      if (ownerId != null) {
+                        final ownerSnap = await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(ownerId)
+                            .get();
+
+                        final ownerToken = ownerSnap.data()?['fcmToken'];
+                        print('ownerToken $ownerToken');
+                        if (ownerToken != null && ownerToken.isNotEmpty) {
+                          await fcmService.sendNotification(
+                            recipientFCMToken: ownerToken,
+                            title: "Ride Started",
+                            body: "Your ride has started.Have a safe journey!",
+                          );
+                        }
+                      }
+
+                      Navigator.pop(context);
+
+                      // Navigator.pushAndRemoveUntil(
+                      //   context,
+                      //   MaterialPageRoute(builder: (_) => D_BottomNavigation()),
+                      //   (route) => false,
+                      // );
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green.shade600,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 15,
+                            ),
+                            content: Row(
+                              children: [
+                                Icon(Icons.check_circle, color: Colors.white),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    localizations.rideStartedSuccess,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                      });
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "${localizations.errorUpdatingStatus} $e",
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                        ),
+                      );
+                    }
+                  } else {
+                    setState(() {
+                      isOtpInvalid = true;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(localizations.invalidOtp),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.transparent,
                       ),
                     );
                   }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(localizations.invalidOtp),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.redAccent,
-                    ),
-                  );
-                }
-              },
-              child: Text(
-                localizations.confirm,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                },
+                child: Text(
+                  localizations.confirm,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 3),
+              Column(
+                children: [
+                  if (isOtpInvalid)
+                    Text(
+                      'Note: ${localizations.invalidOtp}',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

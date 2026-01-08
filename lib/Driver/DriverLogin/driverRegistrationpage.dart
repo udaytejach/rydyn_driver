@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -950,6 +952,8 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (!_validateInputs()) return;
+                        setState(() => isLoading = true);
+
                         String capitalize(String value) {
                           if (value.isEmpty) return value;
                           return value[0].toUpperCase() +
@@ -966,6 +970,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                               .get();
 
                           if (driverSnap.docs.isNotEmpty) {
+                            setState(() => isLoading = false);
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -1017,6 +1022,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                               .get();
 
                           if (ownerSnap.docs.isNotEmpty) {
+                            setState(() => isLoading = false);
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -1060,46 +1066,84 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                             );
                             return;
                           }
+                          if (!mounted) return;
 
-                          if (mounted) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => DriverOtpScreen(
-                                  firstName: capitalize(
-                                    firstNameController.text,
-                                  ),
-                                  lastName: lastNameController.text,
-                                  email: emailController.text,
-                                  phoneNumber: phone,
-                                  countryCode: selectedCountry.countryCode,
-                                  dob: dobController.text,
-                                  vehicleType: vehicleType ?? "",
-                                  licenceNumber: licenceController.text,
-                                  profileImage: image,
-                                  licenceFront: licenceFront,
-                                  licenceBack: licenceBack,
-                                  aadharFront: aadharFront,
-                                  aadharBack: aadharBack,
-                                  holderName: holderController.text,
-                                  accountNumber: accountController.text,
-                                  ifsc: ifscController.text,
-                                  bankName: bankController.text,
-                                  branchName: branchController.text,
+                          final token = await FirebaseMessaging.instance
+                              .getToken();
+                          final String? fcmToken = token;
+
+                          final String phoneNumberWithCode =
+                              "+${selectedCountry.phoneCode}$phone";
+
+                          await FirebaseAuth.instance.verifyPhoneNumber(
+                            phoneNumber: phoneNumberWithCode,
+                            timeout: const Duration(seconds: 60),
+
+                            verificationCompleted:
+                                (PhoneAuthCredential credential) async {
+                                  await FirebaseAuth.instance
+                                      .signInWithCredential(credential);
+                                },
+
+                            verificationFailed: (FirebaseAuthException e) {
+                              setState(() => isLoading = false);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.message ?? "OTP failed"),
                                 ),
-                              ),
-                            );
+                              );
+                            },
 
-                            print(
-                              "Formatted First Name: ${capitalize(firstNameController.text)}",
-                            );
-                          }
+                            codeSent:
+                                (String verificationId, int? resendToken) {
+                                  if (!mounted) return;
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => DriverOtpScreen(
+                                        verificationId: verificationId,
+                                        fcmToken: fcmToken ?? "",
+                                        firstName: capitalize(
+                                          firstNameController.text,
+                                        ),
+                                        lastName: lastNameController.text,
+                                        email: emailController.text,
+                                        phoneNumber: phoneNumberWithCode,
+                                        countryCode:
+                                            selectedCountry.countryCode,
+                                        dob: dobController.text,
+                                        vehicleType: vehicleType ?? "",
+                                        licenceNumber: licenceController.text,
+                                        profileImage: image,
+                                        licenceFront: licenceFront,
+                                        licenceBack: licenceBack,
+                                        aadharFront: aadharFront,
+                                        aadharBack: aadharBack,
+                                        holderName: holderController.text,
+                                        accountNumber: accountController.text,
+                                        ifsc: ifscController.text,
+                                        bankName: bankController.text,
+                                        branchName: branchController.text,
+                                      ),
+                                    ),
+                                  );
+                                },
+
+                            codeAutoRetrievalTimeout:
+                                (String verificationId) {},
+                          );
                         } catch (e) {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                          debugPrint("Error during registration: $e");
+                          setState(() => isLoading = false);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Error during registration: $e"),
+                            ),
+                          );
                         }
                       },
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: korangeColor,
                         minimumSize: const Size(double.infinity, 50),
@@ -1110,19 +1154,28 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 30),
                 ],
               ),
             ),
           ),
-          if (vm.isLoading)
+          if (isLoading)
             const Center(
               child: CircularProgressIndicator(color: Colors.orange),
             ),
         ],
       ),
     );
+  }
+
+  bool isValidEmail(String email) {
+    if (email.contains(' ')) return false;
+
+    if (email != email.toLowerCase()) return false;
+
+    final pattern = RegExp(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$');
+
+    return pattern.hasMatch(email);
   }
 
   bool _validateInputs() {
@@ -1139,6 +1192,13 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
       return false;
     }
 
+    if (!isValidEmail(emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter a valid email address")),
+      );
+      return false;
+    }
+
     // if (emailController.text.isEmpty ||
     //     !RegExp(
     //       r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}',
@@ -1148,6 +1208,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
     //   ).showSnackBar(const SnackBar(content: Text("Please enter valid email")));
     //   return false;
     // }
+
     if (phoneController.text.isEmpty ||
         phoneController.text.length < 10 ||
         phoneController.text.length > 10) {

@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBQUFCkp60pYmkP4wOW_S1t-yHV1T_yPH4',
-    appId: '1:159276101326:android:0ad7eaf4db79df79876a9f',
+    appId: '1:159276101326:android:1812c85570221b25876a9f',
     messagingSenderId: '159276101326',
     projectId: 'mana-driver',
     storageBucket: 'mana-driver.firebasestorage.app',
@@ -60,16 +60,16 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCNa20PzKTCPltG3xx5wE7EnRg0oFYiXhE',
-    appId: '1:159276101326:ios:909db1dfed2f36e3876a9f',
+    appId: '1:159276101326:ios:ab4953a6b506ad79876a9f',
     messagingSenderId: '159276101326',
     projectId: 'mana-driver',
     storageBucket: 'mana-driver.firebasestorage.app',
-    iosBundleId: 'com.example.mdDriverApplication',
+    iosBundleId: 'com.example.nyzoCaptain',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCNa20PzKTCPltG3xx5wE7EnRg0oFYiXhE',
-    appId: '1:159276101326:ios:909db1dfed2f36e3876a9f',
+    appId: '1:159276101326:ios:f3c9ce9af9a00261876a9f',
     messagingSenderId: '159276101326',
     projectId: 'mana-driver',
     storageBucket: 'mana-driver.firebasestorage.app',
@@ -78,11 +78,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyBU4wVEDMHeKTsXA6-IX8kDoIEN0WMJeqY',
-    appId: '1:159276101326:web:229c1602e3f761a9876a9f',
+    appId: '1:159276101326:web:5a18e3498800cd77876a9f',
     messagingSenderId: '159276101326',
     projectId: 'mana-driver',
     authDomain: 'mana-driver.firebaseapp.com',
     storageBucket: 'mana-driver.firebasestorage.app',
-    measurementId: 'G-8GYYNDRY6X',
+    measurementId: 'G-WE34WNRZNR',
   );
 }

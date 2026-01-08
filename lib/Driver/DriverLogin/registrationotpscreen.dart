@@ -287,7 +287,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
       if (fcmToken != null && fcmToken.isNotEmpty) {
         await fcmService.sendNotification(
           recipientFCMToken: fcmToken,
-          title: "Welcome to Rydyn Captain!",
+          title: "Welcome to Nyzo Captain!",
           body:
               "${capitalizeFirst(widget.firstName)} your registration was successful.Please log in to continue.",
         );

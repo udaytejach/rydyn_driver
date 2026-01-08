@@ -960,7 +960,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                               value.substring(1).toLowerCase();
                         }
 
-                        final phone = phoneController.text.trim();
+                        final  phone = phoneController.text.trim();
 
                         try {
                           final driverSnap = await FirebaseFirestore.instance
@@ -1109,7 +1109,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                         ),
                                         lastName: lastNameController.text,
                                         email: emailController.text,
-                                        phoneNumber: phoneNumberWithCode,
+                                        phoneNumber: phone,
                                         countryCode:
                                             selectedCountry.countryCode,
                                         dob: dobController.text,

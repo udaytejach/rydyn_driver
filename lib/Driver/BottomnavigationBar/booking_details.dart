@@ -82,7 +82,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     var options = {
       'key': 'rzp_test_RZa3mGbco9w4Ms',
       'amount': (amount * 100).toInt(),
-      'name': 'Rydyn',
+      'name': 'Nyzo',
       'description': 'Ride Payment',
       'prefill': {'contact': '9999999999', 'email': 'test@rydyn.com'},
     };

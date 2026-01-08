@@ -31,15 +31,15 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4), 
+      duration: const Duration(seconds: 4),
     );
 
     _scaleAnimation = Tween<double>(
-      begin: 0.0, 
-      end: 1.0, 
+      begin: 0.0,
+      end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _controller.forward(); 
+    _controller.forward();
     startSplashFlow();
   }
 
@@ -190,7 +190,7 @@ class _SplashScreenState extends State<SplashScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'rydyn',
+                      'nyzo',
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                           fontSize: 32,

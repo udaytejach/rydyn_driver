@@ -41,7 +41,7 @@ class _BookingDetailsState extends State<BookingDetails> {
   void initState() {
     super.initState();
     data = widget.bookingData;
-    fetchReviews(); 
+    fetchReviews();
     fetchVehicleData();
     fetchOwnerData();
     _razorpay = Razorpay();
@@ -55,7 +55,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     //       isOtpInvalid = false;
     //     });
     //   }
-    // }); 
+    // });
 
     print(widget.docId);
     print('driverName');
@@ -80,7 +80,7 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   void _openCheckout(double amount) {
     var options = {
-      'key': 'rzp_test_RZa3mGbco9w4Ms',
+      'key': SharedPrefServices.getRazorapiKey(),
       'amount': (amount * 100).toInt(),
       'name': 'Nyzo',
       'description': 'Ride Payment',

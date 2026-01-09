@@ -240,7 +240,7 @@ class D_TermsAndConditions extends StatelessWidget {
   }
 }
 
-/// -------- Helper Widgets --------
+
 
 Widget bullet(String text) {
   return Padding(

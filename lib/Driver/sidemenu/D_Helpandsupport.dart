@@ -128,18 +128,18 @@ class _D_HelpAndSupportState extends State<D_HelpAndSupport> {
                             contactCard(
                               "images/phone.png",
                               localizations.hS_t3,
-                              "+91 9000052798",
+                              "+91 9000464851",
                               onTap: () {
-                                _callNumber("+91 9000052798");
+                                _callNumber("+91 9000464851");
                               },
                             ),
                             SizedBox(height: 12),
                             contactCard(
                               "images/sendemail.png",
                               localizations.hS_t4,
-                              "help@manadriver.com",
+                              "hello@nyzoride.com",
                               onTap: () {
-                                _sendEmail("help@manadriver.com");
+                                _sendEmail("hello@nyzoride.com");
                               },
                             ),
                           ],

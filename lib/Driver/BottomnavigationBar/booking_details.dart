@@ -428,6 +428,11 @@ class _BookingDetailsState extends State<BookingDetails> {
     String drop2Lng = data['drop2Lng'].toString();
     List history = data['statusHistory'] ?? [];
 
+    String convertDate(String date) {
+      List<String> parts = date.split("-");
+      return "${parts[2]}-${parts[1]}-${parts[0]}";
+    }
+
     DateTime? acceptedTime;
 
     for (var item in history) {
@@ -1285,7 +1290,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                     ),
                                     const SizedBox(width: 8),
                                     CustomText(
-                                      text: date,
+                                      text: convertDate(date),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
                                       textcolor: KblackColor,
@@ -1331,7 +1336,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                       ),
                                       const SizedBox(width: 8),
                                       CustomText(
-                                        text: arrivalDate,
+                                        text: convertDate(arrivalDate),
                                         fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                         textcolor: KblackColor,

@@ -27,7 +27,7 @@
     </queries>
 
     <application
-        android:label="nyzo Captain"
+        android:label="Nyzo Ride Captain"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <meta-data

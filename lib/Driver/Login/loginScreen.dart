@@ -64,7 +64,7 @@ class _LoginScreenBodyState extends State<_LoginScreenBody> {
                 children: [
                   const Spacer(),
                   CustomText(
-                    text: "nyzo Captain",
+                    text: "Nyzo Ride Captain",
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
                     textcolor: korangeColor,

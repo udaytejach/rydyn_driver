@@ -1214,7 +1214,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                             ),
                           ],
                         ),
-                        if (tripMode == "City Limits" &&
+                        if (tripMode == "Hourly Trip" &&
                             citylimithours.isNotEmpty) ...[
                           const SizedBox(height: 12),
                           Row(
@@ -1226,8 +1226,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                               ),
                               const SizedBox(width: 8),
                               CustomText(
-                                text:
-                                    '${localizations.cityLimit} $citylimithours ${localizations.hours}',
+                                text: '$citylimithours ${localizations.hours}',
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 textcolor: KblackColor,

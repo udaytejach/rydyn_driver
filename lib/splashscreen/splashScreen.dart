@@ -29,17 +29,17 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    );
+    // _controller = AnimationController(
+    //   vsync: this,
+    //   duration: const Duration(seconds: 4),
+    // );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    // _scaleAnimation = Tween<double>(
+    //   begin: 0.0,
+    //   end: 1.0,
+    // ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _controller.forward();
+    // _controller.forward();
     startSplashFlow();
   }
 
@@ -182,44 +182,26 @@ class _SplashScreenState extends State<SplashScreen>
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'nyzo',
-                      style: GoogleFonts.poppins(
-                        textStyle: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      'Captain',
-                      style: GoogleFonts.poppins(
-                        textStyle: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ),
-                  ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'images/nyzo_ride_.png',
+                  height: 200,
+                  width: 200,
+                  fit: BoxFit.contain,
                 ),
-              ),
-
-              //   Image.asset(
-              //     'images/rydyn_captain.png',
-              //     height: 400,
-              //     fit: BoxFit.contain,
-              //   ),
+                Transform.translate(
+                  offset: const Offset(0, -30),
+                  child: Image.asset(
+                    'images/nyzo_captain_add.png',
+                    height: 20,
+                    width: 120,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ],
             ),
           ),
 

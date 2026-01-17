@@ -57,254 +57,257 @@ class _LoginScreenBodyState extends State<_LoginScreenBody> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+
         body: SafeArea(
           child: Stack(
             children: [
-              Column(
-                children: [
-                  const Spacer(),
-                  CustomText(
-                    text: "Nyzo Ride Captain",
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    textcolor: korangeColor,
-                  ),
-                  // Image.asset(
-                  //   'images/rydyn.png',
-                  //   width: 100,
-                  //   height: 100,
-                  //   fit: BoxFit.contain,
-                  // ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: localizations.loginTitle,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                          textcolor: korangeColor,
-                        ),
-                        const SizedBox(height: 50),
-                        PhoneNumberInputField(
-                          controller: phoneController,
-                          selectedCountry: vm.selectedCountry,
-                          onCountryChanged: (Country country) {
-                            vm.setCountry(country);
-                          },
-                        ),
-                        if (state.errorMessage.isNotEmpty)
+              CustomScrollView(
+                slivers: [
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 40),
+
+                          Image.asset(
+                            'images/nyzo_ride.png',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+
+                          const SizedBox(height: 40),
+
                           Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              state.errorMessage,
-                              style: const TextStyle(color: Colors.red),
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: localizations.loginTitle,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w700,
+                                  textcolor: korangeColor,
+                                ),
+
+                                const SizedBox(height: 50),
+
+                                PhoneNumberInputField(
+                                  controller: phoneController,
+                                  selectedCountry: vm.selectedCountry,
+                                  onCountryChanged: (Country country) {
+                                    vm.setCountry(country);
+                                  },
+                                ),
+
+                                if (state.errorMessage.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: Text(
+                                      state.errorMessage,
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  CustomButton(
-                    text: _isLoading
-                        ? localizations.checking
-                        : localizations.sendOtp,
-                    onPressed: _isLoading
-                        ? null
-                        : () async {
-                            final phoneNumber = phoneController.text.trim();
-                            final dialCode = vm.selectedCountry.phoneCode;
 
-                            final phoneNumberwithCode =
-                                "+$dialCode$phoneNumber";
-                            if (phoneNumber.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Please enter mobile number"),
-                                ),
-                              );
-                              return;
-                            }
+                          const SizedBox(height: 20),
 
-                            setState(() => _isLoading = true);
-                            setState(() => _isLoading = true);
+                          const Spacer(),
 
-                            try {
-                              final exists = await _checkUserExists(
-                                phoneNumber,
-                              );
+                          CustomButton(
+                            text: _isLoading
+                                ? localizations.checking
+                                : localizations.sendOtp,
+                            width: 220,
+                            height: 50,
+                            onPressed: _isLoading
+                                ? null
+                                : () async {
+                                    final phoneNumber = phoneController.text
+                                        .trim();
+                                    final dialCode =
+                                        vm.selectedCountry.phoneCode;
+                                    final phoneWithCode =
+                                        "+$dialCode$phoneNumber";
 
-                              // if (exists) {
-                              //   Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (_) =>
-                              //           OtpLogin(phoneNumber: phoneNumber),
-                              //     ),
-                              //   );
-                              if (exists) {
-                                await FirebaseAuth.instance.verifyPhoneNumber(
-                                  phoneNumber: phoneNumberwithCode,
+                                    if (phoneNumber.isEmpty) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            "Please enter mobile number",
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
 
-                                  timeout: const Duration(seconds: 60),
+                                    setState(() => _isLoading = true);
 
-                                  verificationCompleted:
-                                      (PhoneAuthCredential credential) async {
+                                    try {
+                                      final exists = await _checkUserExists(
+                                        phoneNumber,
+                                      );
+
+                                      if (exists) {
                                         await FirebaseAuth.instance
-                                            .signInWithCredential(credential);
-                                      },
-
-                                  verificationFailed:
-                                      (FirebaseAuthException e) {
+                                            .verifyPhoneNumber(
+                                              phoneNumber: phoneWithCode,
+                                              timeout: const Duration(
+                                                seconds: 60,
+                                              ),
+                                              verificationCompleted:
+                                                  (credential) async {
+                                                    await FirebaseAuth.instance
+                                                        .signInWithCredential(
+                                                          credential,
+                                                        );
+                                                  },
+                                              verificationFailed: (e) {
+                                                setState(
+                                                  () => _isLoading = false,
+                                                );
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      e.message ?? "OTP failed",
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              codeSent:
+                                                  (verificationId, _) async {
+                                                    setState(
+                                                      () => _isLoading = false,
+                                                    );
+                                                    if (!mounted) return;
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (_) => OtpLogin(
+                                                          phoneNumber:
+                                                              phoneNumber,
+                                                          verificationId:
+                                                              verificationId,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                              codeAutoRetrievalTimeout: (_) {},
+                                            );
+                                      } else {
                                         setState(() => _isLoading = false);
-                                        print(
-                                          'Verification failed: ${e.message}',
-                                        );
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            title: Center(
+                                              child: Text(
+                                                "New User",
+                                                style: GoogleFonts.poppins(
+                                                  color: korangeColor,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
                                             content: Text(
-                                              e.message ?? "OTP failed",
+                                              "Please register before logging in.",
+                                              style: GoogleFonts.poppins(),
                                             ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: Text(
+                                                  "OK",
+                                                  style: GoogleFonts.poppins(
+                                                    color: korangeColor,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         );
-                                      },
+                                      }
+                                    } catch (e) {
+                                      setState(() => _isLoading = false);
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(content: Text("Error: $e")),
+                                      );
+                                    }
+                                  },
+                          ),
 
-                                  codeSent:
-                                      (
-                                        String verificationId,
-                                        int? resendToken,
-                                      ) async {
-                                        setState(() => _isLoading = true);
+                          const SizedBox(height: 10),
 
-                                        await Future.delayed(
-                                          const Duration(milliseconds: 300),
-                                        );
-
-                                        if (!mounted) return;
-
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => OtpLogin(
-                                              phoneNumber: phoneNumber,
-                                              verificationId: verificationId,
-                                            ),
-                                          ),
-                                        );
-
-                                        setState(() => _isLoading = false);
-                                      },
-
-                                  codeAutoRetrievalTimeout:
-                                      (String verificationId) {},
-                                );
-                              } else {
-                                setState(() => _isLoading = false);
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 32),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomText(
+                                  text: localizations.noAccount,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  textcolor: kgreyColor,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            DriverRegistrationPage(),
                                       ),
-                                      content: Text(
-                                        "Please register before logging in.",
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      title: Center(
-                                        child: Text(
-                                          "New User",
-                                          style: GoogleFonts.poppins(
-                                            color: korangeColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'OK',
-                                            style: GoogleFonts.poppins(
-                                              color: korangeColor,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
                                     );
                                   },
-                                );
-                              }
-                            } catch (e) {
-                              setState(() => _isLoading = false);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Error: $e")),
-                              );
-                            }
-                            //  finally {
-                            //   setState(() => _isLoading = false);
-                            // }
-                          },
-                    width: 220,
-                    height: 50,
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 32),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomText(
-                          text: localizations.noAccount,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          textcolor: kgreyColor,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DriverRegistrationPage(),
-                              ),
-                            );
-                          },
-                          child: CustomText(
-                            text: localizations.register,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            textcolor: korangeColor,
+                                  child: CustomText(
+                                    text: localizations.register,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    textcolor: korangeColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    'APK Release v1.0.4',
-                    style: GoogleFonts.poppins(
-                      color: kgreyColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+
+                          Text(
+                            'APK Release v1.0.4',
+                            style: GoogleFonts.poppins(
+                              color: kgreyColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
+
               if (_isLoading)
-                Center(child: CircularProgressIndicator(color: korangeColor)),
+                const Center(
+                  child: CircularProgressIndicator(color: korangeColor),
+                ),
             ],
           ),
         ),
@@ -369,3 +372,248 @@ class _LoginScreenBodyState extends State<_LoginScreenBody> {
         false;
   }
 }
+// SafeArea(
+        //   child: Stack(
+        //     children: [
+        //       Column(
+        //         children: [
+        //           const Spacer(),
+        //           Image.asset(
+        //             'images/nyzo_ride.png',
+        //             width: 200,
+        //             height: 200,
+        //             fit: BoxFit.contain,
+        //           ),
+        //           const Spacer(),
+        //           Padding(
+        //             padding: const EdgeInsets.symmetric(horizontal: 20),
+        //             child: Column(
+        //               crossAxisAlignment: CrossAxisAlignment.start,
+        //               children: [
+        //                 CustomText(
+        //                   text: localizations.loginTitle,
+        //                   fontSize: 32,
+        //                   fontWeight: FontWeight.w700,
+        //                   textcolor: korangeColor,
+        //                 ),
+        //                 const SizedBox(height: 50),
+        //                 PhoneNumberInputField(
+        //                   controller: phoneController,
+        //                   selectedCountry: vm.selectedCountry,
+        //                   onCountryChanged: (Country country) {
+        //                     vm.setCountry(country);
+        //                   },
+        //                 ),
+        //                 if (state.errorMessage.isNotEmpty)
+        //                   Padding(
+        //                     padding: const EdgeInsets.only(top: 8),
+        //                     child: Text(
+        //                       state.errorMessage,
+        //                       style: const TextStyle(color: Colors.red),
+        //                     ),
+        //                   ),
+        //               ],
+        //             ),
+        //           ),
+        //           const Spacer(),
+        //           CustomButton(
+        //             text: _isLoading
+        //                 ? localizations.checking
+        //                 : localizations.sendOtp,
+        //             onPressed: _isLoading
+        //                 ? null
+        //                 : () async {
+        //                     final phoneNumber = phoneController.text.trim();
+        //                     final dialCode = vm.selectedCountry.phoneCode;
+
+        //                     final phoneNumberwithCode =
+        //                         "+$dialCode$phoneNumber";
+        //                     if (phoneNumber.isEmpty) {
+        //                       ScaffoldMessenger.of(context).showSnackBar(
+        //                         const SnackBar(
+        //                           content: Text("Please enter mobile number"),
+        //                         ),
+        //                       );
+        //                       return;
+        //                     }
+
+        //                     setState(() => _isLoading = true);
+        //                     setState(() => _isLoading = true);
+
+        //                     try {
+        //                       final exists = await _checkUserExists(
+        //                         phoneNumber,
+        //                       );
+
+        //                       // if (exists) {
+        //                       //   Navigator.push(
+        //                       //     context,
+        //                       //     MaterialPageRoute(
+        //                       //       builder: (_) =>
+        //                       //           OtpLogin(phoneNumber: phoneNumber),
+        //                       //     ),
+        //                       //   );
+        //                       if (exists) {
+        //                         await FirebaseAuth.instance.verifyPhoneNumber(
+        //                           phoneNumber: phoneNumberwithCode,
+
+        //                           timeout: const Duration(seconds: 60),
+
+        //                           verificationCompleted:
+        //                               (PhoneAuthCredential credential) async {
+        //                                 await FirebaseAuth.instance
+        //                                     .signInWithCredential(credential);
+        //                               },
+
+        //                           verificationFailed:
+        //                               (FirebaseAuthException e) {
+        //                                 setState(() => _isLoading = false);
+        //                                 print(
+        //                                   'Verification failed: ${e.message}',
+        //                                 );
+        //                                 ScaffoldMessenger.of(
+        //                                   context,
+        //                                 ).showSnackBar(
+        //                                   SnackBar(
+        //                                     content: Text(
+        //                                       e.message ?? "OTP failed",
+        //                                     ),
+        //                                   ),
+        //                                 );
+        //                               },
+
+        //                           codeSent:
+        //                               (
+        //                                 String verificationId,
+        //                                 int? resendToken,
+        //                               ) async {
+        //                                 setState(() => _isLoading = true);
+
+        //                                 await Future.delayed(
+        //                                   const Duration(milliseconds: 300),
+        //                                 );
+
+        //                                 if (!mounted) return;
+
+        //                                 Navigator.push(
+        //                                   context,
+        //                                   MaterialPageRoute(
+        //                                     builder: (_) => OtpLogin(
+        //                                       phoneNumber: phoneNumber,
+        //                                       verificationId: verificationId,
+        //                                     ),
+        //                                   ),
+        //                                 );
+
+        //                                 setState(() => _isLoading = false);
+        //                               },
+
+        //                           codeAutoRetrievalTimeout:
+        //                               (String verificationId) {},
+        //                         );
+        //                       } else {
+        //                         setState(() => _isLoading = false);
+        //                         showDialog(
+        //                           context: context,
+        //                           builder: (context) {
+        //                             return AlertDialog(
+        //                               shape: RoundedRectangleBorder(
+        //                                 borderRadius: BorderRadius.circular(10),
+        //                               ),
+        //                               content: Text(
+        //                                 "Please register before logging in.",
+        //                                 style: GoogleFonts.poppins(
+        //                                   color: Colors.black,
+        //                                   fontSize: 14,
+        //                                   fontWeight: FontWeight.w500,
+        //                                 ),
+        //                               ),
+        //                               title: Center(
+        //                                 child: Text(
+        //                                   "New User",
+        //                                   style: GoogleFonts.poppins(
+        //                                     color: korangeColor,
+        //                                     fontSize: 15,
+        //                                     fontWeight: FontWeight.w600,
+        //                                   ),
+        //                                 ),
+        //                               ),
+
+        //                               actions: [
+        //                                 TextButton(
+        //                                   onPressed: () {
+        //                                     Navigator.pop(context);
+        //                                   },
+        //                                   child: Text(
+        //                                     'OK',
+        //                                     style: GoogleFonts.poppins(
+        //                                       color: korangeColor,
+        //                                       fontSize: 14,
+        //                                       fontWeight: FontWeight.w600,
+        //                                     ),
+        //                                   ),
+        //                                 ),
+        //                               ],
+        //                             );
+        //                           },
+        //                         );
+        //                       }
+        //                     } catch (e) {
+        //                       setState(() => _isLoading = false);
+        //                       ScaffoldMessenger.of(context).showSnackBar(
+        //                         SnackBar(content: Text("Error: $e")),
+        //                       );
+        //                     }
+        //                     //  finally {
+        //                     //   setState(() => _isLoading = false);
+        //                     // }
+        //                   },
+        //             width: 220,
+        //             height: 50,
+        //           ),
+        //           const SizedBox(height: 10),
+        //           Padding(
+        //             padding: const EdgeInsets.only(bottom: 32),
+        //             child: Row(
+        //               mainAxisAlignment: MainAxisAlignment.center,
+        //               children: [
+        //                 CustomText(
+        //                   text: localizations.noAccount,
+        //                   fontSize: 14,
+        //                   fontWeight: FontWeight.w500,
+        //                   textcolor: kgreyColor,
+        //                 ),
+        //                 GestureDetector(
+        //                   onTap: () {
+        //                     Navigator.push(
+        //                       context,
+        //                       MaterialPageRoute(
+        //                         builder: (context) => DriverRegistrationPage(),
+        //                       ),
+        //                     );
+        //                   },
+        //                   child: CustomText(
+        //                     text: localizations.register,
+        //                     fontSize: 14,
+        //                     fontWeight: FontWeight.w500,
+        //                     textcolor: korangeColor,
+        //                   ),
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //           Text(
+        //             'APK Release v1.0.4',
+        //             style: GoogleFonts.poppins(
+        //               color: kgreyColor,
+        //               fontSize: 14,
+        //               fontWeight: FontWeight.w500,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //       if (_isLoading)
+        //         Center(child: CircularProgressIndicator(color: korangeColor)),
+        //     ],
+        //   ),
+        // ),

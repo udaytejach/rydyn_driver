@@ -240,8 +240,6 @@ class D_TermsAndConditions extends StatelessWidget {
   }
 }
 
-
-
 Widget bullet(String text) {
   return Padding(
     padding: const EdgeInsets.only(left: 8.0, bottom: 6),
@@ -253,7 +251,7 @@ Widget bullet(String text) {
           child: CustomText(
             text: text,
             fontSize: 14,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w400,
             textcolor: KblackColor,
           ),
         ),
@@ -265,8 +263,9 @@ Widget bullet(String text) {
 Widget sectionTitle(String text) {
   return CustomText(
     text: text,
+
     fontWeight: FontWeight.w600,
-    fontSize: 16,
+    fontSize: 15,
     textcolor: KblackColor,
   );
 }

@@ -187,20 +187,20 @@ class _SplashScreenState extends State<SplashScreen>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
-                  'images/nyzo_ride_.png',
+                  'images/nyzo_captains.png',
                   height: 200,
                   width: 200,
                   fit: BoxFit.contain,
                 ),
-                Transform.translate(
-                  offset: const Offset(0, -30),
-                  child: Image.asset(
-                    'images/nyzo_captain_add.png',
-                    height: 20,
-                    width: 120,
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                // Transform.translate(
+                //   offset: const Offset(0, -30),
+                //   child: Image.asset(
+                //     'images/nyzo_captain_add.png',
+                //     height: 20,
+                //     width: 120,
+                //     fit: BoxFit.contain,
+                //   ),
+                // ),
               ],
             ),
           ),

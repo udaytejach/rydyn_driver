@@ -9,7 +9,9 @@ class FCMService {
     try {
       String scope = 'https://www.googleapis.com/auth/firebase.messaging';
       String rawKey = SharedPrefServices.getPrivateKey() ?? "";
-      String cleanedPrivateKey = rawKey.replaceAll("\\\\n", "\n");
+      // String cleanedPrivateKey = rawKey.replaceAll("\\\\n", "\n");
+      String cleanedPrivateKey = rawKey.replaceAll(r'\n', '\n');
+
       Map<String, dynamic> serviceAccountJson = {
         "type": "service_account",
         "project_id": "mana-driver",

@@ -1242,7 +1242,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
         const SnackBar(content: Text(' Please enter a valid Licence Number.')),
       );
       return false;
-    }
+     }
     // final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
     final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[- ]?[0-9]{4}[- ]?[0-9]{7,10}$');
 

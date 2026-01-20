@@ -2430,6 +2430,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                         );
                       });
                     } catch (e) {
+                      print('error fcm status $e');
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(

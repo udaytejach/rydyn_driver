@@ -41,48 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBU4wVEDMHeKTsXA6-IX8kDoIEN0WMJeqY',
-    appId: '1:159276101326:web:065461d452842909876a9f',
-    messagingSenderId: '159276101326',
-    projectId: 'mana-driver',
-    authDomain: 'mana-driver.firebaseapp.com',
-    storageBucket: 'mana-driver.firebasestorage.app',
-    measurementId: 'G-DB7T6D2M2G',
+    apiKey: 'AIzaSyD0JuH1GKxzNxuS0OmQn3PWsbtN9GUsV6g',
+    appId: '1:759100098277:web:727570fd1b481cf2c2360c',
+    messagingSenderId: '759100098277',
+    projectId: 'nyzoride-69ab6',
+    authDomain: 'nyzoride-69ab6.firebaseapp.com',
+    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
+    measurementId: 'G-JS33JVMYXV',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBQUFCkp60pYmkP4wOW_S1t-yHV1T_yPH4',
-    appId: '1:159276101326:android:1812c85570221b25876a9f',
-    messagingSenderId: '159276101326',
-    projectId: 'mana-driver',
-    storageBucket: 'mana-driver.firebasestorage.app',
+    apiKey: 'AIzaSyCeUXWCR972pTy5Id2g6uHdPDd26w3eqHw',
+    appId: '1:759100098277:android:61e70bc10eab8edac2360c',
+    messagingSenderId: '759100098277',
+    projectId: 'nyzoride-69ab6',
+    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCNa20PzKTCPltG3xx5wE7EnRg0oFYiXhE',
-    appId: '1:159276101326:ios:ab4953a6b506ad79876a9f',
-    messagingSenderId: '159276101326',
-    projectId: 'mana-driver',
-    storageBucket: 'mana-driver.firebasestorage.app',
+    apiKey: 'AIzaSyAWxOdmQHIt98P0yNmmgSKNg7-yCuWeREI',
+    appId: '1:759100098277:ios:ad36343b98ee3321c2360c',
+    messagingSenderId: '759100098277',
+    projectId: 'nyzoride-69ab6',
+    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
     iosBundleId: 'com.example.nyzoCaptain',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCNa20PzKTCPltG3xx5wE7EnRg0oFYiXhE',
-    appId: '1:159276101326:ios:f3c9ce9af9a00261876a9f',
-    messagingSenderId: '159276101326',
-    projectId: 'mana-driver',
-    storageBucket: 'mana-driver.firebasestorage.app',
+    apiKey: 'AIzaSyAWxOdmQHIt98P0yNmmgSKNg7-yCuWeREI',
+    appId: '1:759100098277:ios:759cd9c74dc4d0bfc2360c',
+    messagingSenderId: '759100098277',
+    projectId: 'nyzoride-69ab6',
+    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
     iosBundleId: 'com.example.mdDriverApplication',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBU4wVEDMHeKTsXA6-IX8kDoIEN0WMJeqY',
-    appId: '1:159276101326:web:5a18e3498800cd77876a9f',
-    messagingSenderId: '159276101326',
-    projectId: 'mana-driver',
-    authDomain: 'mana-driver.firebaseapp.com',
-    storageBucket: 'mana-driver.firebasestorage.app',
-    measurementId: 'G-WE34WNRZNR',
+    apiKey: 'AIzaSyD0JuH1GKxzNxuS0OmQn3PWsbtN9GUsV6g',
+    appId: '1:759100098277:web:1f28bdc7943778cfc2360c',
+    messagingSenderId: '759100098277',
+    projectId: 'nyzoride-69ab6',
+    authDomain: 'nyzoride-69ab6.firebaseapp.com',
+    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
+    measurementId: 'G-MXG58RQEKP',
   );
 }

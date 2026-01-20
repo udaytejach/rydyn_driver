@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
     try {
       final snap = await FirebaseFirestore.instance
           .collection("serviceKeys")
-          .doc('p5xZLhdsUezpgluOIzSY')
+          .doc('dcpHt4KuF3dygNiwnCep')
           .get();
 
       if (!snap.exists) {

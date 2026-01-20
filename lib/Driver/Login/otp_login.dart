@@ -86,7 +86,7 @@ class _OtpLoginState extends State<OtpLogin> {
     try {
       final snap = await FirebaseFirestore.instance
           .collection("serviceKeys")
-          .doc('p5xZLhdsUezpgluOIzSY')
+          .doc('dcpHt4KuF3dygNiwnCep')
           .get();
 
       if (!snap.exists) {
@@ -213,6 +213,8 @@ class _OtpLoginState extends State<OtpLogin> {
                               margin: const EdgeInsets.symmetric(horizontal: 5),
                             ),
                             focusedPinTheme: PinTheme(
+                              margin: const EdgeInsets.symmetric(horizontal: 5),
+
                               width: 60,
                               height: 60,
                               textStyle: GoogleFonts.poppins(
@@ -346,7 +348,7 @@ class _OtpLoginState extends State<OtpLogin> {
                                       }
                                     }
                                   }
-                                  
+
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

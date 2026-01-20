@@ -422,6 +422,26 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
       return;
     }
 
+    if (licenceController.text.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
+      );
+      return;
+    }
+    // final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
+    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[- ]?[0-9]{4}[- ]?[0-9]{7,10}$');
+
+    if (!dlRegex.hasMatch(licenceController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Invalid Driving Licence Format (e.g., TS0920201234567890)',
+          ),
+        ),
+      );
+      return;
+    }
+
     if (licenceFrontUrl == null ||
         licenceFrontUrl!.isEmpty ||
         licenceBackUrl == null ||
@@ -441,49 +461,6 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
       );
       return;
     }
-
-    if (licenceController.text.length < 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
-      );
-      return;
-    }
-    final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
-
-    if (!dlRegex.hasMatch(licenceController.text.trim())) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Invalid Driving Licence Format (e.g., TS0920201234567)',
-          ),
-        ),
-      );
-      return;
-    }
-
-    // if (firstName.length < 2 || holder.length < 2) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text(' Names must have at least 2 characters.'),
-    //     ),
-    //   );
-    //   return;
-    // }
-
-    // if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text(' Please enter a valid email address.')),
-    //   );
-    //   return;
-    // }
-
-    if (licenceNumber.length < 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(' Please enter a valid Licence Number.')),
-      );
-      return;
-    }
-
     if (ifscController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -521,6 +498,70 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
       );
       return;
     }
+
+    // if (licenceController.text.length < 8) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text(' Please enter a valid Licence Number.')),
+    //   );
+    //   return;
+    // }
+    // final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[- ]?[0-9]{4}[- ]?[0-9]{7,10}$');
+
+    // if (!dlRegex.hasMatch(licenceController.text.trim())) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text(
+    //         'Invalid Driving Licence Format (e.g., TS0920201234567)',
+    //       ),
+    //     ),
+    //   );
+    //   return;
+    // }
+
+    // if (licenceNumber.length < 8) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text(' Please enter a valid Licence Number.')),
+    //   );
+    //   return;
+    // }
+
+    // if (ifscController.text.isEmpty) {
+    //   ScaffoldMessenger.of(
+    //     context,
+    //   ).showSnackBar(const SnackBar(content: Text("Please enter IFSC code.")));
+    //   return;
+    // }
+    // if (!RegExp(
+    //   r'^[A-Z]{4}0[A-Z0-9]{6}$',
+    // ).hasMatch(ifscController.text.trim())) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Invalid IFSC Code format.')),
+    //   );
+    //   return;
+    // }
+    // if (ifscController.text.isNotEmpty && accountController.text.isEmpty) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text("Please enter Account Number.")),
+    //   );
+    //   return;
+    // }
+    // if (!RegExp(r'^[0-9]{9,18}$').hasMatch(accountController.text.trim())) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Please enter a valid Account Number (9–18 digits).'),
+    //     ),
+    //   );
+    //   return;
+    // }
+
+    // if (holderController.text.isEmpty) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text("Please enter the account holder's name."),
+    //     ),
+    //   );
+    //   return;
+    // }
 
     setState(() {
       isLoading = true;

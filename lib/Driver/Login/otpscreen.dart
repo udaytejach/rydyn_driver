@@ -160,11 +160,11 @@ class _OtpScreenState extends State<OtpScreen> {
                                 border: Border.all(color: kbordergreyColor),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
+                              margin: const EdgeInsets.symmetric(horizontal: 5),
                             ),
                             focusedPinTheme: PinTheme(
+                              margin: const EdgeInsets.symmetric(horizontal: 5),
+
                               width: 60,
                               height: 60,
                               textStyle: GoogleFonts.poppins(

@@ -71,17 +71,19 @@ class _LoginScreenBodyState extends State<_LoginScreenBody> {
                       ),
                       child: Column(
                         children: [
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 100),
+                          Spacer(),
 
-                          Image.asset(
-                            'images/nyzo_ride.png',
-                            width: 200,
-                            height: 200,
-                            fit: BoxFit.contain,
-                          ),
+                          // const SizedBox(height: 40),
 
-                          const SizedBox(height: 40),
+                          // Image.asset(
+                          //   'images/nyzo_ride.png',
+                          //   width: 200,
+                          //   height: 200,
+                          //   fit: BoxFit.contain,
+                          // ),
 
+                          // const SizedBox(height: 40),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Column(

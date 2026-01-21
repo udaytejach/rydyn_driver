@@ -172,7 +172,7 @@ abstract class AppLocalizations {
   /// No description provided for @mobileNumber.
   ///
   /// In en, this message translates to:
-  /// **'Mobile Number'**
+  /// **'Mobile number'**
   String get mobileNumber;
 
   /// No description provided for @invalidOtp.
@@ -1590,6 +1590,912 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load image'**
   String get failedToLoadImage;
+
+  /// No description provided for @privacyPolicyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'NYZO RIDE – DRIVER (CAPTAIN)'**
+  String get privacyPolicyTitle;
+
+  /// No description provided for @lastUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated: January 2026'**
+  String get lastUpdated;
+
+  /// No description provided for @privacyIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride (“Nyzo Ride”, “we”, “our”, “us”) respects your privacy and is committed to protecting the personal information of users (“you”, “user”, “driver”, “vehicle owner”) who use the Nyzo Ride mobile application, website, and related services (collectively, the “Platform”).'**
+  String get privacyIntro;
+
+  /// No description provided for @privacyPolicyExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'This Privacy Policy explains how we collect, use, store, share, and protect your information.'**
+  String get privacyPolicyExplanation;
+
+  /// No description provided for @informationWeCollect.
+  ///
+  /// In en, this message translates to:
+  /// **'INFORMATION WE COLLECT'**
+  String get informationWeCollect;
+
+  /// No description provided for @personalInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'1.1 Personal Information'**
+  String get personalInformation;
+
+  /// No description provided for @weMayCollectFollowing.
+  ///
+  /// In en, this message translates to:
+  /// **'We may collect the following:'**
+  String get weMayCollectFollowing;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullName;
+
+  /// No description provided for @emailOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address (optional)'**
+  String get emailOptional;
+
+  /// No description provided for @profilePhotoOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photo (optional)'**
+  String get profilePhotoOptional;
+
+  /// No description provided for @governmentIdDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Government ID details (for drivers – License, PAN/Aadhaar where required)'**
+  String get governmentIdDetails;
+
+  /// No description provided for @vehicleDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle details (vehicle owners)'**
+  String get vehicleDetails;
+
+  /// No description provided for @locationInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'1.2 Location Information'**
+  String get locationInformation;
+
+  /// No description provided for @realTimeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time location during active trips'**
+  String get realTimeLocation;
+
+  /// No description provided for @pickupDropLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup and drop locations'**
+  String get pickupDropLocations;
+
+  /// No description provided for @tripRoutesDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip routes and distance data'**
+  String get tripRoutesDistance;
+
+  /// No description provided for @locationCollectionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is collected only when the app is in use and for trip-related purposes.'**
+  String get locationCollectionNote;
+
+  /// No description provided for @usageDeviceInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'1.3 Usage & Device Information'**
+  String get usageDeviceInformation;
+
+  /// No description provided for @deviceModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Device model'**
+  String get deviceModel;
+
+  /// No description provided for @osVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'OS version'**
+  String get osVersion;
+
+  /// No description provided for @appUsageData.
+  ///
+  /// In en, this message translates to:
+  /// **'App usage data'**
+  String get appUsageData;
+
+  /// No description provided for @ipAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'IP address'**
+  String get ipAddress;
+
+  /// No description provided for @crashLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Crash logs and diagnostic data'**
+  String get crashLogs;
+
+  /// No description provided for @paymentInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'1.4 Payment Information'**
+  String get paymentInformation;
+
+  /// No description provided for @paymentStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment status'**
+  String get paymentStatus;
+
+  /// No description provided for @transactionId.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction ID'**
+  String get transactionId;
+
+  /// No description provided for @paymentMethodNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method (Nyzo Ride does NOT store card or UPI credentials)'**
+  String get paymentMethodNote;
+
+  /// No description provided for @howWeUseInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'2. HOW WE USE YOUR INFORMATION'**
+  String get howWeUseInformation;
+
+  /// No description provided for @weUseYourInformationTo.
+  ///
+  /// In en, this message translates to:
+  /// **'We use your information to:'**
+  String get weUseYourInformationTo;
+
+  /// No description provided for @connectOwnersDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect vehicle owners with drivers'**
+  String get connectOwnersDrivers;
+
+  /// No description provided for @enableBookingsTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable bookings and trip management'**
+  String get enableBookingsTrips;
+
+  /// No description provided for @verifyDriverIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify driver identity and eligibility'**
+  String get verifyDriverIdentity;
+
+  /// No description provided for @processPaymentsRefunds.
+  ///
+  /// In en, this message translates to:
+  /// **'Process payments and refunds'**
+  String get processPaymentsRefunds;
+
+  /// No description provided for @improveAppPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve app performance and user experience'**
+  String get improveAppPerformance;
+
+  /// No description provided for @communicateUpdatesAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Communicate service updates and alerts'**
+  String get communicateUpdatesAlerts;
+
+  /// No description provided for @preventFraudMisuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Prevent fraud and misuse'**
+  String get preventFraudMisuse;
+
+  /// No description provided for @complyLegalObligations.
+  ///
+  /// In en, this message translates to:
+  /// **'Comply with legal obligations'**
+  String get complyLegalObligations;
+
+  /// No description provided for @informationSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'3. INFORMATION SHARING'**
+  String get informationSharing;
+
+  /// No description provided for @noSellRentData.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride does not sell or rent your personal data.'**
+  String get noSellRentData;
+
+  /// No description provided for @weMayShareLimitedInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'We may share limited information with:'**
+  String get weMayShareLimitedInfo;
+
+  /// No description provided for @shareDriversOwners.
+  ///
+  /// In en, this message translates to:
+  /// **'Drivers / Vehicle Owners – only what is required for a trip'**
+  String get shareDriversOwners;
+
+  /// No description provided for @sharePaymentGateways.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment gateways – for transaction processing'**
+  String get sharePaymentGateways;
+
+  /// No description provided for @shareCloudPartners.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud & technology partners – app hosting, analytics'**
+  String get shareCloudPartners;
+
+  /// No description provided for @shareLawAuthorities.
+  ///
+  /// In en, this message translates to:
+  /// **'Law enforcement / government authorities – when legally required'**
+  String get shareLawAuthorities;
+
+  /// No description provided for @dataStorageSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'4. DATA STORAGE & SECURITY'**
+  String get dataStorageSecurity;
+
+  /// No description provided for @dataStoredSecureServers.
+  ///
+  /// In en, this message translates to:
+  /// **'Data is stored on secure servers'**
+  String get dataStoredSecureServers;
+
+  /// No description provided for @industryEncryptionUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Industry-standard encryption is used'**
+  String get industryEncryptionUsed;
+
+  /// No description provided for @accessLimitedAuthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Access is limited to authorized personnel only'**
+  String get accessLimitedAuthorized;
+
+  /// No description provided for @regularSecurityAudits.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular security audits are conducted'**
+  String get regularSecurityAudits;
+
+  /// No description provided for @noSystemFullySecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Despite best efforts, no digital system is 100% secure. Users share data at their own risk.'**
+  String get noSystemFullySecure;
+
+  /// No description provided for @userRights.
+  ///
+  /// In en, this message translates to:
+  /// **'5. USER RIGHTS'**
+  String get userRights;
+
+  /// No description provided for @youHaveTheRightTo.
+  ///
+  /// In en, this message translates to:
+  /// **'You have the right to:'**
+  String get youHaveTheRightTo;
+
+  /// No description provided for @accessPersonalData.
+  ///
+  /// In en, this message translates to:
+  /// **'Access your personal data'**
+  String get accessPersonalData;
+
+  /// No description provided for @updateInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Update or correct your information'**
+  String get updateInformation;
+
+  /// No description provided for @requestAccountDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Request deletion of your account'**
+  String get requestAccountDeletion;
+
+  /// No description provided for @withdrawConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw consent (where applicable)'**
+  String get withdrawConsent;
+
+  /// No description provided for @accountDeletionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion requests may be subject to legal or regulatory retention requirements.'**
+  String get accountDeletionNote;
+
+  /// No description provided for @dataRetention.
+  ///
+  /// In en, this message translates to:
+  /// **'6. DATA RETENTION'**
+  String get dataRetention;
+
+  /// No description provided for @dataRetainedAsNecessary.
+  ///
+  /// In en, this message translates to:
+  /// **'Data is retained only as long as necessary'**
+  String get dataRetainedAsNecessary;
+
+  /// No description provided for @tripTransactionRetention.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip and transaction records may be retained for legal, tax, or dispute purposes'**
+  String get tripTransactionRetention;
+
+  /// No description provided for @inactiveAccountsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive accounts may be deleted after a defined period'**
+  String get inactiveAccountsDeleted;
+
+  /// No description provided for @childrensPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'7. CHILDREN’S PRIVACY'**
+  String get childrensPrivacy;
+
+  /// No description provided for @notForUnder18.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is not intended for users under 18 years'**
+  String get notForUnder18;
+
+  /// No description provided for @noMinorDataCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'We do not knowingly collect data from minors'**
+  String get noMinorDataCollection;
+
+  /// No description provided for @thirdPartyServices.
+  ///
+  /// In en, this message translates to:
+  /// **'8. THIRD-PARTY SERVICES'**
+  String get thirdPartyServices;
+
+  /// No description provided for @mayContainThirdPartyLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride may contain links or integrations with third-party services'**
+  String get mayContainThirdPartyLinks;
+
+  /// No description provided for @notResponsibleThirdPartyPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'We are not responsible for their privacy practices'**
+  String get notResponsibleThirdPartyPrivacy;
+
+  /// No description provided for @platformDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'9. PLATFORM NATURE DISCLAIMER'**
+  String get platformDisclaimer;
+
+  /// No description provided for @platformOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is a technology platform only:'**
+  String get platformOnly;
+
+  /// No description provided for @notTransportOperator.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is not a transport operator'**
+  String get notTransportOperator;
+
+  /// No description provided for @doesNotOwnVehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride does not own vehicles'**
+  String get doesNotOwnVehicles;
+
+  /// No description provided for @doesNotEmployDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride does not employ drivers'**
+  String get doesNotEmployDrivers;
+
+  /// No description provided for @independentProviders.
+  ///
+  /// In en, this message translates to:
+  /// **'Drivers and vehicle owners are independent service providers'**
+  String get independentProviders;
+
+  /// No description provided for @policyChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'10. CHANGES TO THIS POLICY'**
+  String get policyChanges;
+
+  /// No description provided for @policyMayUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride may update this Privacy Policy from time to time'**
+  String get policyMayUpdate;
+
+  /// No description provided for @policyUpdatedVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated versions will be published within the app or website'**
+  String get policyUpdatedVersions;
+
+  /// No description provided for @policyContinuedUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Continued use of the platform implies acceptance of the revised policy'**
+  String get policyContinuedUse;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'11. CONTACT US'**
+  String get contactUs;
+
+  /// No description provided for @privacyConcernsContact.
+  ///
+  /// In en, this message translates to:
+  /// **'For privacy concerns or data requests, contact:'**
+  String get privacyConcernsContact;
+
+  /// No description provided for @nyzoRideSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride Support'**
+  String get nyzoRideSupport;
+
+  /// No description provided for @nyzoRideEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'hello@nyzoride.com'**
+  String get nyzoRideEmail;
+
+  /// No description provided for @nyzoRidePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'9000464851'**
+  String get nyzoRidePhone;
+
+  /// No description provided for @driverTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'NYZO RIDE – DRIVER (CAPTAIN)'**
+  String get driverTermsTitle;
+
+  /// No description provided for @driverEligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Driver Eligibility'**
+  String get driverEligibility;
+
+  /// No description provided for @driverEligibilityAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver must be at least 21 years of age.'**
+  String get driverEligibilityAge;
+
+  /// No description provided for @driverEligibilityLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'A valid driving license (LMV / HMV as applicable) is mandatory.'**
+  String get driverEligibilityLicense;
+
+  /// No description provided for @driverEligibilityDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'All documents submitted must be genuine and valid.'**
+  String get driverEligibilityDocuments;
+
+  /// No description provided for @platformNature.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Nature of the Platform'**
+  String get platformNature;
+
+  /// No description provided for @platformNatureDesc1.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is only a technology-based platform.'**
+  String get platformNatureDesc1;
+
+  /// No description provided for @platformNatureDesc2.
+  ///
+  /// In en, this message translates to:
+  /// **'It connects vehicle owners and drivers.'**
+  String get platformNatureDesc2;
+
+  /// No description provided for @platformNatureNotOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is not: A vehicle owner'**
+  String get platformNatureNotOwner;
+
+  /// No description provided for @platformNatureNotDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is not: A driver'**
+  String get platformNatureNotDriver;
+
+  /// No description provided for @platformNatureNotOperator.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is not: A transport operator'**
+  String get platformNatureNotOperator;
+
+  /// No description provided for @noJobGuarantee.
+  ///
+  /// In en, this message translates to:
+  /// **'3. No Job or Employment Guarantee'**
+  String get noJobGuarantee;
+
+  /// No description provided for @nyzoNoJobs.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride does not provide jobs or employment.'**
+  String get nyzoNoJobs;
+
+  /// No description provided for @driversNotEmployees.
+  ///
+  /// In en, this message translates to:
+  /// **'Drivers are not employees of Nyzo Ride.'**
+  String get driversNotEmployees;
+
+  /// No description provided for @tripAvailabilityNotGuaranteed.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip availability is not guaranteed.'**
+  String get tripAvailabilityNotGuaranteed;
+
+  /// No description provided for @nyzoNoFixedIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride does not promise fixed income, salary, or minimum trips.'**
+  String get nyzoNoFixedIncome;
+
+  /// No description provided for @independentDriverStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'4. Independent Driver Status'**
+  String get independentDriverStatus;
+
+  /// No description provided for @driversIndependentProviders.
+  ///
+  /// In en, this message translates to:
+  /// **'Drivers act as independent service providers.'**
+  String get driversIndependentProviders;
+
+  /// No description provided for @noEmployerEmployeeRelation.
+  ///
+  /// In en, this message translates to:
+  /// **'No employer–employee relationship is created.'**
+  String get noEmployerEmployeeRelation;
+
+  /// No description provided for @noBenefitsApplicable.
+  ///
+  /// In en, this message translates to:
+  /// **'Benefits such as PF, ESI, leave, or insurance are not applicable.'**
+  String get noBenefitsApplicable;
+
+  /// No description provided for @taxComplianceDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax and legal compliance is driver’s responsibility.'**
+  String get taxComplianceDriver;
+
+  /// No description provided for @preRideInspection.
+  ///
+  /// In en, this message translates to:
+  /// **'5. Pre-Ride Vehicle Inspection'**
+  String get preRideInspection;
+
+  /// No description provided for @driverMustInspectVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before every ride, the driver must inspect the vehicle.'**
+  String get driverMustInspectVehicle;
+
+  /// No description provided for @inspectionChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'Tyres, brakes, lights, mirrors, fuel level, and documents must be checked.'**
+  String get inspectionChecklist;
+
+  /// No description provided for @unsafeVehicleNoTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'If the vehicle is unsafe, the driver must not start the trip and inform the owner.'**
+  String get unsafeVehicleNoTrip;
+
+  /// No description provided for @nyzoNotResponsibleVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is not responsible for vehicle condition or related issues.'**
+  String get nyzoNotResponsibleVehicle;
+
+  /// No description provided for @tripResponsibilities.
+  ///
+  /// In en, this message translates to:
+  /// **'6. Trip Responsibilities'**
+  String get tripResponsibilities;
+
+  /// No description provided for @driverOnTimePickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver must reach the pickup location on time.'**
+  String get driverOnTimePickup;
+
+  /// No description provided for @followTrafficRules.
+  ///
+  /// In en, this message translates to:
+  /// **'All traffic rules and local laws must be followed.'**
+  String get followTrafficRules;
+
+  /// No description provided for @driveCarefullyResponsibly.
+  ///
+  /// In en, this message translates to:
+  /// **'The owner’s vehicle must be driven carefully and responsibly.'**
+  String get driveCarefullyResponsibly;
+
+  /// No description provided for @misbehaviorProhibited.
+  ///
+  /// In en, this message translates to:
+  /// **'Misbehavior, unsafe driving, or negligence is strictly prohibited.'**
+  String get misbehaviorProhibited;
+
+  /// No description provided for @cancellationPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'7. Cancellation Policy'**
+  String get cancellationPolicy;
+
+  /// No description provided for @avoidUnnecessaryCancellations.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnecessary cancellations by the driver must be avoided.'**
+  String get avoidUnnecessaryCancellations;
+
+  /// No description provided for @frequentCancellationsLeadTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequent cancellations may lead to:'**
+  String get frequentCancellationsLeadTo;
+
+  /// No description provided for @cancellationWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get cancellationWarning;
+
+  /// No description provided for @cancellationTemporarySuspension.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary suspension'**
+  String get cancellationTemporarySuspension;
+
+  /// No description provided for @cancellationPermanentDeactivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent account deactivation'**
+  String get cancellationPermanentDeactivation;
+
+  /// No description provided for @paymentsEarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'8. Payments & Earnings'**
+  String get paymentsEarnings;
+
+  /// No description provided for @earningsAfterCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Earnings are credited only after successful trip completion.'**
+  String get earningsAfterCompletion;
+
+  /// No description provided for @serviceChargesPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Service charges may apply as per Nyzo Ride policy.'**
+  String get serviceChargesPolicy;
+
+  /// No description provided for @noPaymentFraudTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment will be made for fake or fraudulent trips.'**
+  String get noPaymentFraudTrips;
+
+  /// No description provided for @ratingsReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'9. Ratings & Reviews'**
+  String get ratingsReviews;
+
+  /// No description provided for @driverPerformanceEvaluated.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver performance is evaluated based on ratings and feedback.'**
+  String get driverPerformanceEvaluated;
+
+  /// No description provided for @lowRatingsSuspension.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeated low ratings or complaints may result in suspension or termination.'**
+  String get lowRatingsSuspension;
+
+  /// No description provided for @prohibitedActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'10. Prohibited Activities'**
+  String get prohibitedActivities;
+
+  /// No description provided for @noAlcoholDrugsDriving.
+  ///
+  /// In en, this message translates to:
+  /// **'Driving under the influence of alcohol or drugs is strictly prohibited.'**
+  String get noAlcoholDrugsDriving;
+
+  /// No description provided for @noFakeDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading fake documents is not allowed.'**
+  String get noFakeDocuments;
+
+  /// No description provided for @noAppMisuseFraud.
+  ///
+  /// In en, this message translates to:
+  /// **'App misuse, fraud, abuse, or harassment is prohibited.'**
+  String get noAppMisuseFraud;
+
+  /// No description provided for @noBrandMisuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Misuse of Nyzo Ride branding is not permitted.'**
+  String get noBrandMisuse;
+
+  /// No description provided for @insuranceLiability.
+  ///
+  /// In en, this message translates to:
+  /// **'11. Insurance & Liability'**
+  String get insuranceLiability;
+
+  /// No description provided for @insuranceCoverageProvided.
+  ///
+  /// In en, this message translates to:
+  /// **'Insurance coverage applies only if specifically provided by Nyzo Ride.'**
+  String get insuranceCoverageProvided;
+
+  /// No description provided for @driverResponsibleAccidents.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver is responsible for accidents, fines, penalties, and violations.'**
+  String get driverResponsibleAccidents;
+
+  /// No description provided for @nyzoNotLiableIncidents.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride is not directly liable for any such incidents.'**
+  String get nyzoNotLiableIncidents;
+
+  /// No description provided for @accountSuspensionTermination.
+  ///
+  /// In en, this message translates to:
+  /// **'12. Account Suspension or Termination'**
+  String get accountSuspensionTermination;
+
+  /// No description provided for @nyzoSuspendTerminateAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride reserves the right to suspend or terminate driver accounts for rule violations.'**
+  String get nyzoSuspendTerminateAccounts;
+
+  /// No description provided for @immediateActionLegalIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Immediate action may be taken in case of legal issues or police complaints.'**
+  String get immediateActionLegalIssues;
+
+  /// No description provided for @dataPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'13. Data & Privacy'**
+  String get dataPrivacy;
+
+  /// No description provided for @driverDataServicePurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver personal data is used only for service-related purposes.'**
+  String get driverDataServicePurpose;
+
+  /// No description provided for @dataSharedByLaw.
+  ///
+  /// In en, this message translates to:
+  /// **'Data will not be shared with third parties except as required by law.'**
+  String get dataSharedByLaw;
+
+  /// No description provided for @changesToTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'14. Changes to Terms'**
+  String get changesToTerms;
+
+  /// No description provided for @nyzoModifyTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Nyzo Ride may modify these Terms & Conditions at any time.'**
+  String get nyzoModifyTerms;
+
+  /// No description provided for @updatesCommunicatedApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates will be communicated through the app.'**
+  String get updatesCommunicatedApp;
+
+  /// No description provided for @legalJurisdiction.
+  ///
+  /// In en, this message translates to:
+  /// **'15. Legal Jurisdiction'**
+  String get legalJurisdiction;
+
+  /// No description provided for @termsGovernedIndianLaw.
+  ///
+  /// In en, this message translates to:
+  /// **'These Terms are governed by Indian laws.'**
+  String get termsGovernedIndianLaw;
+
+  /// No description provided for @disputesHyderabadJurisdiction.
+  ///
+  /// In en, this message translates to:
+  /// **'Any disputes shall be subject to Hyderabad jurisdiction.'**
+  String get disputesHyderabadJurisdiction;
+
+  /// No description provided for @acceptance.
+  ///
+  /// In en, this message translates to:
+  /// **'16. Acceptance'**
+  String get acceptance;
+
+  /// No description provided for @driverAcceptanceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'By using the Nyzo Ride Driver App, you confirm that:'**
+  String get driverAcceptanceConfirm;
+
+  /// No description provided for @driverAcceptanceQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'“I have read, understood, and agreed to all the above Terms & Conditions.”'**
+  String get driverAcceptanceQuote;
+
+  /// No description provided for @captainTermsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE'**
+  String get captainTermsTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

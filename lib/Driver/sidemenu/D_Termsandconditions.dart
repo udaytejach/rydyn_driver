@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 
 class D_TermsAndConditions extends StatelessWidget {
   const D_TermsAndConditions({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -56,181 +58,139 @@ class D_TermsAndConditions extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionTitle("NYZO RIDE – DRIVER (CAPTAIN)"),
+            sectionTitle(localizations.driverTermsTitle),
 
             const SizedBox(height: 20),
 
-            sectionTitle("1. DRIVER ELIGIBILITY"),
+            sectionTitle(localizations.driverEligibility),
             const SizedBox(height: 10),
-            bullet("Driver must be at least 21 years of age."),
-            bullet(
-              "A valid driving license (LMV / HMV as applicable) is mandatory.",
-            ),
-            bullet("All documents submitted must be genuine and valid."),
+            bullet(localizations.driverEligibilityAge),
+            bullet(localizations.driverEligibilityLicense),
+            bullet(localizations.driverEligibilityDocuments),
 
             const SizedBox(height: 20),
 
-            sectionTitle("2. NATURE OF THE PLATFORM"),
+            sectionTitle(localizations.platformNature),
             const SizedBox(height: 10),
-            bullet("Nyzo Ride is only a technology-based platform."),
-            bullet("It connects vehicle owners and drivers."),
-            bullet("Nyzo Ride is not:"),
-            bullet("A vehicle owner"),
-            bullet("A driver"),
-            bullet("A transport operator"),
+            bullet(localizations.platformNatureDesc1),
+            bullet(localizations.platformNatureDesc2),
+            bullet(localizations.platformNatureNotOwner),
+            bullet(localizations.platformNatureNotDriver),
+            bullet(localizations.platformNatureNotOperator),
 
             const SizedBox(height: 20),
 
-            sectionTitle("3. NO JOB OR EMPLOYMENT GUARANTEE"),
+            sectionTitle(localizations.noJobGuarantee),
             const SizedBox(height: 10),
-            bullet("Nyzo Ride does not provide jobs or employment."),
-            bullet("Drivers are not employees of Nyzo Ride."),
-            bullet("Trip availability is not guaranteed."),
-            bullet(
-              "Nyzo Ride does not promise fixed income, salary, or minimum trips.",
-            ),
+            bullet(localizations.nyzoNoJobs),
+            bullet(localizations.driversNotEmployees),
+            bullet(localizations.tripAvailabilityNotGuaranteed),
+            bullet(localizations.nyzoNoFixedIncome),
 
             const SizedBox(height: 20),
 
-            sectionTitle("4. INDEPENDENT DRIVER STATUS"),
+            sectionTitle(localizations.independentDriverStatus),
             const SizedBox(height: 10),
-            bullet("Drivers act as independent service providers."),
-            bullet("No employer–employee relationship is created."),
-            bullet(
-              "Benefits such as PF, ESI, leave, or insurance are not applicable.",
-            ),
-            bullet("Tax and legal compliance is driver’s responsibility."),
+            bullet(localizations.driversIndependentProviders),
+            bullet(localizations.noEmployerEmployeeRelation),
+            bullet(localizations.noBenefitsApplicable),
+            bullet(localizations.taxComplianceDriver),
 
             const SizedBox(height: 20),
 
-            sectionTitle("5. PRE-RIDE VEHICLE INSPECTION"),
+            sectionTitle(localizations.preRideInspection),
             const SizedBox(height: 10),
-            bullet("Before every ride, the driver must inspect the vehicle."),
-            bullet(
-              "Tyres, brakes, lights, mirrors, fuel level, and documents must be checked.",
-            ),
-            bullet(
-              "If the vehicle is unsafe, the driver must not start the trip and inform the owner.",
-            ),
-            bullet(
-              "Nyzo Ride is not responsible for vehicle condition or related issues.",
-            ),
+            bullet(localizations.driverMustInspectVehicle),
+            bullet(localizations.inspectionChecklist),
+            bullet(localizations.unsafeVehicleNoTrip),
+            bullet(localizations.nyzoNotResponsibleVehicle),
 
             const SizedBox(height: 20),
 
-            sectionTitle("6. TRIP RESPONSIBILITIES"),
+            sectionTitle(localizations.tripResponsibilities),
             const SizedBox(height: 10),
-            bullet("Driver must reach the pickup location on time."),
-            bullet("All traffic rules and local laws must be followed."),
-            bullet(
-              "The owner’s vehicle must be driven carefully and responsibly.",
-            ),
-            bullet(
-              "Misbehavior, unsafe driving, or negligence is strictly prohibited.",
-            ),
+            bullet(localizations.driverOnTimePickup),
+            bullet(localizations.followTrafficRules),
+            bullet(localizations.driveCarefullyResponsibly),
+            bullet(localizations.misbehaviorProhibited),
 
             const SizedBox(height: 20),
 
-            sectionTitle("7. CANCELLATION POLICY"),
+            sectionTitle(localizations.cancellationPolicy),
             const SizedBox(height: 10),
-            bullet("Unnecessary cancellations by the driver must be avoided."),
-            bullet("Frequent cancellations may lead to:"),
-            bullet("Warning"),
-            bullet("Temporary suspension"),
-            bullet("Permanent account deactivation"),
+            bullet(localizations.avoidUnnecessaryCancellations),
+            bullet(localizations.frequentCancellationsLeadTo),
+            bullet(localizations.cancellationWarning),
+            bullet(localizations.cancellationTemporarySuspension),
+            bullet(localizations.cancellationPermanentDeactivation),
 
             const SizedBox(height: 20),
 
-            sectionTitle("8. PAYMENTS & EARNINGS"),
+            sectionTitle(localizations.paymentsEarnings),
             const SizedBox(height: 10),
-            bullet(
-              "Earnings are credited only after successful trip completion.",
-            ),
-            bullet("Service charges may apply as per Nyzo Ride policy."),
-            bullet("No payment will be made for fake or fraudulent trips."),
+            bullet(localizations.earningsAfterCompletion),
+            bullet(localizations.serviceChargesPolicy),
+            bullet(localizations.noPaymentFraudTrips),
 
             const SizedBox(height: 20),
 
-            sectionTitle("9. RATINGS & REVIEWS"),
+            sectionTitle(localizations.ratingsReviews),
             const SizedBox(height: 10),
-            bullet(
-              "Driver performance is evaluated based on ratings and feedback.",
-            ),
-            bullet(
-              "Repeated low ratings or complaints may result in suspension or termination.",
-            ),
+            bullet(localizations.driverPerformanceEvaluated),
+            bullet(localizations.lowRatingsSuspension),
 
             const SizedBox(height: 20),
 
-            sectionTitle("10. PROHIBITED ACTIVITIES"),
+            sectionTitle(localizations.prohibitedActivities),
             const SizedBox(height: 10),
-            bullet(
-              "Driving under the influence of alcohol or drugs is strictly prohibited.",
-            ),
-            bullet("Uploading fake documents is not allowed."),
-            bullet("App misuse, fraud, abuse, or harassment is prohibited."),
-            bullet("Misuse of Nyzo Ride branding is not permitted."),
+            bullet(localizations.noAlcoholDrugsDriving),
+            bullet(localizations.noFakeDocuments),
+            bullet(localizations.noAppMisuseFraud),
+            bullet(localizations.noBrandMisuse),
 
             const SizedBox(height: 20),
 
-            sectionTitle("11. INSURANCE & LIABILITY"),
+            sectionTitle(localizations.insuranceLiability),
             const SizedBox(height: 10),
-            bullet(
-              "Insurance coverage applies only if specifically provided by Nyzo Ride.",
-            ),
-            bullet(
-              "Driver is responsible for accidents, fines, penalties, and violations.",
-            ),
-            bullet("Nyzo Ride is not directly liable for any such incidents."),
+            bullet(localizations.insuranceCoverageProvided),
+            bullet(localizations.driverResponsibleAccidents),
+            bullet(localizations.nyzoNotLiableIncidents),
 
             const SizedBox(height: 20),
 
-            sectionTitle("12. ACCOUNT SUSPENSION OR TERMINATION"),
+            sectionTitle(localizations.accountSuspensionTermination),
             const SizedBox(height: 10),
-            bullet(
-              "Nyzo Ride reserves the right to suspend or terminate driver accounts for rule violations.",
-            ),
-            bullet(
-              "Immediate action may be taken in case of legal issues or police complaints.",
-            ),
+            bullet(localizations.nyzoSuspendTerminateAccounts),
+            bullet(localizations.immediateActionLegalIssues),
 
             const SizedBox(height: 20),
 
-            sectionTitle("13. DATA & PRIVACY"),
+            sectionTitle(localizations.dataPrivacy),
             const SizedBox(height: 10),
-            bullet(
-              "Driver personal data is used only for service-related purposes.",
-            ),
-            bullet(
-              "Data will not be shared with third parties except as required by law.",
-            ),
+            bullet(localizations.driverDataServicePurpose),
+            bullet(localizations.dataSharedByLaw),
 
             const SizedBox(height: 20),
 
-            sectionTitle("14. CHANGES TO TERMS"),
+            sectionTitle(localizations.changesToTerms),
             const SizedBox(height: 10),
-            bullet(
-              "Nyzo Ride may modify these Terms & Conditions at any time.",
-            ),
-            bullet("Updates will be communicated through the app."),
+            bullet(localizations.nyzoModifyTerms),
+            bullet(localizations.updatesCommunicatedApp),
 
             const SizedBox(height: 20),
 
-            sectionTitle("15. LEGAL JURISDICTION"),
+            sectionTitle(localizations.legalJurisdiction),
             const SizedBox(height: 10),
-            bullet("These Terms are governed by Indian laws."),
-            bullet("Any disputes shall be subject to Hyderabad jurisdiction."),
+            bullet(localizations.termsGovernedIndianLaw),
+            bullet(localizations.disputesHyderabadJurisdiction),
 
             const SizedBox(height: 20),
 
-            sectionTitle("16. ACCEPTANCE"),
+            sectionTitle(localizations.acceptance),
             const SizedBox(height: 10),
-
-            bullet("By using the Nyzo Ride Driver App, you confirm that:"),
-            bullet(
-              "I have read, understood, and agreed to all the above Terms & Conditions.",
-            ),
-            bullet("CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE"),
+            bullet(localizations.driverAcceptanceConfirm),
+            bullet(localizations.driverAcceptanceQuote),
+            bullet(localizations.captainTermsTitle),
 
             const SizedBox(height: 30),
           ],

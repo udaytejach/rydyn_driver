@@ -256,5 +256,264 @@
   "notUploaded": "Not uploaded",
   "aadharCard": "Aadhar Card",
   "noImageAvailable": "No Image Available",
-  "failedToLoadImage": "Failed to load image"
+  "failedToLoadImage": "Failed to load image",
+  "privacyPolicyTitle": "NYZO RIDE – DRIVER (CAPTAIN)",
+     "lastUpdated": "Last Updated: January 2026",
+      "privacyIntro": "Nyzo Ride (“Nyzo Ride”, “we”, “our”, “us”) respects your privacy and is committed to protecting the personal information of users (“you”, “user”, “driver”, “vehicle owner”) who use the Nyzo Ride mobile application, website, and related services (collectively, the “Platform”).",
+       "privacyPolicyExplanation": "This Privacy Policy explains how we collect, use, store, share, and protect your information.",
+         "informationWeCollect": "INFORMATION WE COLLECT",
+
+       "personalInformation": "1.1 Personal Information",
+
+  "weMayCollectFollowing": "We may collect the following:",
+
+  "fullName": "Full name",
+
+  "mobileNumber": "Mobile number",
+
+  "emailOptional": "Email address (optional)",
+
+  "profilePhotoOptional": "Profile photo (optional)",
+
+  "governmentIdDetails": "Government ID details (for drivers – License, PAN/Aadhaar where required)",
+
+  "vehicleDetails": "Vehicle details (vehicle owners)",
+  "locationInformation": "1.2 Location Information",
+  "realTimeLocation": "Real-time location during active trips",
+  "pickupDropLocations": "Pickup and drop locations",
+  "tripRoutesDistance": "Trip routes and distance data",
+  "locationCollectionNote": "Location is collected only when the app is in use and for trip-related purposes.",
+  "usageDeviceInformation": "1.3 Usage & Device Information",
+  "deviceModel": "Device model",
+  "osVersion": "OS version",
+  "appUsageData": "App usage data",
+  "ipAddress": "IP address",
+  "crashLogs": "Crash logs and diagnostic data",
+  "paymentInformation": "1.4 Payment Information", 
+  "paymentStatus": "Payment status",
+   "transactionId": "Transaction ID", 
+   "paymentMethodNote": "Payment method (Nyzo Ride does NOT store card or UPI credentials)",
+   "howWeUseInformation": "2. HOW WE USE YOUR INFORMATION",
+  "weUseYourInformationTo": "We use your information to:",
+  "connectOwnersDrivers": "Connect vehicle owners with drivers",
+  "enableBookingsTrips": "Enable bookings and trip management",
+  "verifyDriverIdentity": "Verify driver identity and eligibility",
+  "processPaymentsRefunds": "Process payments and refunds",
+  "improveAppPerformance": "Improve app performance and user experience",
+  "communicateUpdatesAlerts": "Communicate service updates and alerts",
+  "preventFraudMisuse": "Prevent fraud and misuse",
+  "complyLegalObligations": "Comply with legal obligations",
+  "informationSharing": "3. INFORMATION SHARING",
+  "noSellRentData": "Nyzo Ride does not sell or rent your personal data.",
+  "weMayShareLimitedInfo": "We may share limited information with:",
+  "shareDriversOwners": "Drivers / Vehicle Owners – only what is required for a trip",
+  "sharePaymentGateways": "Payment gateways – for transaction processing",
+  "shareCloudPartners": "Cloud & technology partners – app hosting, analytics",
+  "shareLawAuthorities": "Law enforcement / government authorities – when legally required",
+  "dataStorageSecurity": "4. DATA STORAGE & SECURITY",
+  "dataStoredSecureServers": "Data is stored on secure servers",
+  "industryEncryptionUsed": "Industry-standard encryption is used",
+  "accessLimitedAuthorized": "Access is limited to authorized personnel only",
+  "regularSecurityAudits": "Regular security audits are conducted",
+  "noSystemFullySecure": "Despite best efforts, no digital system is 100% secure. Users share data at their own risk.",
+  "userRights": "5. USER RIGHTS",
+
+  "youHaveTheRightTo": "You have the right to:",
+
+  "accessPersonalData": "Access your personal data",
+
+  "updateInformation": "Update or correct your information",
+
+  "requestAccountDeletion": "Request deletion of your account",
+
+  "withdrawConsent": "Withdraw consent (where applicable)",
+
+  "accountDeletionNote": "Account deletion requests may be subject to legal or regulatory retention requirements.",
+
+  "dataRetention": "6. DATA RETENTION",
+
+  "dataRetainedAsNecessary": "Data is retained only as long as necessary",
+
+  "tripTransactionRetention": "Trip and transaction records may be retained for legal, tax, or dispute purposes",
+
+  "inactiveAccountsDeleted": "Inactive accounts may be deleted after a defined period",
+
+  "childrensPrivacy": "7. CHILDREN’S PRIVACY",
+
+  "notForUnder18": "Nyzo Ride is not intended for users under 18 years",
+
+  "noMinorDataCollection": "We do not knowingly collect data from minors",
+
+  "thirdPartyServices": "8. THIRD-PARTY SERVICES",
+
+  "mayContainThirdPartyLinks": "Nyzo Ride may contain links or integrations with third-party services",
+
+  "notResponsibleThirdPartyPrivacy": "We are not responsible for their privacy practices",
+  "platformDisclaimer": "9. PLATFORM NATURE DISCLAIMER",
+
+  "platformOnly": "Nyzo Ride is a technology platform only:",
+
+  "notTransportOperator": "Nyzo Ride is not a transport operator",
+
+  "doesNotOwnVehicles": "Nyzo Ride does not own vehicles",
+
+  "doesNotEmployDrivers": "Nyzo Ride does not employ drivers",
+
+  "independentProviders": "Drivers and vehicle owners are independent service providers",
+
+  "policyChanges": "10. CHANGES TO THIS POLICY",
+
+  "policyMayUpdate": "Nyzo Ride may update this Privacy Policy from time to time",
+
+  "policyUpdatedVersions": "Updated versions will be published within the app or website",
+
+  "policyContinuedUse": "Continued use of the platform implies acceptance of the revised policy",
+
+  "contactUs": "11. CONTACT US",
+
+  "privacyConcernsContact": "For privacy concerns or data requests, contact:",
+
+  "nyzoRideSupport": "Nyzo Ride Support",
+
+  "nyzoRideEmail": "hello@nyzoride.com",
+
+  "nyzoRidePhone": "9000464851",
+  "driverTermsTitle": "NYZO RIDE – DRIVER (CAPTAIN)",
+
+  "driverEligibility": "1. Driver Eligibility",
+
+  "driverEligibilityAge": "Driver must be at least 21 years of age.",
+
+  "driverEligibilityLicense": "A valid driving license (LMV / HMV as applicable) is mandatory.",
+
+  "driverEligibilityDocuments": "All documents submitted must be genuine and valid.",
+
+  "platformNature": "2. Nature of the Platform",
+
+  "platformNatureDesc1": "Nyzo Ride is only a technology-based platform.",
+
+  "platformNatureDesc2": "It connects vehicle owners and drivers.",
+
+  "platformNatureNotOwner": "Nyzo Ride is not: A vehicle owner",
+
+  "platformNatureNotDriver": "Nyzo Ride is not: A driver",
+
+  "platformNatureNotOperator": "Nyzo Ride is not: A transport operator",
+
+  "noJobGuarantee": "3. No Job or Employment Guarantee",
+
+  "nyzoNoJobs": "Nyzo Ride does not provide jobs or employment.",
+
+  "driversNotEmployees": "Drivers are not employees of Nyzo Ride.",
+
+  "tripAvailabilityNotGuaranteed": "Trip availability is not guaranteed.",
+
+  "nyzoNoFixedIncome": "Nyzo Ride does not promise fixed income, salary, or minimum trips.",
+
+  "independentDriverStatus": "4. Independent Driver Status",
+
+  "driversIndependentProviders": "Drivers act as independent service providers.",
+
+  "noEmployerEmployeeRelation": "No employer–employee relationship is created.",
+
+  "noBenefitsApplicable": "Benefits such as PF, ESI, leave, or insurance are not applicable.",
+
+  "taxComplianceDriver": "Tax and legal compliance is driver’s responsibility.",
+
+  "preRideInspection": "5. Pre-Ride Vehicle Inspection",
+
+  "driverMustInspectVehicle": "Before every ride, the driver must inspect the vehicle.",
+
+  "inspectionChecklist": "Tyres, brakes, lights, mirrors, fuel level, and documents must be checked.",
+
+  "unsafeVehicleNoTrip": "If the vehicle is unsafe, the driver must not start the trip and inform the owner.",
+
+  "nyzoNotResponsibleVehicle": "Nyzo Ride is not responsible for vehicle condition or related issues.",
+
+  "tripResponsibilities": "6. Trip Responsibilities",
+
+  "driverOnTimePickup": "Driver must reach the pickup location on time.",
+
+  "followTrafficRules": "All traffic rules and local laws must be followed.",
+
+  "driveCarefullyResponsibly": "The owner’s vehicle must be driven carefully and responsibly.",
+
+  "misbehaviorProhibited": "Misbehavior, unsafe driving, or negligence is strictly prohibited.",
+
+  "cancellationPolicy": "7. Cancellation Policy",
+
+  "avoidUnnecessaryCancellations": "Unnecessary cancellations by the driver must be avoided.",
+
+  "frequentCancellationsLeadTo": "Frequent cancellations may lead to:",
+
+  "cancellationWarning": "Warning",
+
+  "cancellationTemporarySuspension": "Temporary suspension",
+
+  "cancellationPermanentDeactivation": "Permanent account deactivation",
+
+  "paymentsEarnings": "8. Payments & Earnings",
+
+  "earningsAfterCompletion": "Earnings are credited only after successful trip completion.",
+
+  "serviceChargesPolicy": "Service charges may apply as per Nyzo Ride policy.",
+
+  "noPaymentFraudTrips": "No payment will be made for fake or fraudulent trips.",
+
+  "ratingsReviews": "9. Ratings & Reviews",
+
+  "driverPerformanceEvaluated": "Driver performance is evaluated based on ratings and feedback.",
+
+  "lowRatingsSuspension": "Repeated low ratings or complaints may result in suspension or termination.",
+
+  "prohibitedActivities": "10. Prohibited Activities",
+
+  "noAlcoholDrugsDriving": "Driving under the influence of alcohol or drugs is strictly prohibited.",
+
+  "noFakeDocuments": "Uploading fake documents is not allowed.",
+
+  "noAppMisuseFraud": "App misuse, fraud, abuse, or harassment is prohibited.",
+
+  "noBrandMisuse": "Misuse of Nyzo Ride branding is not permitted.",
+
+  "insuranceLiability": "11. Insurance & Liability",
+
+  "insuranceCoverageProvided": "Insurance coverage applies only if specifically provided by Nyzo Ride.",
+
+  "driverResponsibleAccidents": "Driver is responsible for accidents, fines, penalties, and violations.",
+
+  "nyzoNotLiableIncidents": "Nyzo Ride is not directly liable for any such incidents.",
+
+  "accountSuspensionTermination": "12. Account Suspension or Termination",
+
+  "nyzoSuspendTerminateAccounts": "Nyzo Ride reserves the right to suspend or terminate driver accounts for rule violations.",
+
+  "immediateActionLegalIssues": "Immediate action may be taken in case of legal issues or police complaints.",
+
+  "dataPrivacy": "13. Data & Privacy",
+
+  "driverDataServicePurpose": "Driver personal data is used only for service-related purposes.",
+
+  "dataSharedByLaw": "Data will not be shared with third parties except as required by law.",
+
+  "changesToTerms": "14. Changes to Terms",
+
+  "nyzoModifyTerms": "Nyzo Ride may modify these Terms & Conditions at any time.",
+
+  "updatesCommunicatedApp": "Updates will be communicated through the app.",
+
+  "legalJurisdiction": "15. Legal Jurisdiction",
+
+  "termsGovernedIndianLaw": "These Terms are governed by Indian laws.",
+
+  "disputesHyderabadJurisdiction": "Any disputes shall be subject to Hyderabad jurisdiction.",
+
+  "acceptance": "16. Acceptance",
+
+  "driverAcceptanceConfirm": "By using the Nyzo Ride Driver App, you confirm that:",
+
+  "driverAcceptanceQuote": "“I have read, understood, and agreed to all the above Terms & Conditions.”",
+
+  "captainTermsTitle": "CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE"
+ 
 }

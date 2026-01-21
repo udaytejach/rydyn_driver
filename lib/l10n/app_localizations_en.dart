@@ -45,7 +45,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterMobileNumber => 'Please enter mobile number';
 
   @override
-  String get mobileNumber => 'Mobile Number';
+  String get mobileNumber => 'Mobile number';
 
   @override
   String get invalidOtp => 'Invalid OTP. Please try again.';
@@ -754,4 +754,457 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedToLoadImage => 'Failed to load image';
+
+  @override
+  String get privacyPolicyTitle => 'NYZO RIDE – DRIVER (CAPTAIN)';
+
+  @override
+  String get lastUpdated => 'Last Updated: January 2026';
+
+  @override
+  String get privacyIntro => 'Nyzo Ride (“Nyzo Ride”, “we”, “our”, “us”) respects your privacy and is committed to protecting the personal information of users (“you”, “user”, “driver”, “vehicle owner”) who use the Nyzo Ride mobile application, website, and related services (collectively, the “Platform”).';
+
+  @override
+  String get privacyPolicyExplanation => 'This Privacy Policy explains how we collect, use, store, share, and protect your information.';
+
+  @override
+  String get informationWeCollect => 'INFORMATION WE COLLECT';
+
+  @override
+  String get personalInformation => '1.1 Personal Information';
+
+  @override
+  String get weMayCollectFollowing => 'We may collect the following:';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get emailOptional => 'Email address (optional)';
+
+  @override
+  String get profilePhotoOptional => 'Profile photo (optional)';
+
+  @override
+  String get governmentIdDetails => 'Government ID details (for drivers – License, PAN/Aadhaar where required)';
+
+  @override
+  String get vehicleDetails => 'Vehicle details (vehicle owners)';
+
+  @override
+  String get locationInformation => '1.2 Location Information';
+
+  @override
+  String get realTimeLocation => 'Real-time location during active trips';
+
+  @override
+  String get pickupDropLocations => 'Pickup and drop locations';
+
+  @override
+  String get tripRoutesDistance => 'Trip routes and distance data';
+
+  @override
+  String get locationCollectionNote => 'Location is collected only when the app is in use and for trip-related purposes.';
+
+  @override
+  String get usageDeviceInformation => '1.3 Usage & Device Information';
+
+  @override
+  String get deviceModel => 'Device model';
+
+  @override
+  String get osVersion => 'OS version';
+
+  @override
+  String get appUsageData => 'App usage data';
+
+  @override
+  String get ipAddress => 'IP address';
+
+  @override
+  String get crashLogs => 'Crash logs and diagnostic data';
+
+  @override
+  String get paymentInformation => '1.4 Payment Information';
+
+  @override
+  String get paymentStatus => 'Payment status';
+
+  @override
+  String get transactionId => 'Transaction ID';
+
+  @override
+  String get paymentMethodNote => 'Payment method (Nyzo Ride does NOT store card or UPI credentials)';
+
+  @override
+  String get howWeUseInformation => '2. HOW WE USE YOUR INFORMATION';
+
+  @override
+  String get weUseYourInformationTo => 'We use your information to:';
+
+  @override
+  String get connectOwnersDrivers => 'Connect vehicle owners with drivers';
+
+  @override
+  String get enableBookingsTrips => 'Enable bookings and trip management';
+
+  @override
+  String get verifyDriverIdentity => 'Verify driver identity and eligibility';
+
+  @override
+  String get processPaymentsRefunds => 'Process payments and refunds';
+
+  @override
+  String get improveAppPerformance => 'Improve app performance and user experience';
+
+  @override
+  String get communicateUpdatesAlerts => 'Communicate service updates and alerts';
+
+  @override
+  String get preventFraudMisuse => 'Prevent fraud and misuse';
+
+  @override
+  String get complyLegalObligations => 'Comply with legal obligations';
+
+  @override
+  String get informationSharing => '3. INFORMATION SHARING';
+
+  @override
+  String get noSellRentData => 'Nyzo Ride does not sell or rent your personal data.';
+
+  @override
+  String get weMayShareLimitedInfo => 'We may share limited information with:';
+
+  @override
+  String get shareDriversOwners => 'Drivers / Vehicle Owners – only what is required for a trip';
+
+  @override
+  String get sharePaymentGateways => 'Payment gateways – for transaction processing';
+
+  @override
+  String get shareCloudPartners => 'Cloud & technology partners – app hosting, analytics';
+
+  @override
+  String get shareLawAuthorities => 'Law enforcement / government authorities – when legally required';
+
+  @override
+  String get dataStorageSecurity => '4. DATA STORAGE & SECURITY';
+
+  @override
+  String get dataStoredSecureServers => 'Data is stored on secure servers';
+
+  @override
+  String get industryEncryptionUsed => 'Industry-standard encryption is used';
+
+  @override
+  String get accessLimitedAuthorized => 'Access is limited to authorized personnel only';
+
+  @override
+  String get regularSecurityAudits => 'Regular security audits are conducted';
+
+  @override
+  String get noSystemFullySecure => 'Despite best efforts, no digital system is 100% secure. Users share data at their own risk.';
+
+  @override
+  String get userRights => '5. USER RIGHTS';
+
+  @override
+  String get youHaveTheRightTo => 'You have the right to:';
+
+  @override
+  String get accessPersonalData => 'Access your personal data';
+
+  @override
+  String get updateInformation => 'Update or correct your information';
+
+  @override
+  String get requestAccountDeletion => 'Request deletion of your account';
+
+  @override
+  String get withdrawConsent => 'Withdraw consent (where applicable)';
+
+  @override
+  String get accountDeletionNote => 'Account deletion requests may be subject to legal or regulatory retention requirements.';
+
+  @override
+  String get dataRetention => '6. DATA RETENTION';
+
+  @override
+  String get dataRetainedAsNecessary => 'Data is retained only as long as necessary';
+
+  @override
+  String get tripTransactionRetention => 'Trip and transaction records may be retained for legal, tax, or dispute purposes';
+
+  @override
+  String get inactiveAccountsDeleted => 'Inactive accounts may be deleted after a defined period';
+
+  @override
+  String get childrensPrivacy => '7. CHILDREN’S PRIVACY';
+
+  @override
+  String get notForUnder18 => 'Nyzo Ride is not intended for users under 18 years';
+
+  @override
+  String get noMinorDataCollection => 'We do not knowingly collect data from minors';
+
+  @override
+  String get thirdPartyServices => '8. THIRD-PARTY SERVICES';
+
+  @override
+  String get mayContainThirdPartyLinks => 'Nyzo Ride may contain links or integrations with third-party services';
+
+  @override
+  String get notResponsibleThirdPartyPrivacy => 'We are not responsible for their privacy practices';
+
+  @override
+  String get platformDisclaimer => '9. PLATFORM NATURE DISCLAIMER';
+
+  @override
+  String get platformOnly => 'Nyzo Ride is a technology platform only:';
+
+  @override
+  String get notTransportOperator => 'Nyzo Ride is not a transport operator';
+
+  @override
+  String get doesNotOwnVehicles => 'Nyzo Ride does not own vehicles';
+
+  @override
+  String get doesNotEmployDrivers => 'Nyzo Ride does not employ drivers';
+
+  @override
+  String get independentProviders => 'Drivers and vehicle owners are independent service providers';
+
+  @override
+  String get policyChanges => '10. CHANGES TO THIS POLICY';
+
+  @override
+  String get policyMayUpdate => 'Nyzo Ride may update this Privacy Policy from time to time';
+
+  @override
+  String get policyUpdatedVersions => 'Updated versions will be published within the app or website';
+
+  @override
+  String get policyContinuedUse => 'Continued use of the platform implies acceptance of the revised policy';
+
+  @override
+  String get contactUs => '11. CONTACT US';
+
+  @override
+  String get privacyConcernsContact => 'For privacy concerns or data requests, contact:';
+
+  @override
+  String get nyzoRideSupport => 'Nyzo Ride Support';
+
+  @override
+  String get nyzoRideEmail => 'hello@nyzoride.com';
+
+  @override
+  String get nyzoRidePhone => '9000464851';
+
+  @override
+  String get driverTermsTitle => 'NYZO RIDE – DRIVER (CAPTAIN)';
+
+  @override
+  String get driverEligibility => '1. Driver Eligibility';
+
+  @override
+  String get driverEligibilityAge => 'Driver must be at least 21 years of age.';
+
+  @override
+  String get driverEligibilityLicense => 'A valid driving license (LMV / HMV as applicable) is mandatory.';
+
+  @override
+  String get driverEligibilityDocuments => 'All documents submitted must be genuine and valid.';
+
+  @override
+  String get platformNature => '2. Nature of the Platform';
+
+  @override
+  String get platformNatureDesc1 => 'Nyzo Ride is only a technology-based platform.';
+
+  @override
+  String get platformNatureDesc2 => 'It connects vehicle owners and drivers.';
+
+  @override
+  String get platformNatureNotOwner => 'Nyzo Ride is not: A vehicle owner';
+
+  @override
+  String get platformNatureNotDriver => 'Nyzo Ride is not: A driver';
+
+  @override
+  String get platformNatureNotOperator => 'Nyzo Ride is not: A transport operator';
+
+  @override
+  String get noJobGuarantee => '3. No Job or Employment Guarantee';
+
+  @override
+  String get nyzoNoJobs => 'Nyzo Ride does not provide jobs or employment.';
+
+  @override
+  String get driversNotEmployees => 'Drivers are not employees of Nyzo Ride.';
+
+  @override
+  String get tripAvailabilityNotGuaranteed => 'Trip availability is not guaranteed.';
+
+  @override
+  String get nyzoNoFixedIncome => 'Nyzo Ride does not promise fixed income, salary, or minimum trips.';
+
+  @override
+  String get independentDriverStatus => '4. Independent Driver Status';
+
+  @override
+  String get driversIndependentProviders => 'Drivers act as independent service providers.';
+
+  @override
+  String get noEmployerEmployeeRelation => 'No employer–employee relationship is created.';
+
+  @override
+  String get noBenefitsApplicable => 'Benefits such as PF, ESI, leave, or insurance are not applicable.';
+
+  @override
+  String get taxComplianceDriver => 'Tax and legal compliance is driver’s responsibility.';
+
+  @override
+  String get preRideInspection => '5. Pre-Ride Vehicle Inspection';
+
+  @override
+  String get driverMustInspectVehicle => 'Before every ride, the driver must inspect the vehicle.';
+
+  @override
+  String get inspectionChecklist => 'Tyres, brakes, lights, mirrors, fuel level, and documents must be checked.';
+
+  @override
+  String get unsafeVehicleNoTrip => 'If the vehicle is unsafe, the driver must not start the trip and inform the owner.';
+
+  @override
+  String get nyzoNotResponsibleVehicle => 'Nyzo Ride is not responsible for vehicle condition or related issues.';
+
+  @override
+  String get tripResponsibilities => '6. Trip Responsibilities';
+
+  @override
+  String get driverOnTimePickup => 'Driver must reach the pickup location on time.';
+
+  @override
+  String get followTrafficRules => 'All traffic rules and local laws must be followed.';
+
+  @override
+  String get driveCarefullyResponsibly => 'The owner’s vehicle must be driven carefully and responsibly.';
+
+  @override
+  String get misbehaviorProhibited => 'Misbehavior, unsafe driving, or negligence is strictly prohibited.';
+
+  @override
+  String get cancellationPolicy => '7. Cancellation Policy';
+
+  @override
+  String get avoidUnnecessaryCancellations => 'Unnecessary cancellations by the driver must be avoided.';
+
+  @override
+  String get frequentCancellationsLeadTo => 'Frequent cancellations may lead to:';
+
+  @override
+  String get cancellationWarning => 'Warning';
+
+  @override
+  String get cancellationTemporarySuspension => 'Temporary suspension';
+
+  @override
+  String get cancellationPermanentDeactivation => 'Permanent account deactivation';
+
+  @override
+  String get paymentsEarnings => '8. Payments & Earnings';
+
+  @override
+  String get earningsAfterCompletion => 'Earnings are credited only after successful trip completion.';
+
+  @override
+  String get serviceChargesPolicy => 'Service charges may apply as per Nyzo Ride policy.';
+
+  @override
+  String get noPaymentFraudTrips => 'No payment will be made for fake or fraudulent trips.';
+
+  @override
+  String get ratingsReviews => '9. Ratings & Reviews';
+
+  @override
+  String get driverPerformanceEvaluated => 'Driver performance is evaluated based on ratings and feedback.';
+
+  @override
+  String get lowRatingsSuspension => 'Repeated low ratings or complaints may result in suspension or termination.';
+
+  @override
+  String get prohibitedActivities => '10. Prohibited Activities';
+
+  @override
+  String get noAlcoholDrugsDriving => 'Driving under the influence of alcohol or drugs is strictly prohibited.';
+
+  @override
+  String get noFakeDocuments => 'Uploading fake documents is not allowed.';
+
+  @override
+  String get noAppMisuseFraud => 'App misuse, fraud, abuse, or harassment is prohibited.';
+
+  @override
+  String get noBrandMisuse => 'Misuse of Nyzo Ride branding is not permitted.';
+
+  @override
+  String get insuranceLiability => '11. Insurance & Liability';
+
+  @override
+  String get insuranceCoverageProvided => 'Insurance coverage applies only if specifically provided by Nyzo Ride.';
+
+  @override
+  String get driverResponsibleAccidents => 'Driver is responsible for accidents, fines, penalties, and violations.';
+
+  @override
+  String get nyzoNotLiableIncidents => 'Nyzo Ride is not directly liable for any such incidents.';
+
+  @override
+  String get accountSuspensionTermination => '12. Account Suspension or Termination';
+
+  @override
+  String get nyzoSuspendTerminateAccounts => 'Nyzo Ride reserves the right to suspend or terminate driver accounts for rule violations.';
+
+  @override
+  String get immediateActionLegalIssues => 'Immediate action may be taken in case of legal issues or police complaints.';
+
+  @override
+  String get dataPrivacy => '13. Data & Privacy';
+
+  @override
+  String get driverDataServicePurpose => 'Driver personal data is used only for service-related purposes.';
+
+  @override
+  String get dataSharedByLaw => 'Data will not be shared with third parties except as required by law.';
+
+  @override
+  String get changesToTerms => '14. Changes to Terms';
+
+  @override
+  String get nyzoModifyTerms => 'Nyzo Ride may modify these Terms & Conditions at any time.';
+
+  @override
+  String get updatesCommunicatedApp => 'Updates will be communicated through the app.';
+
+  @override
+  String get legalJurisdiction => '15. Legal Jurisdiction';
+
+  @override
+  String get termsGovernedIndianLaw => 'These Terms are governed by Indian laws.';
+
+  @override
+  String get disputesHyderabadJurisdiction => 'Any disputes shall be subject to Hyderabad jurisdiction.';
+
+  @override
+  String get acceptance => '16. Acceptance';
+
+  @override
+  String get driverAcceptanceConfirm => 'By using the Nyzo Ride Driver App, you confirm that:';
+
+  @override
+  String get driverAcceptanceQuote => '“I have read, understood, and agreed to all the above Terms & Conditions.”';
+
+  @override
+  String get captainTermsTitle => 'CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE';
 }

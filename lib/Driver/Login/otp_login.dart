@@ -245,8 +245,8 @@ class _OtpLoginState extends State<OtpLogin> {
                                   TextSpan(text: localizations.noOtp),
                                   TextSpan(
                                     text: _secondsLeft > 0
-                                        ? "Resend OTP in 00:${_secondsLeft.toString().padLeft(2, '0')}"
-                                        : "Resend OTP",
+                                        ? "${localizations.resendOtp} in 00:${_secondsLeft.toString().padLeft(2, '0')}"
+                                        : localizations.resendOtp,
                                     style: TextStyle(
                                       color: _secondsLeft > 0
                                           ? kgreyColor

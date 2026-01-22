@@ -49,7 +49,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
               ),
               Center(
                 child: CustomText(
-                  text: 'Privacy Policy',
+                  text: localizations.privacyPolicy,
                   textcolor: KblackColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,

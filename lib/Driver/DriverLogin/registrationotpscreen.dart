@@ -21,6 +21,7 @@ import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customButton.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/notifications/service.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 
 class DriverOtpScreen extends StatefulWidget {
   final String firstName,
@@ -358,7 +359,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -377,7 +378,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            text: "Enter Your OTP",
+                            text: localizations.enterOtp,
                             fontSize: 32,
                             fontWeight: FontWeight.w700,
                             textcolor: korangeColor,
@@ -391,14 +392,11 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                                 color: kgreyColor,
                               ),
                               children: [
-                                const TextSpan(text: "OTP sent to "),
                                 TextSpan(
                                   text: widget.phoneNumber,
                                   style: TextStyle(color: korangeColor),
                                 ),
-                                const TextSpan(
-                                  text: " this OTP will get auto entering",
-                                ),
+                                TextSpan(text: localizations.otpSent),
                               ],
                             ),
                           ),
@@ -452,11 +450,11 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 children: [
-                                  TextSpan(text: 'You didn\'t receive OTP? '),
+                                  TextSpan(text: localizations.noOtp),
                                   TextSpan(
                                     text: _secondsLeft > 0
-                                        ? "Resend OTP in 00:${_secondsLeft.toString().padLeft(2, '0')}"
-                                        : "Resend OTP",
+                                        ? "${localizations.resendOtp} in 00:${_secondsLeft.toString().padLeft(2, '0')}"
+                                        : localizations.resendOtp,
                                     style: TextStyle(
                                       color: _secondsLeft > 0
                                           ? kgreyColor
@@ -487,7 +485,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
                     _isLoading
                         ? const CircularProgressIndicator(color: korangeColor)
                         : CustomButton(
-                            text: 'Verify OTP',
+                            text: localizations.verifyOtp,
                             onPressed: _verifyOtp,
                             width: 220,
                             height: 53,

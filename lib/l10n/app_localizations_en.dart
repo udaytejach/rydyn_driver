@@ -699,7 +699,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rideCompleted => 'Ride Completed';
 
   @override
-  String get rideCompletedMessage => 'Your ride has been completed. Thank you for choosing Rydyn!';
+  String get rideCompletedMessage => 'Your ride has been completed. Thank you for choosing Nyzo Ride!';
 
   @override
   String get rideCompletedSuccess => 'Ride completed successfully!';
@@ -1207,4 +1207,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get captainTermsTitle => 'CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE';
+
+  @override
+  String get basicInformation => 'Basic Information';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get drivingLicenceNumber => 'Driving Licence Number';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get uploadDocuments => 'Upload Documents';
+
+  @override
+  String get uploadDriverLicence => 'Upload Driver Licence';
+
+  @override
+  String get uploadAadharCard => 'Upload Aadhar Card';
+
+  @override
+  String get uploadFront => 'Upload Front';
+
+  @override
+  String get uploadBack => 'Upload Back';
+
+  @override
+  String get ifscCode => 'IFSC Code';
+
+  @override
+  String get agreePrivacyPolicy => 'I agree to the collection and use of my information as described in the Privacy Policy.';
+
+  @override
+  String get continueText => 'Continue';
 }

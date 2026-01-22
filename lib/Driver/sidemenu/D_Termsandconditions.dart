@@ -42,7 +42,7 @@ class D_TermsAndConditions extends StatelessWidget {
               ),
               Center(
                 child: CustomText(
-                  text: 'Terms & Conditions',
+                  text: localizations.termsConditions,
                   textcolor: KblackColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,

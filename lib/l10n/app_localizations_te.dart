@@ -507,7 +507,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get bankDetails => 'బ్యాంక్ వివరాలు';
 
   @override
-  String get dateOfBirth => 'జనన తేది';
+  String get dateOfBirth => 'పుట్టిన తేదీ';
 
   @override
   String get light => 'లైట్';
@@ -519,7 +519,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get lightPremiumHeavy => 'లైట్-ప్రీమియం-హెవీ';
 
   @override
-  String get chooseVehicleType => 'వాహన రకం ఎంచుకోండి';
+  String get chooseVehicleType => 'వాహన రకాన్ని ఎంచుకోండి';
 
   @override
   String get licenceNumber => 'లైసెన్స్ నంబర్';
@@ -552,10 +552,10 @@ class AppLocalizationsTe extends AppLocalizations {
   String get branch => 'శాఖ';
 
   @override
-  String get accountNumber => 'ఖాతా సంఖ్య';
+  String get accountNumber => 'ఖాతా నంబర్';
 
   @override
-  String get accountHolderName => 'ఖాతాదారుని పేరు';
+  String get accountHolderName => 'ఖాతాదారుడి పేరు';
 
   @override
   String get selectImageFrom => 'చిత్రాన్ని ఎంచుకోండి';
@@ -699,7 +699,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get rideCompleted => 'రైడ్ పూర్తయింది';
 
   @override
-  String get rideCompletedMessage => 'మీ రైడ్ పూర్తయింది. Rydyn ఎంచుకున్నందుకు ధన్యవాదాలు!';
+  String get rideCompletedMessage => 'మీ రైడ్ పూర్తయింది. Nyzo Ride ఎంచుకున్నందుకు ధన్యవాదాలు!';
 
   @override
   String get rideCompletedSuccess => 'రైడ్ విజయవంతంగా పూర్తయింది!';
@@ -1207,4 +1207,46 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get captainTermsTitle => 'Nyzo Ride కెప్టెన్ నిబంధనలు & షరతులు';
+
+  @override
+  String get basicInformation => 'ప్రాథమిక సమాచారం';
+
+  @override
+  String get firstName => 'మొదటి పేరు';
+
+  @override
+  String get lastName => 'చివరి పేరు';
+
+  @override
+  String get email => 'ఇమెయిల్';
+
+  @override
+  String get drivingLicenceNumber => 'డ్రైవింగ్ లైసెన్స్ నంబర్';
+
+  @override
+  String get preferences => 'అభిరుచులు';
+
+  @override
+  String get uploadDocuments => 'పత్రాలను అప్‌లోడ్ చేయండి';
+
+  @override
+  String get uploadDriverLicence => 'డ్రైవర్ లైసెన్స్ అప్‌లోడ్ చేయండి';
+
+  @override
+  String get uploadAadharCard => 'ఆధార్ కార్డ్ అప్‌లోడ్ చేయండి';
+
+  @override
+  String get uploadFront => 'ముందు వైపు అప్‌లోడ్ చేయండి';
+
+  @override
+  String get uploadBack => 'వెనుక వైపు అప్‌లోడ్ చేయండి';
+
+  @override
+  String get ifscCode => 'IFSC కోడ్';
+
+  @override
+  String get agreePrivacyPolicy => 'గోప్యతా విధానంలో పేర్కొన్న విధంగా నా సమాచారాన్ని సేకరించడం మరియు ఉపయోగించడాన్ని నేను అంగీకరిస్తున్నాను.';
+
+  @override
+  String get continueText => 'కొనసాగించండి';
 }

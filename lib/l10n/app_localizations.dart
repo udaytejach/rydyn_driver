@@ -1480,7 +1480,7 @@ abstract class AppLocalizations {
   /// No description provided for @rideCompletedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Your ride has been completed. Thank you for choosing Rydyn!'**
+  /// **'Your ride has been completed. Thank you for choosing Nyzo Ride!'**
   String get rideCompletedMessage;
 
   /// No description provided for @rideCompletedSuccess.
@@ -2496,6 +2496,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE'**
   String get captainTermsTitle;
+
+  /// No description provided for @basicInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basicInformation;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @drivingLicenceNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Driving Licence Number'**
+  String get drivingLicenceNumber;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @uploadDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Documents'**
+  String get uploadDocuments;
+
+  /// No description provided for @uploadDriverLicence.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Driver Licence'**
+  String get uploadDriverLicence;
+
+  /// No description provided for @uploadAadharCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Aadhar Card'**
+  String get uploadAadharCard;
+
+  /// No description provided for @uploadFront.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Front'**
+  String get uploadFront;
+
+  /// No description provided for @uploadBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Back'**
+  String get uploadBack;
+
+  /// No description provided for @ifscCode.
+  ///
+  /// In en, this message translates to:
+  /// **'IFSC Code'**
+  String get ifscCode;
+
+  /// No description provided for @agreePrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the collection and use of my information as described in the Privacy Policy.'**
+  String get agreePrivacyPolicy;
+
+  /// No description provided for @continueText.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueText;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

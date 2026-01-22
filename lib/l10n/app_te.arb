@@ -235,7 +235,7 @@
   "completeRide": "రైడ్ పూర్తి చేయండి",
   "confirmCompleteRide": "మీరు నిజంగా ఈ రైడ్‌ను పూర్తి చేయాలనుకుంటున్నారా?",
   "rideCompleted": "రైడ్ పూర్తయింది",
-  "rideCompletedMessage": "మీ రైడ్ పూర్తయింది. Rydyn ఎంచుకున్నందుకు ధన్యవాదాలు!",
+  "rideCompletedMessage": "మీ రైడ్ పూర్తయింది. Nyzo Ride ఎంచుకున్నందుకు ధన్యవాదాలు!",
   "rideCompletedSuccess": "రైడ్ విజయవంతంగా పూర్తయింది!",
   "cancellation": "రద్దు",
   "cancelFreeShort": "మీరు ఈ రైడ్‌ను ఉచితంగా రద్దు చేయవచ్చు.",
@@ -406,6 +406,32 @@
   "acceptance": "16. అంగీకారం",
   "driverAcceptanceConfirm": "Nyzo Ride డ్రైవర్ యాప్‌ను ఉపయోగించడం ద్వారా, మీరు ధృవీకరిస్తున్నారు:",
   "driverAcceptanceQuote": "“నేను పై నిబంధనలు & షరతులను చదివి, అర్థం చేసుకుని, అంగీకరించాను.”",
-  "captainTermsTitle": "Nyzo Ride కెప్టెన్ నిబంధనలు & షరతులు"
+  "captainTermsTitle": "Nyzo Ride కెప్టెన్ నిబంధనలు & షరతులు",
+  "basicInformation": "ప్రాథమిక సమాచారం",
+"firstName": "మొదటి పేరు",
+"lastName": "చివరి పేరు",
+"email": "ఇమెయిల్",
+"dateOfBirth": "పుట్టిన తేదీ",
+"chooseVehicleType": "వాహన రకాన్ని ఎంచుకోండి",
+"light": "లైట్",
+"lightPremium": "లైట్-ప్రీమియం",
+"lightPremiumHeavy": "లైట్-ప్రీమియం-హెవీ",
+"drivingLicenceNumber": "డ్రైవింగ్ లైసెన్స్ నంబర్",
+"preferences": "అభిరుచులు",
+"uploadDocuments": "పత్రాలను అప్‌లోడ్ చేయండి",
+"uploadDriverLicence": "డ్రైవర్ లైసెన్స్ అప్‌లోడ్ చేయండి",
+"uploadAadharCard": "ఆధార్ కార్డ్ అప్‌లోడ్ చేయండి",
+"uploadFront": "ముందు వైపు అప్‌లోడ్ చేయండి",
+"uploadBack": "వెనుక వైపు అప్‌లోడ్ చేయండి",
+"bankDetails": "బ్యాంక్ వివరాలు",
+"ifscCode": "IFSC కోడ్",
+"bankName": "బ్యాంక్ పేరు",
+"branch": "శాఖ",
+"accountNumber": "ఖాతా నంబర్",
+"accountHolderName": "ఖాతాదారుడి పేరు",
+"agreePrivacyPolicy": "గోప్యతా విధానంలో పేర్కొన్న విధంగా నా సమాచారాన్ని సేకరించడం మరియు ఉపయోగించడాన్ని నేను అంగీకరిస్తున్నాను.",
+"continueText": "కొనసాగించండి"
+
+
 
 }

@@ -236,7 +236,7 @@
   "completeRide": "Complete Ride",
   "confirmCompleteRide": "Are you sure you want to complete this ride?",
   "rideCompleted": "Ride Completed",
-  "rideCompletedMessage": "Your ride has been completed. Thank you for choosing Rydyn!",
+  "rideCompletedMessage": "Your ride has been completed. Thank you for choosing Nyzo Ride!",
   "rideCompletedSuccess": "Ride completed successfully!",
   "cancellation": "Cancellation",
   "cancelFreeShort": "You can cancel this ride for FREE.",
@@ -514,6 +514,34 @@
 
   "driverAcceptanceQuote": "“I have read, understood, and agreed to all the above Terms & Conditions.”",
 
-  "captainTermsTitle": "CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE"
+  "captainTermsTitle": "CAPTAIN TERMS AND CONDITIONS OF NYZO RIDE",
+  "basicInformation": "Basic Information",
+"firstName": "First Name",
+"lastName": "Last Name",
+"email": "Email",
+"dateOfBirth": "Date of Birth",
+"chooseVehicleType": "Choose Vehicle Type",
+"light": "Light",
+"lightPremium": "Light-Premium",
+"lightPremiumHeavy": "Light-Premium-Heavy",
+"drivingLicenceNumber": "Driving Licence Number",
+"preferences": "Preferences",
+"uploadDocuments": "Upload Documents",
+"uploadDriverLicence": "Upload Driver Licence",
+"uploadAadharCard": "Upload Aadhar Card",
+"uploadFront": "Upload Front",
+"uploadBack": "Upload Back",
+"bankDetails": "Bank Details",
+"ifscCode": "IFSC Code",
+"bankName": "Bank Name",
+"branch": "Branch",
+"accountNumber": "Account Number",
+"accountHolderName": "Account Holder Name",
+"agreePrivacyPolicy": "I agree to the collection and use of my information as described in the Privacy Policy.",
+"continueText": "Continue"
+
+
+
+
  
 }

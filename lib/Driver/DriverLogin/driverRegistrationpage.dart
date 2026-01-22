@@ -21,6 +21,7 @@ import 'package:rydyn/Driver/Widgets/colors.dart';
 import 'package:rydyn/Driver/Widgets/customText.dart';
 import 'package:rydyn/Driver/Widgets/customTextField.dart';
 import 'package:rydyn/Driver/Widgets/mobileNumberInputField.dart';
+import 'package:rydyn/l10n/app_localizations.dart';
 
 class DriverRegistrationPage extends StatefulWidget {
   const DriverRegistrationPage({super.key});
@@ -358,7 +359,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<DriverViewModel>(context);
-
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -390,7 +391,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
               ),
               Center(
                 child: CustomText(
-                  text: "Basic Information",
+                  text: localizations.basicInformation,
                   textcolor: KblackColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 22,
@@ -452,17 +453,17 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                   const SizedBox(height: 20),
 
                   D_CustomTextField(
-                    labelText: "First Name",
+                    labelText: localizations.firstName,
                     controller: firstNameController,
                   ),
                   const SizedBox(height: 10),
                   D_CustomTextField(
-                    labelText: "Last Name",
+                    labelText: localizations.lastName,
                     controller: lastNameController,
                   ),
                   const SizedBox(height: 10),
                   D_CustomTextField(
-                    labelText: "Email",
+                    labelText: localizations.email,
                     controller: emailController,
                   ),
                   const SizedBox(height: 10),
@@ -481,7 +482,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                     controller: dobController,
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText: "Date of Birth",
+                      labelText: localizations.dateOfBirth,
                       labelStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -538,38 +539,6 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                             ).format(picked);
                           }
                         },
-
-                        // onPressed: () async {
-                        //   final DateTime? picked = await showDatePicker(
-                        //     context: context,
-                        //     initialDate: DateTime.now(),
-                        //     firstDate: DateTime(1900),
-                        //     lastDate: DateTime.now(),
-                        //     builder: (context, child) {
-                        //       return Theme(
-                        //         data: Theme.of(context).copyWith(
-                        //           colorScheme: const ColorScheme.light(
-                        //             primary: korangeColor,
-                        //             onPrimary: Colors.white,
-                        //             onSurface: Colors.black,
-                        //           ),
-                        //           textButtonTheme: TextButtonThemeData(
-                        //             style: TextButton.styleFrom(
-                        //               foregroundColor: korangeColor,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         child: child!,
-                        //       );
-                        //     },
-                        //   );
-
-                        //   if (picked != null) {
-                        //     dobController.text = DateFormat(
-                        //       "dd-MM-yyyy",
-                        //     ).format(picked);
-                        //   }
-                        // },
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -579,8 +548,8 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
                   const SizedBox(height: 20),
                   const Divider(),
-                  const Text(
-                    "Preferences",
+                  Text(
+                    localizations.preferences,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -595,7 +564,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                       value: vehicleType,
 
                       hint: Text(
-                        "Choose Vehicle Type",
+                        localizations.chooseVehicleType,
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 15,
@@ -603,14 +572,17 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                         ),
                       ),
                       items: [
-                        DropdownMenuItem(value: 'Light', child: Text('Light')),
                         DropdownMenuItem(
-                          value: 'Light-Premium',
-                          child: Text('Light-Premium'),
+                          value: localizations.light,
+                          child: Text(localizations.light),
                         ),
                         DropdownMenuItem(
-                          value: 'Light-Premium-Heavy',
-                          child: Text('Light-Premium-Heavy'),
+                          value: localizations.lightPremium,
+                          child: Text(localizations.lightPremium),
+                        ),
+                        DropdownMenuItem(
+                          value: localizations.lightPremiumHeavy,
+                          child: Text(localizations.lightPremiumHeavy),
                         ),
                         // DropdownMenuItem(value: 'All', child: Text('All')),
                       ],
@@ -646,15 +618,15 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
                   const SizedBox(height: 10),
                   D_CustomTextField(
-                    labelText: "Driving Licence Number",
+                    labelText: localizations.drivingLicenceNumber,
                     controller: licenceController,
                     inputFormatters: [UpperCaseTextFormatter()],
                     validator: validateDLNumber,
                   ),
 
                   const SizedBox(height: 20),
-                  const Text(
-                    "Upload Documents",
+                  Text(
+                    localizations.uploadDocuments,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -673,7 +645,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Upload Driver Licence",
+                              localizations.uploadDriverLicence,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -707,7 +679,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                               licenceFront!,
                                               fit: BoxFit.cover,
                                             )
-                                          : const Text("Upload Front"),
+                                          : Text(localizations.uploadFront),
                                     ),
                                   ),
                                 ),
@@ -735,7 +707,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                               licenceBack!,
                                               fit: BoxFit.cover,
                                             )
-                                          : const Text("Upload Back"),
+                                          : Text(localizations.uploadBack),
                                     ),
                                   ),
                                 ),
@@ -758,7 +730,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Upload Aadhar Card",
+                              localizations.aadharCard,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -792,7 +764,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                               aadharFront!,
                                               fit: BoxFit.cover,
                                             )
-                                          : const Text("Upload Front"),
+                                          : Text(localizations.uploadFront),
                                     ),
                                   ),
                                 ),
@@ -819,7 +791,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                                               aadharBack!,
                                               fit: BoxFit.cover,
                                             )
-                                          : const Text("Upload Back"),
+                                          : Text(localizations.uploadBack),
                                     ),
                                   ),
                                 ),
@@ -833,8 +805,8 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
                   const SizedBox(height: 20),
                   const Divider(),
-                  const Text(
-                    "Bank Details",
+                  Text(
+                    localizations.bankDetails,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -845,7 +817,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                   const SizedBox(height: 10),
                   D_CustomTextField(
                     controller: ifscController,
-                    labelText: "IFSC Code",
+                    labelText: localizations.ifscCode,
                     inputFormatters: [UpperCaseTextFormatter()],
                     onChanged: (value) async {
                       final code = value.toUpperCase().trim();
@@ -891,25 +863,25 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                   const SizedBox(height: 10),
                   D_CustomTextField(
                     controller: bankController,
-                    labelText: "Bank Name",
+                    labelText: localizations.bankName,
                     readOnly: true,
                   ),
                   const SizedBox(height: 10),
                   D_CustomTextField(
                     controller: branchController,
-                    labelText: "Branch",
+                    labelText: localizations.branch,
                     readOnly: true,
                   ),
                   const SizedBox(height: 10),
 
                   D_CustomTextField(
                     controller: accountController,
-                    labelText: "Account Number",
+                    labelText: localizations.accountNumber,
                   ),
                   const SizedBox(height: 10),
                   D_CustomTextField(
                     controller: holderController,
-                    labelText: "Account Holder Name",
+                    labelText: localizations.accountHolderName,
                   ),
 
                   SizedBox(height: 20),
@@ -940,7 +912,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
                       Expanded(
                         child: Text(
-                          "I agree to the collection and use of my information as described in the Privacy Policy.",
+                          localizations.agreePrivacyPolicy,
                           style: const TextStyle(fontSize: 14),
                         ),
                       ),
@@ -960,7 +932,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                               value.substring(1).toLowerCase();
                         }
 
-                        final  phone = phoneController.text.trim();
+                        final phone = phoneController.text.trim();
 
                         try {
                           final driverSnap = await FirebaseFirestore.instance
@@ -1148,8 +1120,8 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
                         backgroundColor: korangeColor,
                         minimumSize: const Size(double.infinity, 50),
                       ),
-                      child: const Text(
-                        "Continue",
+                      child: Text(
+                        localizations.continueText,
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
@@ -1242,7 +1214,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
         const SnackBar(content: Text(' Please enter a valid Licence Number.')),
       );
       return false;
-     }
+    }
     // final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}$');
     final dlRegex = RegExp(r'^[A-Z]{2}[0-9]{2}[- ]?[0-9]{4}[- ]?[0-9]{7,10}$');
 

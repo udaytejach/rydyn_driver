@@ -513,13 +513,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get light => 'लाइट';
 
   @override
-  String get lightPremium => 'लाइट-प्रिमियम';
+  String get lightPremium => 'लाइट-प्रीमियम';
 
   @override
-  String get lightPremiumHeavy => 'लाइट-प्रिमियम-हेवी';
+  String get lightPremiumHeavy => 'लाइट-प्रीमियम-हेवी';
 
   @override
-  String get chooseVehicleType => 'वाहन प्रकार चुनें';
+  String get chooseVehicleType => 'वाहन का प्रकार चुनें';
 
   @override
   String get licenceNumber => 'लाइसेंस नंबर';
@@ -552,7 +552,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get branch => 'शाखा';
 
   @override
-  String get accountNumber => 'खाता संख्या';
+  String get accountNumber => 'खाता नंबर';
 
   @override
   String get accountHolderName => 'खाता धारक का नाम';
@@ -699,7 +699,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rideCompleted => 'राइड पूरी हुई';
 
   @override
-  String get rideCompletedMessage => 'आपकी राइड पूरी हो गई है। Rydyn चुनने के लिए धन्यवाद!';
+  String get rideCompletedMessage => 'आपकी राइड पूरी हो गई है। Nyzo Ride चुनने के लिए धन्यवाद!';
 
   @override
   String get rideCompletedSuccess => 'राइड सफलतापूर्वक पूरी हुई!';
@@ -1207,4 +1207,46 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get captainTermsTitle => 'Nyzo Ride के कैप्टन नियम और शर्तें';
+
+  @override
+  String get basicInformation => 'मूल जानकारी';
+
+  @override
+  String get firstName => 'पहला नाम';
+
+  @override
+  String get lastName => 'अंतिम नाम';
+
+  @override
+  String get email => 'ईमेल';
+
+  @override
+  String get drivingLicenceNumber => 'ड्राइविंग लाइसेंस नंबर';
+
+  @override
+  String get preferences => 'प्राथमिकताएँ';
+
+  @override
+  String get uploadDocuments => 'दस्तावेज़ अपलोड करें';
+
+  @override
+  String get uploadDriverLicence => 'ड्राइवर लाइसेंस अपलोड करें';
+
+  @override
+  String get uploadAadharCard => 'आधार कार्ड अपलोड करें';
+
+  @override
+  String get uploadFront => 'सामने की ओर अपलोड करें';
+
+  @override
+  String get uploadBack => 'पीछे की ओर अपलोड करें';
+
+  @override
+  String get ifscCode => 'IFSC कोड';
+
+  @override
+  String get agreePrivacyPolicy => 'मैं गोपनीयता नीति में वर्णित अनुसार मेरी जानकारी के संग्रह और उपयोग के लिए सहमत हूँ।';
+
+  @override
+  String get continueText => 'जारी रखें';
 }

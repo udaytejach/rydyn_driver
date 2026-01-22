@@ -83,8 +83,11 @@ class _BookingDetailsState extends State<BookingDetails> {
       'key': SharedPrefServices.getRazorapiKey(),
       'amount': (amount * 100).toInt(),
       'name': 'Nyzo Ride',
-      'description': 'Ride Payment',
-      'prefill': {'contact': '9999999999', 'email': 'test@rydyn.com'},
+      'description': 'Nyzo Ride Trip Payment',
+      'prefill': {
+        'contact': SharedPrefServices.getNumber().toString(),
+        'email': SharedPrefServices.getEmail().toString(),
+      },
     };
 
     try {

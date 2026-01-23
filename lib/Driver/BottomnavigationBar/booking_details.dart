@@ -2515,6 +2515,7 @@ class _BookingDetailsState extends State<BookingDetails> {
       context: context,
       builder: (context) {
         final localizations = AppLocalizations.of(context)!;
+        bool isLoading = false;
         return SizedBox(
           height: 150,
           child: AlertDialog(
@@ -2530,22 +2531,40 @@ class _BookingDetailsState extends State<BookingDetails> {
               ),
             ),
             backgroundColor: kwhiteColor,
-            content: TextField(
-              controller: otpController,
-              maxLength: 4,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                counterText: "",
-                hintText: "••••",
-                filled: true,
-                fillColor: Colors.grey.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade400),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: otpController,
+                  maxLength: 4,
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    counterText: "",
+                    hintText: "••••",
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade400),
+                    ),
+                  ),
                 ),
-              ),
+                if (isOtpInvalid)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      'Note: ${localizations.invalidOtp}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+              ],
             ),
+
             actionsAlignment: MainAxisAlignment.spaceEvenly,
             actions: [
               OutlinedButton(
@@ -2632,12 +2651,6 @@ class _BookingDetailsState extends State<BookingDetails> {
 
                       Navigator.pop(context);
 
-                      // Navigator.pushAndRemoveUntil(
-                      //   context,
-                      //   MaterialPageRoute(builder: (_) => D_BottomNavigation()),
-                      //   (route) => false,
-                      // );
-
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -2703,19 +2716,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                 ),
               ),
               SizedBox(height: 3),
-              Column(
-                children: [
-                  if (isOtpInvalid)
-                    Text(
-                      'Note: ${localizations.invalidOtp}',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                ],
-              ),
-            ],
+             ],
           ),
         );
       },

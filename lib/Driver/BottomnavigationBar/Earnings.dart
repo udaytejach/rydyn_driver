@@ -208,12 +208,30 @@ class _MyEarningsState extends State<MyEarnings> {
 
                             data['bookingStatus'] = book['status'] ?? "";
 
+                            // final ownerDocId = book['ownerdocId'] ?? "";
+
+                            // if (data['bookingStatus'] != "Cancelled" &&
+                            //     ownerDocId.isNotEmpty) {
+                            //   final owner = ownerDetails[ownerDocId];
+
+                            //   if (owner != null) {
+                            //     data['ownerName'] =
+                            //         "${owner['firstName']} ${owner['lastName']}";
+                            //   } else {
+                            //     data['ownerName'] = "Nyzo Ride Admin";
+                            //   }
+                            // } else {
+                            //   data['ownerName'] = "Nyzo Ride Admin";
+                            // }
                             final ownerDocId = book['ownerdocId'] ?? "";
+                            final bookingStatus = data['bookingStatus'];
+                            final amount = data['amount'] ?? 0.0;
 
-                            if (data['bookingStatus'] != "Cancelled" &&
-                                ownerDocId.isNotEmpty) {
+                            if (bookingStatus == "Cancelled" &&
+                                amount == 39.0) {
+                              data['ownerName'] = "Nyzo Ride Admin";
+                            } else if (ownerDocId.isNotEmpty) {
                               final owner = ownerDetails[ownerDocId];
-
                               if (owner != null) {
                                 data['ownerName'] =
                                     "${owner['firstName']} ${owner['lastName']}";

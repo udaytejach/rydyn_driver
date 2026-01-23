@@ -57,6 +57,15 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     var car,
     String bookingId,
     String newStatus,
+    String fcmtitleRideAccepted,
+    String fcmbodyRideAccepted,
+    String snackBarRideAccepted,
+    String snackBarRideAcceptedFailed,
+    String rideAlreadyTaken,
+    String rideAlreadyTakenMessage,
+    String snackBarRideAlreadyTaken,
+    String okText,
+    String failedToUpdateStatusText,
   ) async {
     try {
       final driverId = await SharedPrefServices.getUserId();
@@ -120,8 +129,8 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
           if (ownerToken != null && ownerToken.isNotEmpty) {
             await fcmService.sendNotification(
               recipientFCMToken: ownerToken,
-              title: "Ride Accepted",
-              body: "Your ride has been accepted by $driverName.",
+              title: fcmtitleRideAccepted,
+              body: "$fcmbodyRideAccepted $driverName.",
             );
           }
         }
@@ -133,9 +142,9 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
           ),
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ride accepted successfully!')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(snackBarRideAccepted)));
       }
     } catch (e) {
       debugPrint('Error updating booking status: $e');
@@ -144,8 +153,8 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Booking not found.'),
+          SnackBar(
+            content: Text(snackBarRideAcceptedFailed),
             backgroundColor: Colors.red,
           ),
         );
@@ -173,16 +182,15 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const CustomText(
-                    text: 'Ride Already Taken',
+                  CustomText(
+                    text: rideAlreadyTaken,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     textcolor: KblackColor,
                   ),
 
-                  const CustomText(
-                    text:
-                        'This ride has already been accepted by another driver.',
+                  CustomText(
+                    text: rideAlreadyTakenMessage,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     textcolor: KblackColor,
@@ -206,10 +214,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
-                        "OK",
-                        style: TextStyle(color: kwhiteColor),
-                      ),
+                      child: Text(okText, style: TextStyle(color: kwhiteColor)),
                     ),
                   ),
                 ],
@@ -225,7 +230,7 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to update status: $e'),
+          content: Text('$failedToUpdateStatusText $e'),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -741,69 +746,107 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                                     } else {
                                                       showDialog(
                                                         context: context,
-                                                        builder: (context) => AlertDialog(
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  15,
+                                                        barrierDismissible:
+                                                            false,
+                                                        builder: (context) {
+                                                          bool isLoading =
+                                                              false;
+
+                                                          return StatefulBuilder(
+                                                            builder: (context, setState) {
+                                                              return AlertDialog(
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        15,
+                                                                      ),
                                                                 ),
-                                                          ),
-                                                          title: Center(
-                                                            child: CustomText(
-                                                              text: localizations
-                                                                  .confirmRide,
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              textcolor:
-                                                                  Colors.black,
-                                                            ),
-                                                          ),
-                                                          content: CustomText(
-                                                            text: localizations
-                                                                .acceptRideQuestion,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            textcolor:
-                                                                Colors.black,
-                                                          ),
-                                                          actions: [
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceEvenly,
-                                                              children: [
-                                                                CustomCancelButton(
-                                                                  text:
-                                                                      localizations
-                                                                          .no,
-                                                                  onPressed: () {
-                                                                    print(
-                                                                      car['id'],
-                                                                    );
-                                                                    Navigator.pop(
-                                                                      context,
-                                                                    );
-                                                                  },
+                                                                title: Center(
+                                                                  child: CustomText(
+                                                                    text: localizations
+                                                                        .confirmRide,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    textcolor:
+                                                                        Colors
+                                                                            .black,
+                                                                  ),
                                                                 ),
-                                                                CustomButton(
-                                                                  text:
-                                                                      localizations
-                                                                          .yes,
-                                                                  onPressed: () {
-                                                                    _updateBookingStatus(
-                                                                      car,
-                                                                      car['id'],
-                                                                      'Accepted',
-                                                                    );
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
+                                                                content:
+                                                                    isLoading
+                                                                    ? SizedBox(
+                                                                        height:
+                                                                            80,
+                                                                        child: Center(
+                                                                          child: CircularProgressIndicator(
+                                                                            color:
+                                                                                korangeColor,
+                                                                            strokeWidth:
+                                                                                2,
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    : CustomText(
+                                                                        text: localizations
+                                                                            .acceptRideQuestion,
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        textcolor:
+                                                                            Colors.black,
+                                                                      ),
+                                                                actions:
+                                                                    isLoading
+                                                                    ? []
+                                                                    : [
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceEvenly,
+                                                                          children: [
+                                                                            CustomCancelButton(
+                                                                              text: localizations.no,
+                                                                              onPressed: () {
+                                                                                Navigator.pop(
+                                                                                  context,
+                                                                                );
+                                                                              },
+                                                                            ),
+                                                                            CustomButton(
+                                                                              text: localizations.yes,
+                                                                              onPressed: () async {
+                                                                                setState(
+                                                                                  () {
+                                                                                    isLoading = true;
+                                                                                  },
+                                                                                );
+
+                                                                                await _updateBookingStatus(
+                                                                                  car,
+                                                                                  car['id'],
+                                                                                  'Accepted',
+                                                                                  localizations.rideAccepted,
+                                                                                  localizations.rideAcceptedBy,
+                                                                                  localizations.rideAcceptedSuccess,
+                                                                                  localizations.bookingNotFound,
+                                                                                  localizations.rideAlreadyTaken,
+                                                                                  localizations.rideAlreadyTakenByOther,
+                                                                                  localizations.failedToUpdateStatus,
+                                                                                  localizations.ok,
+                                                                                  localizations.failedToUpdateStatus,
+                                                                                );
+                                                                              },
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
                                                       );
                                                     }
                                                   },

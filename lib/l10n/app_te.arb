@@ -336,8 +336,8 @@
   "contactUs": "11. మమ్మల్ని సంప్రదించండి",
   "privacyConcernsContact": "గోప్యతా సమస్యలు లేదా డేటా అభ్యర్థనల కోసం సంప్రదించండి:",
   "nyzoRideSupport": "Nyzo Ride సహాయం",
-  "nyzoRideEmail": "ఇమెయిల్: hello@nyzoride.com",
-  "nyzoRidePhone": "ఫోన్: 9000464851",
+  "nyzoRideEmail": "hello@nyzoride.com",
+  "nyzoRidePhone": "9000464851",
   "driverTermsTitle": "NYZO RIDE – డ్రైవర్ (కెప్టెన్)",
   "driverEligibility": "1. డ్రైవర్ అర్హత",
   "driverEligibilityAge": "డ్రైవర్ కనీసం 21 సంవత్సరాల వయస్సు కలిగి ఉండాలి.",
@@ -410,7 +410,7 @@
   "basicInformation": "ప్రాథమిక సమాచారం",
 "firstName": "మొదటి పేరు",
 "lastName": "చివరి పేరు",
-"email": "ఇమెయిల్",
+"email": "ఇమెయిల్:",
 "dateOfBirth": "పుట్టిన తేదీ",
 "chooseVehicleType": "వాహన రకాన్ని ఎంచుకోండి",
 "light": "లైట్",
@@ -430,7 +430,11 @@
 "accountNumber": "ఖాతా నంబర్",
 "accountHolderName": "ఖాతాదారుడి పేరు",
 "agreePrivacyPolicy": "గోప్యతా విధానంలో పేర్కొన్న విధంగా నా సమాచారాన్ని సేకరించడం మరియు ఉపయోగించడాన్ని నేను అంగీకరిస్తున్నాను.",
-"continueText": "కొనసాగించండి"
+"continueText": "కొనసాగించండి",
+"phone": "ఫోన్:",
+"rideId": "రైడ్ ఐడి"
+
+
 
 
 

@@ -414,15 +414,16 @@ class _BookingDetailsState extends State<BookingDetails> {
     String arrivalDate = data['arrivalDate'] ?? 'DD/MM/YYYY';
     String arrivalTime = data['arrivalTime'] ?? 'HH:MM';
     String servicePrice = data['servicePrice']?.toString() ?? '0.00';
-    String addonPrice = data['addonPrice']?.toString() ?? '0.00';
-    String taxes = data['taxes']?.toString() ?? '0.00';
-    String walletPoints = data['walletPoints']?.toString() ?? '0.00';
+
     String totalPrice = data['fare']?.toString() ?? '0.00';
     String serviceFare = data['serviceFare']?.toString() ?? '0.00';
     String convenienceFee = data['convenienceFee']?.toString() ?? '0.00';
     String status = data['status'] ?? '';
     bool coupunApplied = data['couponApplied'] ?? false;
     String OwnerOTP = data['ownerOTP'].toString();
+    String addonPrice = data['addonPrice']?.toString() ?? '0.00';
+    String taxes = data['taxes']?.toString() ?? '0.00';
+    String walletPoints = data['walletPoints']?.toString() ?? '0.00';
     String pickupLat = data['pickupLat'].toString();
     String pickupLng = data['pickupLng'].toString();
     String dropLat = data['dropLat'].toString();
@@ -499,6 +500,10 @@ class _BookingDetailsState extends State<BookingDetails> {
     }
 
     bool isPaymentReceived = false;
+
+    bool _navigatedToDashboard = false;
+
+    double updatedCoupon = 0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -1010,7 +1015,26 @@ class _BookingDetailsState extends State<BookingDetails> {
                         ],
                       ),
 
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        CustomText(
+                          text: '${localizations.rideId} : ',
+                          fontSize: 12,
+
+                          fontWeight: FontWeight.w400,
+                          textcolor: KorangeColorNew,
+                        ),
+                        CustomText(
+                          text: widget.docId,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          textcolor: KblackColor,
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 15),
+
                     DottedLine(dashColor: kbordergreyColor, dashLength: 7),
 
                     const SizedBox(height: 10),
@@ -1458,141 +1482,353 @@ class _BookingDetailsState extends State<BookingDetails> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300, width: 1),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          blurRadius: 3,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: localizations.paymentSummary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          textcolor: korangeColor,
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              text: localizations.distance,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
-                            ),
-                            CustomText(
-                              text: "$distance",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('bookings')
+                        .doc(widget.docId)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData || !snapshot.data!.exists) {
+                        return const Center(
+                          child: CircularProgressIndicator(color: korangeColor),
+                        );
+                      }
+
+                      final data =
+                          snapshot.data!.data() as Map<String, dynamic>;
+
+                      final String distance =
+                          data['distance']?.toString() ?? "--";
+                      final String tripMode =
+                          data['tripMode']?.toString() ?? "";
+
+                      final double serviceFare = (data['serviceFare'] is num)
+                          ? data['serviceFare'].toDouble()
+                          : 0.0;
+
+                      final bool hasConvenienceFee =
+                          tripMode == "Round Trip" &&
+                          data['convenienceFee'] is num;
+
+                      final double convenienceFee = hasConvenienceFee
+                          ? data['convenienceFee'].toDouble()
+                          : 0.0;
+
+                      final double appliedDiscount =
+                          (data['appliedDiscount'] is num)
+                          ? data['appliedDiscount'].toDouble()
+                          : 0.0;
+
+                      final bool couponApplied = data['couponApplied'] == true;
+
+                      final double totalPrice =
+                          serviceFare +
+                          (hasConvenienceFee ? convenienceFee : 0) -
+                          appliedDiscount;
+
+                      double convenienceFees = 0.0;
+
+                      if (tripMode == "Round Trip" &&
+                          data['convenienceFee'] is num) {
+                        convenienceFees = data['convenienceFee'].toDouble();
+                      }
+
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomText(
-                              text: localizations.servicePrice,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
+                              text: localizations.paymentSummary,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              textcolor: korangeColor,
                             ),
-                            CustomText(
-                              text:
-                                  "₹${(double.tryParse(serviceFare) ?? 0).toStringAsFixed(2)}",
+                            const SizedBox(height: 12),
 
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(
+                                  text: localizations.distance,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                                CustomText(
+                                  text: distance,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              text: localizations.convenienceFee,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
+                            const SizedBox(height: 8),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(
+                                  text: localizations.servicePrice,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                                CustomText(
+                                  text: "₹${serviceFare.toStringAsFixed(2)}",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                              ],
                             ),
-                            CustomText(
-                              text:
-                                  "₹${(double.tryParse(convenienceFee) ?? 0).toStringAsFixed(2)}",
-
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              textcolor: KblackColor,
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(
+                                  text: localizations.convenienceFee,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                                CustomText(
+                                  text: "₹${convenienceFee.toStringAsFixed(2)}",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  textcolor: KblackColor,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
 
-                        if (data['couponApplied'] == true) ...[
-                          const SizedBox(height: 5),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomText(
-                                text: localizations.couponApplied,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                textcolor: Colors.green,
-                              ),
-                              CustomText(
-                                text:
-                                    "-₹${((data['appliedDiscount'] ?? 0)).toStringAsFixed(2)}",
-
-                                // "-₹${appliedDiscount.toStringAsFixed(2)}",
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                textcolor: Colors.green,
+                            if (hasConvenienceFee) ...[
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomText(
+                                    text: localizations.convenienceFee,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    textcolor: KblackColor,
+                                  ),
+                                  CustomText(
+                                    text:
+                                        "₹${convenienceFee.toStringAsFixed(2)}",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    textcolor: KblackColor,
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                        ],
 
-                        const SizedBox(height: 10),
-                        const DottedLine(dashColor: kseegreyColor),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              text: localizations.totalPrice,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              textcolor: korangeColor,
-                            ),
-                            CustomText(
-                              text:
-                                  "₹${(double.tryParse(totalPrice) ?? 0).toStringAsFixed(2)}",
+                            if (couponApplied) ...[
+                              const SizedBox(height: 5),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomText(
+                                    text: localizations.couponApplied,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    textcolor: Colors.green,
+                                  ),
+                                  CustomText(
+                                    text:
+                                        "-₹${appliedDiscount.toStringAsFixed(2)}",
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    textcolor: Colors.green,
+                                  ),
+                                ],
+                              ),
+                            ],
 
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              textcolor: korangeColor,
+                            const SizedBox(height: 10),
+                            const DottedLine(dashColor: kseegreyColor),
+                            const SizedBox(height: 10),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(
+                                  text: localizations.totalPrice,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  textcolor: korangeColor,
+                                ),
+                                CustomText(
+                                  text: "₹${totalPrice.toStringAsFixed(2)}",
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  textcolor: korangeColor,
+                                ),
+                              ],
                             ),
+
+                            const SizedBox(height: 10),
+                            const DottedLine(dashColor: kseegreyColor),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        const DottedLine(dashColor: kseegreyColor),
-                      ],
-                    ),
+                      );
+                    },
                   ),
+
+                  // Container(
+                  //   width: double.infinity,
+                  //   padding: const EdgeInsets.all(15),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white,
+                  //     borderRadius: BorderRadius.circular(12),
+                  //     border: Border.all(color: Colors.grey.shade300, width: 1),
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.grey.withOpacity(0.1),
+                  //         blurRadius: 3,
+                  //         offset: const Offset(0, 1),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       CustomText(
+                  //         text: localizations.paymentSummary,
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.w600,
+                  //         textcolor: korangeColor,
+                  //       ),
+                  //       const SizedBox(height: 12),
+                  //       Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           CustomText(
+                  //             text: localizations.distance,
+                  //             fontSize: 14,
+                  //             fontWeight: FontWeight.w400,
+                  //             textcolor: KblackColor,
+                  //           ),
+                  //           CustomText(
+                  //             text: "$distance",
+                  //             fontSize: 14,
+                  //             fontWeight: FontWeight.w400,
+                  //             textcolor: KblackColor,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       const SizedBox(height: 8),
+                  //       Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           CustomText(
+                  //             text: localizations.servicePrice,
+                  //             fontSize: 14,
+                  //             fontWeight: FontWeight.w400,
+                  //             textcolor: KblackColor,
+                  //           ),
+                  //           CustomText(
+                  //             text:
+                  //                 "₹${(double.tryParse(serviceFare) ?? 0).toStringAsFixed(2)}",
+
+                  //             fontSize: 14,
+                  //             fontWeight: FontWeight.w400,
+                  //             textcolor: KblackColor,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       const SizedBox(height: 8),
+
+                  //       Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           CustomText(
+                  //             text: localizations.convenienceFee,
+                  //             fontSize: 14,
+                  //             fontWeight: FontWeight.w400,
+                  //             textcolor: KblackColor,
+                  //           ),
+                  //           CustomText(
+                  //             text:
+                  //                 "₹${(double.tryParse(convenienceFee) ?? 0).toStringAsFixed(2)}",
+
+                  //             fontSize: 14,
+                  //             fontWeight: FontWeight.w400,
+                  //             textcolor: KblackColor,
+                  //           ),
+                  //         ],
+                  //       ),
+
+                  //      if (data['couponApplied'] == true) ...[
+                  //         const SizedBox(height: 5),
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //           children: [
+                  //             CustomText(
+                  //               text: localizations.couponApplied,
+                  //               fontSize: 13,
+                  //               fontWeight: FontWeight.w500,
+                  //               textcolor: Colors.green,
+                  //             ),
+                  //             CustomText(
+                  //               text:
+                  //                   "-₹${((data['appliedDiscount'] ?? 0)).toStringAsFixed(2)}",
+
+                  //               // "-₹${appliedDiscount.toStringAsFixed(2)}",
+                  //               fontSize: 13,
+                  //               fontWeight: FontWeight.w600,
+                  //               textcolor: Colors.green,
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ],
+
+                  //       const SizedBox(height: 10),
+                  //       const DottedLine(dashColor: kseegreyColor),
+                  //       const SizedBox(height: 10),
+                  //       Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           CustomText(
+                  //             text: localizations.totalPrice,
+                  //             fontSize: 18,
+                  //             fontWeight: FontWeight.w700,
+                  //             textcolor: korangeColor,
+                  //           ),
+                  //           CustomText(
+                  //             text:
+                  //                 "₹${(double.tryParse(totalPrice) ?? 0).toStringAsFixed(2)}",
+
+                  //             fontSize: 18,
+                  //             fontWeight: FontWeight.w700,
+                  //             textcolor: korangeColor,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       const SizedBox(height: 10),
+                  //       const DottedLine(dashColor: kseegreyColor),
+                  //     ],
+                  //   ),
+                  // ),
                   const SizedBox(height: 10),
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -1601,7 +1837,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return SizedBox(); // or loader if you want
+                        return SizedBox();
                       }
 
                       final reviewsList = snapshot.data!.docs
@@ -1929,6 +2165,7 @@ class _BookingDetailsState extends State<BookingDetails> {
           final data = snapshot.data!.data() as Map<String, dynamic>;
 
           String ridestatus = data['status'] ?? '';
+          updatedCoupon = data['appliedDiscount'] ?? 0;
           String paymentStatus = data['paymentStatus'] ?? 'Waiting for Payment';
 
           if (ridestatus == 'Cancelled') {

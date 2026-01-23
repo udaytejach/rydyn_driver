@@ -996,10 +996,10 @@ class AppLocalizationsTe extends AppLocalizations {
   String get nyzoRideSupport => 'Nyzo Ride సహాయం';
 
   @override
-  String get nyzoRideEmail => 'ఇమెయిల్: hello@nyzoride.com';
+  String get nyzoRideEmail => 'hello@nyzoride.com';
 
   @override
-  String get nyzoRidePhone => 'ఫోన్: 9000464851';
+  String get nyzoRidePhone => '9000464851';
 
   @override
   String get driverTermsTitle => 'NYZO RIDE – డ్రైవర్ (కెప్టెన్)';
@@ -1218,7 +1218,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get lastName => 'చివరి పేరు';
 
   @override
-  String get email => 'ఇమెయిల్';
+  String get email => 'ఇమెయిల్:';
 
   @override
   String get drivingLicenceNumber => 'డ్రైవింగ్ లైసెన్స్ నంబర్';
@@ -1249,4 +1249,10 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get continueText => 'కొనసాగించండి';
+
+  @override
+  String get phone => 'ఫోన్:';
+
+  @override
+  String get rideId => 'రైడ్ ఐడి';
 }

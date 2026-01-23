@@ -1218,7 +1218,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lastName => 'Last Name';
 
   @override
-  String get email => 'Email';
+  String get email => 'Email:';
 
   @override
   String get drivingLicenceNumber => 'Driving Licence Number';
@@ -1249,4 +1249,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continueText => 'Continue';
+
+  @override
+  String get phone => 'Phone:';
+
+  @override
+  String get rideId => 'Ride ID';
 }

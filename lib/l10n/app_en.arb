@@ -518,7 +518,7 @@
   "basicInformation": "Basic Information",
 "firstName": "First Name",
 "lastName": "Last Name",
-"email": "Email",
+"email": "Email:",
 "dateOfBirth": "Date of Birth",
 "chooseVehicleType": "Choose Vehicle Type",
 "light": "Light",
@@ -538,7 +538,11 @@
 "accountNumber": "Account Number",
 "accountHolderName": "Account Holder Name",
 "agreePrivacyPolicy": "I agree to the collection and use of my information as described in the Privacy Policy.",
-"continueText": "Continue"
+"continueText": "Continue",
+"phone": "Phone:",
+"rideId": "Ride ID"
+
+
 
 
 

@@ -322,11 +322,11 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () => _sendEmail(localizations.nyzoRideEmail),
-              child: support(localizations.nyzoRideEmail, "Email:"),
+              child: support(localizations.nyzoRideEmail, localizations.email),
             ),
             GestureDetector(
               onTap: () => _callNumber(localizations.nyzoRidePhone),
-              child: support(localizations.nyzoRidePhone, "Phone:"),
+              child: support(localizations.nyzoRidePhone, localizations.phone),
             ),
 
             // GestureDetector(
@@ -376,7 +376,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
             fontWeight: FontWeight.w500,
             textcolor: Colors.black,
           ),
-          const Text(" ", style: TextStyle(fontSize: 16)),
+          Text("  "),
           Expanded(
             child: CustomText(
               text: text,

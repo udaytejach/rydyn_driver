@@ -2518,7 +2518,7 @@ abstract class AppLocalizations {
   /// No description provided for @email.
   ///
   /// In en, this message translates to:
-  /// **'Email'**
+  /// **'Email:'**
   String get email;
 
   /// No description provided for @drivingLicenceNumber.
@@ -2580,6 +2580,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get continueText;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone:'**
+  String get phone;
+
+  /// No description provided for @rideId.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride ID'**
+  String get rideId;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

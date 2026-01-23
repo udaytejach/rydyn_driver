@@ -142,14 +142,14 @@ class _MyEarningsState extends State<MyEarnings> {
                   localizations.transactions,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: kbordergreyColor, width: 1.0),
-                  ),
-                  child: const Icon(Icons.filter_list, size: 20),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.all(8),
+                //   decoration: BoxDecoration(
+                //     shape: BoxShape.circle,
+                //     border: Border.all(color: kbordergreyColor, width: 1.0),
+                //   ),
+                //   child: const Icon(Icons.filter_list, size: 20),
+                // ),
               ],
             ),
           ),
@@ -218,10 +218,10 @@ class _MyEarningsState extends State<MyEarnings> {
                                 data['ownerName'] =
                                     "${owner['firstName']} ${owner['lastName']}";
                               } else {
-                                data['ownerName'] = "Rydyn Admin";
+                                data['ownerName'] = "Nyzo Ride Admin";
                               }
                             } else {
-                              data['ownerName'] = "Rydyn Admin";
+                              data['ownerName'] = "Nyzo Ride Admin";
                             }
 
                             if (data['status'] == "Success" &&
@@ -286,77 +286,119 @@ class _MyEarningsState extends State<MyEarnings> {
                                 elevation: 0,
                                 child: Padding(
                                   padding: const EdgeInsets.all(14),
-                                  child: Row(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      CircleAvatar(
-                                        backgroundColor: kcirclegrey,
-                                        child: Image.asset(
-                                          "images/download.png",
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor: kcirclegrey,
+                                            child: Image.asset(
+                                              "images/download.png",
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                tx['ownerName'],
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: korangeColor,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              IntrinsicHeight(
+                                                child: Row(
+                                                  children: [
+                                                    CustomText(
+                                                      text: method,
+                                                      fontSize: 12,
+                                                      textcolor: kseegreyColor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                    const VerticalDivider(
+                                                      color: kseegreyColor,
+                                                      width: 16,
+                                                    ),
+                                                    CustomText(
+                                                      text: date,
+                                                      fontSize: 12,
+                                                      textcolor: kseegreyColor,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          const Spacer(),
+
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                "₹${amount.toStringAsFixed(2)}",
+                                                style: const TextStyle(
+                                                  color: korangeColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+
+                                              if (!(bookingStatus ==
+                                                      "Cancelled" &&
+                                                  amount == 59.0))
+                                                Text(
+                                                  label,
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: labelColor,
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          CustomText(
+                                            text: "Ride Id : ",
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            textcolor: korangeColor,
+                                          ),
+                                          CustomText(
+                                            text:
+                                                "${tx['rideId'] ?? tx['bookingDocId'] ?? '--'}",
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            textcolor: kseegreyColor,
+                                          ),
+                                        ],
+                                      ),
+
+                                      if (bookingStatus == "Cancelled" &&
+                                          amount == 59.0)
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 5),
+                                          child: CustomText(
+                                            text:
+                                                "Ride cancelled and amount credited to admin",
+                                            fontSize: 11,
+                                            textcolor: KredColor,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 12),
-
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            tx['ownerName'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: korangeColor,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          IntrinsicHeight(
-                                            child: Row(
-                                              children: [
-                                                CustomText(
-                                                  text: method,
-                                                  fontSize: 12,
-                                                  textcolor: kseegreyColor,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                                const VerticalDivider(
-                                                  color: kseegreyColor,
-                                                  width: 16,
-                                                ),
-                                                CustomText(
-                                                  text: date,
-                                                  fontSize: 12,
-                                                  textcolor: kseegreyColor,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      const Spacer(),
-
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            "₹${amount.toStringAsFixed(2)}",
-                                            style: const TextStyle(
-                                              color: korangeColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-
-                                          Text(
-                                            label,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: labelColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
                                     ],
                                   ),
                                 ),

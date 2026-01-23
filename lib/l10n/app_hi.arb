@@ -346,8 +346,8 @@
   "contactUs": "11. हमसे संपर्क करें",
   "privacyConcernsContact": "गोपनीयता चिंताओं या डेटा अनुरोधों के लिए संपर्क करें:",
   "nyzoRideSupport": "Nyzo Ride समर्थन",
-  "nyzoRideEmail": "ईमेल: hello@nyzoride.com",
-  "nyzoRidePhone": "फ़ोन: 9000464851",
+  "nyzoRideEmail": "hello@nyzoride.com",
+  "nyzoRidePhone": "9000464851",
   "driverTermsTitle": "NYZO RIDE – ड्राइवर (कैप्टन)",
   "driverEligibility": "1. ड्राइवर पात्रता",
   "driverEligibilityAge": "ड्राइवर की आयु कम से कम 21 वर्ष होनी चाहिए।",
@@ -420,7 +420,7 @@
   "basicInformation": "मूल जानकारी",
 "firstName": "पहला नाम",
 "lastName": "अंतिम नाम",
-"email": "ईमेल",
+"email": "ईमेल:",
 "dateOfBirth": "जन्म तिथि",
 "chooseVehicleType": "वाहन का प्रकार चुनें",
 "light": "लाइट",
@@ -440,7 +440,11 @@
 "accountNumber": "खाता नंबर",
 "accountHolderName": "खाता धारक का नाम",
 "agreePrivacyPolicy": "मैं गोपनीयता नीति में वर्णित अनुसार मेरी जानकारी के संग्रह और उपयोग के लिए सहमत हूँ।",
-"continueText": "जारी रखें"
+"continueText": "जारी रखें",
+"phone": "फ़ोन:",
+"rideId": "राइड आईडी"
+
+
 
 
 

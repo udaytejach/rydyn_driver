@@ -342,7 +342,7 @@ class AppLocalizationsTe extends AppLocalizations {
   String get home_watch => 'చూడండి & నేర్చుకోండి';
 
   @override
-  String get home_prem => 'డ్రైవర్ సేవలకు ప్రీమియం ఫీల్';
+  String get home_prem => 'ఆత్మవిశ్వాసంతో డ్రైవ్ చేయండి';
 
   @override
   String get home_india => 'భారతదేశంలో తయారు చేయబడింది';
@@ -1255,4 +1255,31 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get rideId => 'రైడ్ ఐడి';
+
+  @override
+  String get helpDesc => 'రైడ్స్, చెల్లింపులు, ఖాతా లేదా యాప్ వినియోగానికి సంబంధించిన ఏ సమస్యకైనా మేము మీకు సహాయం చేయడానికి సిద్ధంగా ఉన్నాము.';
+
+  @override
+  String get quickHelp => 'త్వరిత సహాయ ఎంపికలు';
+
+  @override
+  String get chooseWay => 'మమ్మల్ని సంప్రదించడానికి సరైన మార్గాన్ని ఎంచుకోండి:';
+
+  @override
+  String get callSupport => 'కాల్స్ సహాయం';
+
+  @override
+  String get callDesc => 'మా సహాయ బృందం నుండి వెంటనే సహాయం పొందండి';
+
+  @override
+  String get availableHours => 'పని సమయాల్లో అందుబాటులో ఉంటుంది';
+
+  @override
+  String get emailSupport => 'ఈమెయిల్ సహాయం';
+
+  @override
+  String get emailDesc => 'మీ ప్రశ్నలు లేదా సమస్యలను మాకు పంపండి';
+
+  @override
+  String get emailReplyTime => 'మేము సాధారణంగా 24 గంటల్లో స్పందిస్తాము';
 }

@@ -163,7 +163,7 @@ class _LoginScreenBodyState extends State<_LoginScreenBody> {
                                             .verifyPhoneNumber(
                                               phoneNumber: phoneWithCode,
                                               timeout: const Duration(
-                                                seconds: 60,
+                                                seconds: 40,
                                               ),
                                               verificationCompleted:
                                                   (credential) async {

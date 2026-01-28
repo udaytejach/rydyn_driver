@@ -46,60 +46,30 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     // _setUserOnline();
     _setUserOnline();
     // _setupRealtimePresence();
-
+    _markMessagesAsRead();
     messageController.addListener(() => _handleTypingStatus());
+    print('ownerId: ${widget.ownerId}');
   }
 
-  void _setupRealtimePresence() async {
-    final userId = await SharedPrefServices.getUserId();
-    if (userId == null) return;
+  Future<void> _markMessagesAsRead() async {
+    final driverId = widget.driverId;
 
-    final DatabaseReference rtdbRef = FirebaseDatabase.instance.ref();
-    final userStatusDatabaseRef = rtdbRef.child("status/$userId");
+    final unreadMessages = await FirebaseFirestore.instance
+        .collection('bookings')
+        .doc(widget.bookingId)
+        .collection('messages')
+        .where('senderId', isNotEqualTo: driverId)
+        .where('status', isEqualTo: 'sent')
+        .get();
 
-    final onlineState = {
-      "state": "online",
-      "last_changed": ServerValue.timestamp,
-    };
-    final offlineState = {
-      "state": "offline",
-      "last_changed": ServerValue.timestamp,
-    };
+    final batch = FirebaseFirestore.instance.batch();
 
-    final userStatusFirestoreRef = FirebaseFirestore.instance
-        .collection('userStatus')
-        .doc(userId);
+    for (var doc in unreadMessages.docs) {
+      batch.update(doc.reference, {'status': 'read'});
+    }
 
-    userStatusDatabaseRef.onDisconnect().set(offlineState);
-    await userStatusDatabaseRef.set(onlineState);
-
-    await userStatusFirestoreRef.set({
-      'isOnline': true,
-      'lastSeen': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
-
-    await userStatusDatabaseRef.onDisconnect().set(offlineState);
-    await userStatusFirestoreRef.set({
-      'isOnline': false,
-      'lastSeen': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    await batch.commit();
   }
-
-  // void _setUserOnline() async {
-  //   final userId = await SharedPrefServices.getUserId();
-  //   FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
-  //     'isOnline': true,
-  //     'lastSeen': FieldValue.serverTimestamp(),
-  //   }, SetOptions(merge: true));
-  // }
-
-  // void _setUserOffline() async {
-  //   final userId = await SharedPrefServices.getUserId();
-  //   FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
-  //     'isOnline': false,
-  //     'lastSeen': FieldValue.serverTimestamp(),
-  //   }, SetOptions(merge: true));
-  // }
 
   Future<void> _setUserOnline() async {
     final userId = await SharedPrefServices.getUserId();
@@ -208,7 +178,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
           'senderId': senderId,
           'timestamp': FieldValue.serverTimestamp(),
           'status': 'sent',
-        });
+        }); 
 
     messageController.clear();
     String? ownerToken;
@@ -296,74 +266,6 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       color: Colors.black87,
                     ),
                   ),
-                  // StreamBuilder<DocumentSnapshot>(
-                  //   stream: FirebaseFirestore.instance
-                  //       .collection('userStatus')
-                  //       .doc(widget.ownerId)
-                  //       .snapshots(),
-                  //   builder: (context, snapshot) {
-                  //     if (!snapshot.hasData || !snapshot.data!.exists) {
-                  //       return Text(
-                  //         "Ofline",
-                  //         style: GoogleFonts.poppins(
-                  //           fontSize: 12,
-                  //           color: Colors.grey,
-                  //         ),
-                  //       );
-                  //     }
-                  //     final data =
-                  //         snapshot.data!.data() as Map<String, dynamic>;
-                  //     final bool isOnline = data['isOnline'] ?? false;
-                  //     final Timestamp? lastSeen = data['lastSeen'];
-                  //     if (isOnline) {
-                  //       return Text(
-                  //         "Online",
-                  //         style: GoogleFonts.poppins(
-                  //           fontSize: 12,
-                  //           color: Colors.green,
-                  //           fontWeight: FontWeight.w500,
-                  //         ),
-                  //       );
-                  //     } else if (lastSeen != null) {
-                  //       final lastSeenDate = lastSeen.toDate();
-                  //       final now = DateTime.now();
-
-                  //       final difference = now.difference(lastSeenDate).inDays;
-                  //       final timeFormat = DateFormat(
-                  //         'hh:mm a',
-                  //       ).format(lastSeenDate);
-                  //       String displayText;
-
-                  //       if (difference == 0) {
-                  //         displayText = "last seen today at $timeFormat";
-                  //       } else if (difference == 1) {
-                  //         displayText = "last seen yesterday at $timeFormat";
-                  //       } else if (difference > 1 && difference <= 6) {
-                  //         displayText =
-                  //             "last seen on ${DateFormat('EEEE').format(lastSeenDate)} at $timeFormat";
-                  //       } else {
-                  //         displayText =
-                  //             "last seen on ${DateFormat('MMM d, hh:mm a').format(lastSeenDate)}";
-                  //       }
-
-                  //       return Text(
-                  //         displayText,
-                  //         style: GoogleFonts.poppins(
-                  //           fontSize: 12,
-                  //           color: Colors.grey,
-                  //         ),
-                  //       );
-                  //     } else {
-                  //       return Text(
-                  //         "Offline",
-                  //         style: GoogleFonts.poppins(
-                  //           fontSize: 12,
-                  //           color: Colors.grey,
-                  //         ),
-                  //       );
-                  //     }
-                  //   },
-                  // ),
                 ],
               ),
             ],
@@ -694,3 +596,123 @@ class ChatBubble extends StatelessWidget {
     );
   }
 }
+
+
+// void _setupRealtimePresence() async {
+  //   final userId = await SharedPrefServices.getUserId();
+  //   if (userId == null) return;
+
+  //   final DatabaseReference rtdbRef = FirebaseDatabase.instance.ref();
+  //   final userStatusDatabaseRef = rtdbRef.child("status/$userId");
+
+  //   final onlineState = {
+  //     "state": "online",
+  //     "last_changed": ServerValue.timestamp,
+  //   };
+  //   final offlineState = {
+  //     "state": "offline",
+  //     "last_changed": ServerValue.timestamp,
+  //   };
+
+  //   final userStatusFirestoreRef = FirebaseFirestore.instance
+  //       .collection('userStatus')
+  //       .doc(userId);
+
+  //   userStatusDatabaseRef.onDisconnect().set(offlineState);
+  //   await userStatusDatabaseRef.set(onlineState);
+
+  //   await userStatusFirestoreRef.set({
+  //     'isOnline': true,
+  //     'lastSeen': FieldValue.serverTimestamp(),
+  //   }, SetOptions(merge: true));
+
+  //   await userStatusDatabaseRef.onDisconnect().set(offlineState);
+  //   await userStatusFirestoreRef.set({
+  //     'isOnline': false,
+  //     'lastSeen': FieldValue.serverTimestamp(),
+  //   }, SetOptions(merge: true));
+  // }
+
+ // StreamBuilder<DocumentSnapshot>(
+                  //   stream: FirebaseFirestore.instance
+                  //       .collection('userStatus')
+                  //       .doc(widget.ownerId)
+                  //       .snapshots(),
+                  //   builder: (context, snapshot) {
+                  //     if (!snapshot.hasData || !snapshot.data!.exists) {
+                  //       return Text(
+                  //         "Ofline",
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       );
+                  //     }
+                  //     final data =
+                  //         snapshot.data!.data() as Map<String, dynamic>;
+                  //     final bool isOnline = data['isOnline'] ?? false;
+                  //     final Timestamp? lastSeen = data['lastSeen'];
+                  //     if (isOnline) {
+                  //       return Text(
+                  //         "Online",
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.green,
+                  //           fontWeight: FontWeight.w500,
+                  //         ),
+                  //       );
+                  //     } else if (lastSeen != null) {
+                  //       final lastSeenDate = lastSeen.toDate();
+                  //       final now = DateTime.now();
+
+                  //       final difference = now.difference(lastSeenDate).inDays;
+                  //       final timeFormat = DateFormat(
+                  //         'hh:mm a',
+                  //       ).format(lastSeenDate);
+                  //       String displayText;
+
+                  //       if (difference == 0) {
+                  //         displayText = "last seen today at $timeFormat";
+                  //       } else if (difference == 1) {
+                  //         displayText = "last seen yesterday at $timeFormat";
+                  //       } else if (difference > 1 && difference <= 6) {
+                  //         displayText =
+                  //             "last seen on ${DateFormat('EEEE').format(lastSeenDate)} at $timeFormat";
+                  //       } else {
+                  //         displayText =
+                  //             "last seen on ${DateFormat('MMM d, hh:mm a').format(lastSeenDate)}";
+                  //       }
+
+                  //       return Text(
+                  //         displayText,
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       );
+                  //     } else {
+                  //       return Text(
+                  //         "Offline",
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 12,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       );
+                  //     }
+                  //   },
+                  // ),
+// void _setUserOnline() async {
+  //   final userId = await SharedPrefServices.getUserId();
+  //   FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
+  //     'isOnline': true,
+  //     'lastSeen': FieldValue.serverTimestamp(),
+  //   }, SetOptions(merge: true));
+  // }
+
+  // void _setUserOffline() async {
+  //   final userId = await SharedPrefServices.getUserId();
+  //   FirebaseFirestore.instance.collection('userStatus').doc(userId).set({
+  //     'isOnline': false,
+  //     'lastSeen': FieldValue.serverTimestamp(),
+  //   }, SetOptions(merge: true));
+  // }

@@ -342,7 +342,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_watch => 'Watch & Learn';
 
   @override
-  String get home_prem => 'PREMIUM FEEL FOR DRIVER SERVICES';
+  String get home_prem => 'DRIVE WITH CONFIDENCE';
 
   @override
   String get home_india => 'Made in India';
@@ -1255,4 +1255,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rideId => 'Ride ID';
+
+  @override
+  String get helpDesc => 'We’re here to assist you with any issues related to rides, payments, account, or app usage.';
+
+  @override
+  String get quickHelp => 'Quick Help Options';
+
+  @override
+  String get chooseWay => 'Choose the best way to reach us:';
+
+  @override
+  String get callSupport => 'Call Support';
+
+  @override
+  String get callDesc => 'Get instant help from our support team';
+
+  @override
+  String get availableHours => 'Available during working hours';
+
+  @override
+  String get emailSupport => 'Email Support';
+
+  @override
+  String get emailDesc => 'Send us your queries or concerns';
+
+  @override
+  String get emailReplyTime => 'We usually respond within 24 hours';
 }

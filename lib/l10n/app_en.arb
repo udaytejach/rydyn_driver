@@ -112,7 +112,7 @@
 "p_editProfile": "Edit Profile",
 "home_viewoffers":"View Offers",
 "home_watch":"Watch & Learn",
-"home_prem":"PREMIUM FEEL FOR DRIVER SERVICES",
+"home_prem":"DRIVE WITH CONFIDENCE",
 "home_india":"Made in India",
 "enterOtp": "Enter Your OTP",
 "otpSent": " OTP sent !!",
@@ -540,7 +540,16 @@
 "agreePrivacyPolicy": "I agree to the collection and use of my information as described in the Privacy Policy.",
 "continueText": "Continue",
 "phone": "Phone:",
-"rideId": "Ride ID"
+"rideId": "Ride ID",
+"helpDesc": "We’re here to assist you with any issues related to rides, payments, account, or app usage.",
+  "quickHelp": "Quick Help Options",
+  "chooseWay": "Choose the best way to reach us:",
+  "callSupport": "Call Support",
+  "callDesc": "Get instant help from our support team",
+  "availableHours": "Available during working hours",
+  "emailSupport": "Email Support",
+  "emailDesc": "Send us your queries or concerns",
+  "emailReplyTime": "We usually respond within 24 hours"
 
 
 

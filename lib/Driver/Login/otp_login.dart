@@ -40,7 +40,7 @@ class _OtpLoginState extends State<OtpLogin> {
   String? _currentVerificationId;
   bool _isResending = false;
 
-  int _secondsLeft = 60;
+  int _secondsLeft = 40;
   Timer? _timer;
   String? _otpErrorMessage;
   final FCMService fcmService = FCMService();
@@ -53,7 +53,7 @@ class _OtpLoginState extends State<OtpLogin> {
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: "+91${widget.phoneNumber}",
-        timeout: const Duration(seconds: 60),
+        timeout: const Duration(seconds: 40),
 
         verificationCompleted: (PhoneAuthCredential credential) async {},
 
@@ -134,7 +134,7 @@ class _OtpLoginState extends State<OtpLogin> {
 
   void _startTimer() {
     _timer?.cancel();
-    setState(() => _secondsLeft = 60);
+    setState(() => _secondsLeft = 40);
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsLeft == 0) {

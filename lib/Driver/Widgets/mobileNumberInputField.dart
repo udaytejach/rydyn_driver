@@ -29,7 +29,7 @@ class PhoneNumberInputField extends StatelessWidget {
       style: GoogleFonts.poppins(
         color: KblackColor,
         fontSize: 15,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
         labelText:

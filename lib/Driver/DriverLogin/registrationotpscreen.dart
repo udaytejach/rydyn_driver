@@ -72,7 +72,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
   bool _isResending = false;
   String? _otpErrorMessage;
 
-  int _secondsLeft = 60;
+  int _secondsLeft = 40;
   Timer? _timer;
   @override
   void initState() {
@@ -84,7 +84,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
 
   void _startTimer() {
     _timer?.cancel();
-    setState(() => _secondsLeft = 60);
+    setState(() => _secondsLeft = 40);
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsLeft == 0) {
@@ -103,7 +103,7 @@ class _DriverOtpScreenState extends State<DriverOtpScreen> {
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: "+91${widget.phoneNumber}",
-        timeout: const Duration(seconds: 60),
+        timeout: const Duration(seconds: 40),
 
         verificationCompleted: (PhoneAuthCredential credential) async {},
 

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart'; 
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +37,7 @@ void main() async {
   await Geolocator.isLocationServiceEnabled();
   await _requestNotificationPermission();
   await FirebaseApi().initNotifications();
+  _setupNotificationListeners();
 
   if (Platform.isAndroid) {
     // Code specific to Android
@@ -47,6 +48,20 @@ void main() async {
     print("Running on iOS");
   }
   runApp(const MyApp());
+}
+
+void _setupNotificationListeners() {
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (message.data['route'] != null) {
+      navigatorKey.currentState?.pushNamed(message.data['route']);
+    }
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    if (message.data['route'] != null) {
+      navigatorKey.currentState?.pushNamed(message.data['route']);
+    }
+  });
 }
 
 Future<void> _requestNotificationPermission() async {

@@ -364,6 +364,16 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   bool isOtpInvalid = false;
+  Stream<int> unreadMessageCountStream(String bookingId, String driverId) {
+    return FirebaseFirestore.instance
+        .collection('privateChats')
+        .doc(bookingId)
+        .collection('messages')
+        .where('senderId', isNotEqualTo: driverId)
+        .where('status', isEqualTo: 'sent')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -658,65 +668,134 @@ class _BookingDetailsState extends State<BookingDetails> {
                   .doc(widget.docId)
                   .snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) return SizedBox();
+                if (!snapshot.hasData) return const SizedBox();
 
                 final bookingData =
                     snapshot.data!.data() as Map<String, dynamic>;
                 final status = bookingData['status'] ?? '';
 
                 if (status != 'Accepted' && status != 'Ongoing') {
-                  return SizedBox();
+                  return const SizedBox();
                 }
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 0,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ChatScreen(
-                                  bookingId: widget.docId,
-                                  driverId: SharedPrefServices.getUserId()
-                                      .toString(),
-                                  ownerId: bookingData['ownerdocId'],
-                                  ownerName: ownerFullName,
-                                  ownerProfile: ownerData?['profilePic'] ?? '',
+                        child: StreamBuilder<int>(
+                          stream: unreadMessageCountStream(
+                            widget.docId,
+                            SharedPrefServices.getUserId().toString(),
+                          ),
+                          builder: (context, snapshot) {
+                            final unreadCount = snapshot.data ?? 0;
+                            final hasUnread = unreadCount > 0;
+
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ChatScreen(
+                                            bookingId: widget.docId,
+                                            driverId:
+                                                SharedPrefServices.getUserId()
+                                                    .toString(),
+                                            ownerId: bookingData['ownerdocId'],
+                                            ownerName: ownerFullName,
+                                            ownerProfile:
+                                                ownerData?['profilePic'] ?? '',
+                                          ),
+                                        ),
+                                      );
+                                    },
+
+                                    icon: Icon(
+                                      Icons.chat,
+                                      size: 20,
+                                      color: hasUnread
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+
+                                    label: RichText(
+                                      text: TextSpan(
+                                        text: localizations.chat,
+                                        style: TextStyle(
+                                          color: hasUnread
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        children: hasUnread
+                                            ? [
+                                                TextSpan(
+                                                  text: ' ($unreadCount)',
+                                                  style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ]
+                                            : [],
+                                      ),
+                                    ),
+
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: hasUnread
+                                            ? Colors.red
+                                            : Colors.grey.shade300,
+                                        width: 1.5,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      backgroundColor: Colors.white,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                if (hasUnread)
+                                  Positioned(
+                                    top: -10,
+                                    right: 5,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                          color: Colors.red,
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Text(
+                                        'NEW MESSAGE',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             );
                           },
-                          icon: const Icon(
-                            Icons.chat,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          label: Text(
-                            localizations.chat,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                              color: Colors.grey.shade300,
-                              width: 1.5,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            backgroundColor: Colors.white,
-                          ),
                         ),
                       ),
 
@@ -726,11 +805,13 @@ class _BookingDetailsState extends State<BookingDetails> {
                         child: ElevatedButton.icon(
                           onPressed: () async {
                             final ownerPhone = ownerData?['phone'] ?? '';
+
                             if (ownerPhone.isNotEmpty) {
                               final Uri callUri = Uri(
                                 scheme: 'tel',
                                 path: ownerPhone,
                               );
+
                               if (await canLaunchUrl(callUri)) {
                                 await launchUrl(callUri);
                               } else {
@@ -763,7 +844,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                           ),
                           label: Text(
                             localizations.call,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -2716,7 +2797,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                 ),
               ),
               SizedBox(height: 3),
-             ],
+            ],
           ),
         );
       },

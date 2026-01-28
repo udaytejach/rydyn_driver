@@ -1049,7 +1049,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
                           await FirebaseAuth.instance.verifyPhoneNumber(
                             phoneNumber: phoneNumberWithCode,
-                            timeout: const Duration(seconds: 60),
+                            timeout: const Duration(seconds: 40),
 
                             verificationCompleted:
                                 (PhoneAuthCredential credential) async {

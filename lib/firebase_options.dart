@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,9 +28,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,19 +49,9 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD0JuH1GKxzNxuS0OmQn3PWsbtN9GUsV6g',
-    appId: '1:759100098277:web:727570fd1b481cf2c2360c',
-    messagingSenderId: '759100098277',
-    projectId: 'nyzoride-69ab6',
-    authDomain: 'nyzoride-69ab6.firebaseapp.com',
-    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
-    measurementId: 'G-JS33JVMYXV',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCeUXWCR972pTy5Id2g6uHdPDd26w3eqHw',
-    appId: '1:759100098277:android:61e70bc10eab8edac2360c',
+    appId: '1:759100098277:android:444dc6a22757a3e2c2360c',
     messagingSenderId: '759100098277',
     projectId: 'nyzoride-69ab6',
     storageBucket: 'nyzoride-69ab6.firebasestorage.app',
@@ -60,29 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAWxOdmQHIt98P0yNmmgSKNg7-yCuWeREI',
-    appId: '1:759100098277:ios:ad36343b98ee3321c2360c',
+    appId: '1:759100098277:ios:051472e527170c44c2360c',
     messagingSenderId: '759100098277',
     projectId: 'nyzoride-69ab6',
     storageBucket: 'nyzoride-69ab6.firebasestorage.app',
-    iosBundleId: 'com.example.nyzoCaptain',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAWxOdmQHIt98P0yNmmgSKNg7-yCuWeREI',
-    appId: '1:759100098277:ios:759cd9c74dc4d0bfc2360c',
-    messagingSenderId: '759100098277',
-    projectId: 'nyzoride-69ab6',
-    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
-    iosBundleId: 'com.example.mdDriverApplication',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyD0JuH1GKxzNxuS0OmQn3PWsbtN9GUsV6g',
-    appId: '1:759100098277:web:1f28bdc7943778cfc2360c',
-    messagingSenderId: '759100098277',
-    projectId: 'nyzoride-69ab6',
-    authDomain: 'nyzoride-69ab6.firebaseapp.com',
-    storageBucket: 'nyzoride-69ab6.firebasestorage.app',
-    measurementId: 'G-MXG58RQEKP',
+    iosBundleId: 'com.naresh.nyzoCaptain',
   );
 }

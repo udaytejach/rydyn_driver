@@ -511,6 +511,7 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
 
                           final DateTime? picked = await showDatePicker(
                             context: context,
+                            locale: const Locale("en", "IN"),
                             initialDate: maxAdultDate,
                             firstDate: DateTime(1900),
                             lastDate: maxAdultDate,

@@ -872,6 +872,7 @@ class _DriversProfilescreenState extends State<DriversProfilescreen> {
                                 // Show date picker
                                 final pickedDate = await showDatePicker(
                                   context: context,
+                                  locale: const Locale("en", "IN"),
                                   initialDate: initialDate,
                                   firstDate: DateTime(1950),
                                   lastDate: lastAllowedDate,

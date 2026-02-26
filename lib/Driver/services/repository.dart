@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rydyn/Driver/models/user_model.dart';
+import 'package:nyzoridecaptain/Driver/models/user_model.dart';
 
 class RepositoryData {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

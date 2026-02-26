@@ -14,7 +14,7 @@ class _D_SettindsState extends State<D_Settinds> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        automaticallyImplyLeading: false, // disable default back button
+        automaticallyImplyLeading: false,
         title: Stack(
           alignment: Alignment.center,
           children: [

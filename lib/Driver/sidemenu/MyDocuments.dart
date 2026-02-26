@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 
 class DocumentsPage extends StatefulWidget {
   const DocumentsPage({super.key});
@@ -151,34 +151,6 @@ class _DocumentsPageState extends State<DocumentsPage> {
               ],
             ),
           ),
-
-          // SafeArea(
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(16),
-          //     child: SizedBox(
-          //       width: 250,
-          //       child: ElevatedButton.icon(
-          //         style: ElevatedButton.styleFrom(
-          //           padding: const EdgeInsets.symmetric(vertical: 14),
-          //           backgroundColor: korangeColor,
-          //           shape: RoundedRectangleBorder(
-          //             borderRadius: BorderRadius.circular(30),
-          //           ),
-          //         ),
-          //         onPressed: () {},
-          //         icon: const Icon(Icons.upload, color: Colors.white),
-          //         label: const Text(
-          //           "Upload Document",
-          //           style: TextStyle(
-          //             fontSize: 16,
-          //             fontWeight: FontWeight.bold,
-          //             color: Colors.white,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

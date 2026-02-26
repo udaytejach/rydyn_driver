@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:rydyn/Driver/D_Models/Driver_Model.dart';
+import 'package:nyzoridecaptain/Driver/D_Models/Driver_Model.dart';
 
 class DriverViewModel extends ChangeNotifier {
   bool isLoading = false;

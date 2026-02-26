@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -329,14 +329,6 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
               child: support(localizations.nyzoRidePhone, localizations.phone),
             ),
 
-            // GestureDetector(
-            //   onTap: () => _sendEmail("hello@nyzoride.com"),
-            //   child: support("hello@nyzoride.com", "Email:"),
-            // ),
-            // GestureDetector(
-            //   onTap: () => _callNumber("9000464851"),
-            //   child: support("9000464851", "Phone:"),
-            // ),
             const SizedBox(height: 40),
           ],
         ),

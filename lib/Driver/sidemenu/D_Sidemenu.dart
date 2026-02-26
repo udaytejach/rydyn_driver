@@ -2,19 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rydyn/Driver/Login/loginScreen.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customButton.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
-import 'package:rydyn/Driver/services/locale_provider.dart';
-import 'package:rydyn/Driver/sidemenu/D_Helpandsupport.dart';
-import 'package:rydyn/Driver/sidemenu/D_Termsandconditions.dart';
-import 'package:rydyn/Driver/sidemenu/Driverprofilepage.dart';
-import 'package:rydyn/Driver/sidemenu/MyDocuments.dart';
-import 'package:rydyn/Driver/sidemenu/privacy_policy.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/Login/loginScreen.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customButton.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customoutlinedbutton.dart';
+import 'package:nyzoridecaptain/Driver/services/locale_provider.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/D_Helpandsupport.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/D_Termsandconditions.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/Driverprofilepage.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/MyDocuments.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/privacy_policy.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 
 class D_SideMenu extends StatefulWidget {
   const D_SideMenu({super.key});
@@ -330,26 +330,6 @@ class _D_SideMenuState extends State<D_SideMenu> {
                 },
               ),
             ),
-
-            // onChanged: (newValue) {
-            //   if (newValue == null) return;
-            //   setState(() {
-            //     selectedLanguage = newValue;
-            //   });
-
-            //   final localeProvider = Provider.of<LocaleProvider>(
-            //     context,
-            //     listen: false,
-            //   );
-
-            //   if (newValue == 'English') {
-            //     localeProvider.setLocale(const Locale('en'));
-            //   } else if (newValue == 'Hindi') {
-            //     localeProvider.setLocale(const Locale('hi'));
-            //   } else if (newValue == 'Telugu') {
-            //     localeProvider.setLocale(const Locale('te'));
-            //   }
-            // },
           ],
         ),
         actions: _dialogActions(

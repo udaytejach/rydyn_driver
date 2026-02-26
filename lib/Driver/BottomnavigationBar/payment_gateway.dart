@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
 
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
 
 class PaymentGateway extends StatefulWidget {
   const PaymentGateway({super.key});

@@ -5,17 +5,17 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/booking_details.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customButton.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
-import 'package:rydyn/Driver/notifications/service.dart';
-import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/booking_details.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customButton.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customoutlinedbutton.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/notifications/service.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/D_Sidemenu.dart';
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -967,21 +967,6 @@ class _DriverDashboardState extends State<DriverDashboard> {
                               fontWeight: FontWeight.bold,
                               textcolor: KblackColor,
                             ),
-                            // GestureDetector(
-                            //   onTap: () {},
-                            //   child: Text(
-                            //     localizations.viewAll,
-                            //     style: GoogleFonts.poppins(
-                            //       fontSize: 12,
-                            //       fontWeight: FontWeight.w400,
-                            //       color: korangeColor,
-                            //       decoration: TextDecoration.underline,
-                            //       decorationColor: korangeColor,
-                            //       decorationStyle: TextDecorationStyle.solid,
-                            //       decorationThickness: 1.5,
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
                         SizedBox(height: 20),

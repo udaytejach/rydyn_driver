@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
-import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/D_Sidemenu.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class D_HelpAndSupport extends StatefulWidget {

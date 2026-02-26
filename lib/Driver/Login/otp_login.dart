@@ -9,16 +9,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
-import 'package:rydyn/Driver/Login/selectLanguage.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customButton.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
-import 'package:rydyn/Driver/notifications/service.dart';
-import 'package:rydyn/Driver/viewmodels/login_viewmodel.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/new_driver_dashbaord.dart';
+import 'package:nyzoridecaptain/Driver/Login/selectLanguage.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customButton.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/notifications/service.dart';
+import 'package:nyzoridecaptain/Driver/viewmodels/login_viewmodel.dart';
 
 class OtpLogin extends StatefulWidget {
   final String phoneNumber;
@@ -258,14 +258,6 @@ class _OtpLoginState extends State<OtpLogin> {
                                         : (TapGestureRecognizer()
                                             ..onTap = _resendOtp),
                                   ),
-
-                                  // TextSpan(
-                                  //   text: localizations.resendOtp,
-                                  //   style: TextStyle(
-                                  //     color: korangeColor,
-                                  //     fontWeight: FontWeight.w600,
-                                  //   ),
-                                  // ),
                                 ],
                               ),
                             ),

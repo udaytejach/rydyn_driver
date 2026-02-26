@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/D_Sidemenu.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 
 class MyEarnings extends StatefulWidget {
   const MyEarnings({super.key});
@@ -142,14 +142,6 @@ class _MyEarningsState extends State<MyEarnings> {
                   localizations.transactions,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                // Container(
-                //   padding: const EdgeInsets.all(8),
-                //   decoration: BoxDecoration(
-                //     shape: BoxShape.circle,
-                //     border: Border.all(color: kbordergreyColor, width: 1.0),
-                //   ),
-                //   child: const Icon(Icons.filter_list, size: 20),
-                // ),
               ],
             ),
           ),
@@ -208,21 +200,6 @@ class _MyEarningsState extends State<MyEarnings> {
 
                             data['bookingStatus'] = book['status'] ?? "";
 
-                            // final ownerDocId = book['ownerdocId'] ?? "";
-
-                            // if (data['bookingStatus'] != "Cancelled" &&
-                            //     ownerDocId.isNotEmpty) {
-                            //   final owner = ownerDetails[ownerDocId];
-
-                            //   if (owner != null) {
-                            //     data['ownerName'] =
-                            //         "${owner['firstName']} ${owner['lastName']}";
-                            //   } else {
-                            //     data['ownerName'] = "Nyzo Ride Admin";
-                            //   }
-                            // } else {
-                            //   data['ownerName'] = "Nyzo Ride Admin";
-                            // }
                             final ownerDocId = book['ownerdocId'] ?? "";
                             final bookingStatus = data['bookingStatus'];
                             final amount = data['amount'] ?? 0.0;

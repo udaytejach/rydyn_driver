@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/booking_details.dart';
-import 'package:rydyn/Driver/D_Appbar/d_appbar.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customButton.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/Widgets/customoutlinedbutton.dart';
-import 'package:rydyn/Driver/notifications/service.dart';
-import 'package:rydyn/Driver/sidemenu/D_Sidemenu.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/booking_details.dart';
+import 'package:nyzoridecaptain/Driver/D_Appbar/d_appbar.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customButton.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customoutlinedbutton.dart';
+import 'package:nyzoridecaptain/Driver/notifications/service.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/D_Sidemenu.dart';
 import 'dart:math';
 
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 
 class D_Bookings extends StatefulWidget {
   const D_Bookings({super.key});
@@ -668,24 +668,6 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
                                           const SizedBox(height: 10),
                                           Row(
                                             children: [
-                                              // Expanded(
-                                              //   child: OutlinedButton(
-                                              //     style:
-                                              //         OutlinedButton.styleFrom(
-                                              //           side: const BorderSide(
-                                              //             color:
-                                              //                 KorangeColorNew,
-                                              //           ),
-                                              //         ),
-                                              //     onPressed: () {},
-                                              //     child: const CustomText(
-                                              //       text: "Decline",
-                                              //       textcolor: KorangeColorNew,
-                                              //       fontSize: 12,
-                                              //       fontWeight: FontWeight.w500,
-                                              //     ),
-                                              //   ),
-                                              // ),
                                               const SizedBox(width: 10),
                                               Expanded(
                                                 child: ElevatedButton(
@@ -882,93 +864,3 @@ class _D_BookingsState extends State<D_Bookings> with TickerProviderStateMixin {
     );
   }
 }
-
-// Future<void> _updateBookingStatus(String bookingId, String newStatus) async {
-  //   try {
-  //     final driverId = await SharedPrefServices.getUserId();
-  //     final driverDocId = await SharedPrefServices.getDocId();
-  //     final driverName =
-  //         "${await SharedPrefServices.getFirstName()} ${await SharedPrefServices.getLastName()}";
-
-  //     final bookingRef = FirebaseFirestore.instance
-  //         .collection('bookings')
-  //         .doc(bookingId);
-  //     final bookingSnap = await bookingRef.get();
-
-  //     if (!bookingSnap.exists) {
-  //       ScaffoldMessenger.of(
-  //         context,
-  //       ).showSnackBar(const SnackBar(content: Text('Booking not found.')));
-  //       return;
-  //     }
-
-  //     final bookingData = bookingSnap.data() as Map<String, dynamic>;
-  //     final existingDriverId = bookingData['driverId'] ?? '';
-
-  //     if (existingDriverId.isNotEmpty && existingDriverId != driverId) {
-  //       showDialog(
-  //         context: context,
-  //         builder: (context) => AlertDialog(
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(15),
-  //           ),
-  //           title: const Center(
-  //             child: Text(
-  //               "Ride Already Taken",
-  //               style: TextStyle(fontWeight: FontWeight.bold),
-  //             ),
-  //           ),
-  //           content: const Text(
-  //             "This ride has already been accepted by another driver.",
-  //             textAlign: TextAlign.center,
-  //           ),
-  //           actions: [
-  //             Center(
-  //               child: ElevatedButton(
-  //                 onPressed: () => Navigator.pop(context),
-  //                 style: ElevatedButton.styleFrom(
-  //                   backgroundColor: korangeColor,
-  //                 ),
-  //                 child: const Text("OK", style: TextStyle(color: kwhiteColor)),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //       return;
-  //     }
-
-  //     final random = Random();
-  //     final ownerOTP = 1000 + random.nextInt(9000);
-
-  //     await bookingRef.update({
-  //       'status': newStatus,
-  //       'driverdocId': driverDocId,
-  //       'driverId': driverId,
-  //       'driverName': driverName,
-  //       'ownerOTP': ownerOTP.toString(),
-  //       'statusHistory': FieldValue.arrayUnion([
-  //         {'status': newStatus, 'dateTime': DateTime.now().toIso8601String()},
-  //       ]),
-  //     });
-
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //         content: Text('Ride accepted successfully!'),
-  //         backgroundColor: Colors.orange,
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     debugPrint('Error updating booking status: $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Failed to update status: $e'),
-  //         backgroundColor: Colors.redAccent,
-  //       ),
-  //     );
-  //   }
-  // }
-
-
-
-

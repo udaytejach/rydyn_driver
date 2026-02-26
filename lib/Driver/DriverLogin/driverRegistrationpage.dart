@@ -14,14 +14,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
-import 'package:rydyn/Driver/DriverLogin/registrationotpscreen.dart';
-import 'package:rydyn/Driver/Widgets/D_customTextfield.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/Widgets/customTextField.dart';
-import 'package:rydyn/Driver/Widgets/mobileNumberInputField.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/D_Models/Driver_ViewModel.dart';
+import 'package:nyzoridecaptain/Driver/DriverLogin/registrationotpscreen.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/D_customTextfield.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customTextField.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/mobileNumberInputField.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 
 class DriverRegistrationPage extends StatefulWidget {
   const DriverRegistrationPage({super.key});
@@ -1171,16 +1171,6 @@ class _DriverRegistrationPageState extends State<DriverRegistrationPage> {
       );
       return false;
     }
-
-    // if (emailController.text.isEmpty ||
-    //     !RegExp(
-    //       r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}',
-    //     ).hasMatch(emailController.text)) {
-    //   ScaffoldMessenger.of(
-    //     context,
-    //   ).showSnackBar(const SnackBar(content: Text("Please enter valid email")));
-    //   return false;
-    // }
 
     if (phoneController.text.isEmpty ||
         phoneController.text.length < 10 ||

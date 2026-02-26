@@ -5,18 +5,18 @@ import 'package:country_picker/country_picker.dart';
 
 import 'package:provider/provider.dart';
 import 'package:libphonenumber_plugin/libphonenumber_plugin.dart';
-import 'package:rydyn/Driver/DriverLogin/driverRegistrationpage.dart';
-import 'package:rydyn/Driver/Login/loginScreen.dart';
-import 'package:rydyn/Driver/Login/otpscreen.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customButton.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/Widgets/customTextField.dart';
-import 'package:rydyn/Driver/Widgets/mobileNumberInputField.dart';
-import 'package:rydyn/Driver/viewmodels/register_viewmodel.dart';
+import 'package:nyzoridecaptain/Driver/DriverLogin/driverRegistrationpage.dart';
+import 'package:nyzoridecaptain/Driver/Login/loginScreen.dart';
+import 'package:nyzoridecaptain/Driver/Login/otpscreen.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customButton.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customTextField.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/mobileNumberInputField.dart';
+import 'package:nyzoridecaptain/Driver/viewmodels/register_viewmodel.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});  
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();

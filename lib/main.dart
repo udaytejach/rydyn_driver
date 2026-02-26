@@ -1,4 +1,4 @@
-import 'dart:io';  
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,18 +6,18 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
-import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
-import 'package:rydyn/Driver/Login/loginScreen.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
-import 'package:rydyn/Driver/notifications/firebase_api.dart';
-import 'package:rydyn/Driver/services/locale_provider.dart';
-import 'package:rydyn/Driver/services/repository.dart';
-import 'package:rydyn/Driver/viewmodels/login_viewmodel.dart';
-import 'package:rydyn/Driver/viewmodels/register_viewmodel.dart';
-import 'package:rydyn/firebase_options.dart';
-import 'package:rydyn/splashscreen/splashScreen.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/D_Models/Driver_ViewModel.dart';
+import 'package:nyzoridecaptain/Driver/Login/loginScreen.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/notifications/firebase_api.dart';
+import 'package:nyzoridecaptain/Driver/services/locale_provider.dart';
+import 'package:nyzoridecaptain/Driver/services/repository.dart';
+import 'package:nyzoridecaptain/Driver/viewmodels/login_viewmodel.dart';
+import 'package:nyzoridecaptain/Driver/viewmodels/register_viewmodel.dart';
+import 'package:nyzoridecaptain/firebase_options.dart';
+import 'package:nyzoridecaptain/splashscreen/splashScreen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -40,10 +40,8 @@ void main() async {
   _setupNotificationListeners();
 
   if (Platform.isAndroid) {
-    // Code specific to Android
     print("Running on Android");
   } else if (Platform.isIOS) {
-    // Code specific to iOS
     await FirebaseApi().iosNotifications();
     print("Running on iOS");
   }
@@ -74,8 +72,6 @@ Future<void> _requestNotificationPermission() async {
   );
   print('User granted permission: ${settings.authorizationStatus}');
 }
-
-// final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

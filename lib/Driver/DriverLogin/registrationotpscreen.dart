@@ -12,16 +12,16 @@ import 'package:intl/intl.dart';
 
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
-import 'package:rydyn/Driver/D_Models/Driver_Model.dart';
-import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
-import 'package:rydyn/Driver/Login/loginScreen.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customButton.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/notifications/service.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/D_Models/Driver_Model.dart';
+import 'package:nyzoridecaptain/Driver/D_Models/Driver_ViewModel.dart';
+import 'package:nyzoridecaptain/Driver/Login/loginScreen.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customButton.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/notifications/service.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 
 class DriverOtpScreen extends StatefulWidget {
   final String firstName,

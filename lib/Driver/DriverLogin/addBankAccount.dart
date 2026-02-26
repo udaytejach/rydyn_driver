@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
-import 'package:rydyn/Driver/D_Models/Driver_Model.dart';
-import 'package:rydyn/Driver/D_Models/Driver_ViewModel.dart';
-import 'package:rydyn/Driver/Login/loginScreen.dart';
-import 'package:rydyn/Driver/Widgets/D_customTextfield.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/D_Models/Driver_Model.dart';
+import 'package:nyzoridecaptain/Driver/D_Models/Driver_ViewModel.dart';
+import 'package:nyzoridecaptain/Driver/Login/loginScreen.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/D_customTextfield.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
 
 class AddBankAccount extends StatefulWidget {
   const AddBankAccount({super.key});
@@ -97,38 +97,7 @@ class _AddBankAccountState extends State<AddBankAccount> {
                 ],
               ),
               const SizedBox(height: 30),
-              // Center(
-              //   child: CustomButton(
-              //     text: "Submit",
-              //     onPressed: () async {
-              //       if (!isAgreed) {
-              //         ScaffoldMessenger.of(context).showSnackBar(
-              //           const SnackBar(
-              //             content: Text("Please accept privacy policy"),
-              //           ),
-              //         );
-              //         return;
-              //       }
 
-              //       vm.driver.bankAccount = BankAccount(
-              //         holderName: holderController.text,
-              //         accountNumber: accountController.text,
-              //         ifsc: ifscController.text,
-              //         bankName: bankController.text,
-              //         branch: branchController.text,
-              //       );
-
-              //       await vm.saveDriver();
-
-              //       Navigator.pushReplacement(
-              //         context,
-              //         MaterialPageRoute(builder: (_) => D_BottomNavigation()),
-              //       );
-              //     },
-              //     width: 220,
-              //     height: 53,
-              //   ),
-              // ),
               Center(
                 child: SizedBox(
                   width: 220,

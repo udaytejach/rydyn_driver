@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_Bookings.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/Earnings.dart';
-import 'package:rydyn/Driver/DriverDahboard/driverDashboard.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
-import 'package:rydyn/Driver/sidemenu/D_Helpandsupport.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_Bookings.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/Earnings.dart';
+import 'package:nyzoridecaptain/Driver/DriverDahboard/driverDashboard.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/sidemenu/D_Helpandsupport.dart';
 
 class D_BottomNavigation extends StatefulWidget {
   @override

@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:provider/provider.dart';
-import 'package:rydyn/Driver/Login/loginScreen.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
-import 'package:rydyn/Driver/services/locale_provider.dart';
+import 'package:nyzoridecaptain/Driver/Login/loginScreen.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/services/locale_provider.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -49,16 +49,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                           textcolor: korangeColor,
                         ),
                       ),
-                      // const SizedBox(height: 10),
-                      // Container(
-                      //   margin: EdgeInsets.only(left: marginStart),
-                      //   child: CustomText(
-                      //     text: localizations.selectLanguageSubtitle,
-                      //     fontSize: 14,
-                      //     fontWeight: FontWeight.w400,
-                      //     textcolor: kgreyColor,
-                      //   ),
-                      // ),
+
                       const SizedBox(height: 50),
                       SizedBox(
                         height: 58,

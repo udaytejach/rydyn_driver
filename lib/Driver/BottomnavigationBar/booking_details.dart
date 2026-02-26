@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/chat_screen.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/payment_gateway.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/notifications/service.dart';
-import 'package:rydyn/l10n/app_localizations.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/chat_screen.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/payment_gateway.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/notifications/service.dart';
+import 'package:nyzoridecaptain/l10n/app_localizations.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -638,20 +638,6 @@ class _BookingDetailsState extends State<BookingDetails> {
                               ),
                             ],
                           ),
-
-                          // GestureDetector(
-                          //   onTap: () {},
-                          //   child: Text(
-                          //     "View Vehicle Details",
-                          //     style: TextStyle(
-                          //       fontWeight: FontWeight.w600,
-                          //       fontSize: 12,
-                          //       color: korangeColor,
-                          //       decoration: TextDecoration.underline,
-                          //       decorationColor: korangeColor,
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -1775,7 +1761,6 @@ class _BookingDetailsState extends State<BookingDetails> {
                     },
                   ),
 
-                 
                   const SizedBox(height: 10),
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -1793,7 +1778,6 @@ class _BookingDetailsState extends State<BookingDetails> {
 
                       if (reviewsList.isEmpty) {
                         return Container();
-                       
                       }
 
                       final review = reviewsList[0];
@@ -2703,164 +2687,3 @@ Widget _buildCard(
     ),
   );
 }
-
- // Container(
-                        //   width: double.infinity,
-                        //   padding: const EdgeInsets.all(15),
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.white,
-                        //     borderRadius: BorderRadius.circular(12),
-                        //     border: Border.all(
-                        //       color: Colors.grey.shade300,
-                        //       width: 1,
-                        //     ),
-                        //     boxShadow: [
-                        //       BoxShadow(
-                        //         color: Colors.grey.withOpacity(0.1),
-                        //         blurRadius: 3,
-                        //         offset: const Offset(0, 1),
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   child: const CustomText(
-                        //     text: "No review available",
-                        //     fontSize: 14,
-                        //     fontWeight: FontWeight.w500,
-                        //     textcolor: KblackColor,
-                        //   ),
-                        // );
- // Container(
-                  //   width: double.infinity,
-                  //   padding: const EdgeInsets.all(15),
-                  //   decoration: BoxDecoration(
-                  //     color: Colors.white,
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     border: Border.all(color: Colors.grey.shade300, width: 1),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.grey.withOpacity(0.1),
-                  //         blurRadius: 3,
-                  //         offset: const Offset(0, 1),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       CustomText(
-                  //         text: localizations.paymentSummary,
-                  //         fontSize: 16,
-                  //         fontWeight: FontWeight.w600,
-                  //         textcolor: korangeColor,
-                  //       ),
-                  //       const SizedBox(height: 12),
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           CustomText(
-                  //             text: localizations.distance,
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w400,
-                  //             textcolor: KblackColor,
-                  //           ),
-                  //           CustomText(
-                  //             text: "$distance",
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w400,
-                  //             textcolor: KblackColor,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       const SizedBox(height: 8),
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           CustomText(
-                  //             text: localizations.servicePrice,
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w400,
-                  //             textcolor: KblackColor,
-                  //           ),
-                  //           CustomText(
-                  //             text:
-                  //                 "₹${(double.tryParse(serviceFare) ?? 0).toStringAsFixed(2)}",
-
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w400,
-                  //             textcolor: KblackColor,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       const SizedBox(height: 8),
-
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           CustomText(
-                  //             text: localizations.convenienceFee,
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w400,
-                  //             textcolor: KblackColor,
-                  //           ),
-                  //           CustomText(
-                  //             text:
-                  //                 "₹${(double.tryParse(convenienceFee) ?? 0).toStringAsFixed(2)}",
-
-                  //             fontSize: 14,
-                  //             fontWeight: FontWeight.w400,
-                  //             textcolor: KblackColor,
-                  //           ),
-                  //         ],
-                  //       ),
-
-                  //      if (data['couponApplied'] == true) ...[
-                  //         const SizedBox(height: 5),
-                  //         Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //           children: [
-                  //             CustomText(
-                  //               text: localizations.couponApplied,
-                  //               fontSize: 13,
-                  //               fontWeight: FontWeight.w500,
-                  //               textcolor: Colors.green,
-                  //             ),
-                  //             CustomText(
-                  //               text:
-                  //                   "-₹${((data['appliedDiscount'] ?? 0)).toStringAsFixed(2)}",
-
-                  //               // "-₹${appliedDiscount.toStringAsFixed(2)}",
-                  //               fontSize: 13,
-                  //               fontWeight: FontWeight.w600,
-                  //               textcolor: Colors.green,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ],
-
-                  //       const SizedBox(height: 10),
-                  //       const DottedLine(dashColor: kseegreyColor),
-                  //       const SizedBox(height: 10),
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           CustomText(
-                  //             text: localizations.totalPrice,
-                  //             fontSize: 18,
-                  //             fontWeight: FontWeight.w700,
-                  //             textcolor: korangeColor,
-                  //           ),
-                  //           CustomText(
-                  //             text:
-                  //                 "₹${(double.tryParse(totalPrice) ?? 0).toStringAsFixed(2)}",
-
-                  //             fontSize: 18,
-                  //             fontWeight: FontWeight.w700,
-                  //             textcolor: korangeColor,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       const SizedBox(height: 10),
-                  //       const DottedLine(dashColor: kseegreyColor),
-                  //     ],
-                  //   ),
-                  // ),

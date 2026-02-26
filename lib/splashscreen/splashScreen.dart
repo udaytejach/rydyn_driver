@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rydyn/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
-import 'package:rydyn/Driver/Login/selectLanguage.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/Widgets/colors.dart';
-import 'package:rydyn/Driver/Widgets/customText.dart';
-import 'package:rydyn/Driver/notifications/firebase_api.dart';
-import 'package:rydyn/Driver/notifications/service.dart';
+import 'package:nyzoridecaptain/Driver/BottomnavigationBar/D_bottomnavigationbar.dart';
+import 'package:nyzoridecaptain/Driver/Login/selectLanguage.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/colors.dart';
+import 'package:nyzoridecaptain/Driver/Widgets/customText.dart';
+import 'package:nyzoridecaptain/Driver/notifications/firebase_api.dart';
+import 'package:nyzoridecaptain/Driver/notifications/service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,17 +29,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // _controller = AnimationController(
-    //   vsync: this,
-    //   duration: const Duration(seconds: 4),
-    // );
-
-    // _scaleAnimation = Tween<double>(
-    //   begin: 0.0,
-    //   end: 1.0,
-    // ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
-    // _controller.forward();
     startSplashFlow();
   }
 
@@ -192,15 +181,6 @@ class _SplashScreenState extends State<SplashScreen>
                   width: 200,
                   fit: BoxFit.contain,
                 ),
-                // Transform.translate(
-                //   offset: const Offset(0, -30),
-                //   child: Image.asset(
-                //     'images/nyzo_captain_add.png',
-                //     height: 20,
-                //     width: 120,
-                //     fit: BoxFit.contain,
-                //   ),
-                // ),
               ],
             ),
           ),

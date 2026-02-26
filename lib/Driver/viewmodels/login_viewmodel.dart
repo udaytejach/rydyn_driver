@@ -3,8 +3,8 @@ import 'package:country_picker/country_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:rydyn/Driver/SharedPreferences/shared_preferences.dart';
-import 'package:rydyn/Driver/models/loginState.dart';
+import 'package:nyzoridecaptain/Driver/SharedPreferences/shared_preferences.dart';
+import 'package:nyzoridecaptain/Driver/models/loginState.dart';
 
 import '../services/repository.dart';
 
@@ -156,7 +156,7 @@ class LoginViewModel extends ChangeNotifier {
     String docId,
   ) async {
     await SharedPrefServices.setRoleCode(userData['roleCode'] ?? "");
-   
+
     await SharedPrefServices.setProfileImage(userData['profileUrl'] ?? "");
     await SharedPrefServices.setStatus(userData['status'] ?? "");
     await SharedPrefServices.setFirstName(userData['firstName'] ?? "");
